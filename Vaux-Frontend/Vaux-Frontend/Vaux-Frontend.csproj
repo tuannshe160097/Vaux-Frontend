@@ -7,4 +7,9 @@
     <RootNamespace>Vaux_Frontend</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Controller\" />
+    <Folder Include="DTO\" />
+  </ItemGroup>
+
 </Project>
