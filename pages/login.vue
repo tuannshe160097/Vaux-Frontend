@@ -1,34 +1,70 @@
-<template lang='pug'>
-  section.surface-0.flex.align-items-center.justify-content-center.min-h-screen.min-w-screen.overflow-hidden.p-2
-    .grid.justify-content-center.col-12(class='md:col-6 lg:col-4')
-      .logo-block.w-full.mb-5
-        img.pr-1(:src='require("assets/images/tag-user.png")')
-        img.pt-2(:src='require("assets/images/logo-text-airtag.png")')
-      .w-full
-        //- Input Email
-        label.block.font-bold.mb-2(for="inputEmail") Email
-        span.p-input-icon-left.mb-3.w-full
-          .icon.icon--left.icon-sms.bg-primary
-          InputText#inputEmail.w-full(v-model="loginUser.userName")
-        //- Input Password
-        label.block.font-bold.mb-2(for="inputPassword") Password
-        span.p-input-icon-left.mb-6.w-full
-          .icon.icon--left.icon-lock-open.bg-primary
-          InputText#inputPassword.w-full(type="password", v-model="loginUser.password")
-        //- Action block
-        Button.bg-primary.w-full.p-3.mb-3(type="button", label="Sign In", @click='callLogin')
-        //- Remember block
-        .flex.align-items-center.justify-content-between.mb-5
-          .flex.align-items-center
-            Checkbox#rememberCheck.mr-2(v-model="checked", :binary="true")
-            label.text-sm(for="rememberCheck") Save password
-          a.ml-5.text-sm.text-right.text-primary.cursor-pointer Forgot password?
+<template>
+  <section
+    class="surface-0 flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden p-2"
+  >
+    <div class="grid justify-content-center col-12 md:col-6 lg:col-4">
+      <div class="logo-block w-full mb-5">
+        <img class="pr-1" :src="require('assets/images/tag-user.png')" /><img
+          class="pt-2"
+          :src="require('assets/images/logo-text-airtag.png')"
+        />
+      </div>
+      <div class="w-full">
+        <label class="block font-bold mb-2" for="inputSdt">
+          Số điện thoại
+        </label>
 
+        <div class="field col-12 md:col-3">
+          <label for="withoutgrouping">Without Grouping</label>
+          <InputNumber
+            id="withoutgrouping"
+            v-model="sdt"
+            mode="decimal"
+            :useGrouping="false"
+          />
+        </div>
+        <span class="p-input-icon-left mb-3 w-full">
+          <div class="icon icon--left icon-sms bg-primary"></div>
+          <InputNumber class="w-full" id="inputSdt" v-model="sdt" />
+        </span>
+
+        <label class="block font-bold mb-2" for="inputPassword"> OTP </label>
+        <span class="p-input-icon-left mb-6 w-full">
+          <div class="icon icon--left icon-lock-open bg-primary"></div>
+          <InputText id="inputPassword" type="text" v-model="otp"></InputText>
+          <Button label="Send Otp" @click="sendOtp"></Button>
+        </span>
+        <Button
+          class="bg-primary w-full p-3 mb-3"
+          type="button"
+          label="Sign In"
+          @click="callLogin"
+        ></Button>
+        <div class="flex align-items-center justify-content-between mb-5">
+          <div class="flex align-items-center">
+            <Checkbox
+              class="mr-2"
+              id="rememberCheck"
+              v-model="checked"
+              :binary="true"
+            ></Checkbox>
+            <label class="text-sm" for="rememberCheck">Save password</label>
+          </div>
+          <a class="ml-5 text-sm text-right text-primary cursor-pointer"
+            >Forgot password?</a
+          >
+        </div>
+      </div>
+    </div>
+  </section>
 </template>
-<script lang='ts'>
-import { Component, Vue } from 'nuxt-property-decorator'
 
+<script lang="ts">
+// import { Component, Vue } from 'nuxt-property-decorator'
+import InputNumber from 'primevue/inputnumber'
+import axios from 'axios'
 @Component({
+  layout: 'default',
   fetch({ redirect, $auth }): Promise<void> | void {
     if ($auth.user) {
       redirect('/')
@@ -36,25 +72,61 @@ import { Component, Vue } from 'nuxt-property-decorator'
   },
 })
 class Login extends Vue {
-
   checked = false
-
-  loginUser = {
-    userName: null,
-    password: null
-  }
-
-  callLogin() {
-    this.$auth.loginWith('local', { data: this.loginUser })
-      .catch(() => {
-        const userLogin = require('~/mocks/user.json')
-        this.$auth.setUser(userLogin)
-        this.$store.commit('commons/store-token/setToken', userLogin)
-      })
+  sdt
+  otp
+  async sendOtp() {
+    try {
+      let result = await axios.post(
+        'https://localhost:6565/api/SendOtp?phone=' + this.sdt,
+        {}
+      )
+      console.log(result)
+      if (result.status === 200) {
+        console.log('Yêu cầu thành công')
+      }
+    } catch (error) {
+      if (error.response) {
+        console.log('Lỗi Bad Request:', error.response.data)
+        // Xử lý lỗi 400 ở đây
+      } else {
+        console.error('Lỗi khi gửi yêu cầu:', error)
+      }
+    }
   }
 }
-
 export default Login
+// export default {
+//   name: 'Login',
+//   data() {
+//     return {
+//       sdt: '',
+//       otp: '',
+//       checked: true,
+//     }
+//   },
+//   methods: {
+//     async sendOtp() {
+//       try {
+//         let result = await axios.post(
+//           'https://localhost:6565/api/SendOtp?phone=' + this.sdt,
+//           {}
+//         )
+//         console.log(result)
+//         if (result.status === 200) {
+//           console.log('Yêu cầu thành công')
+//         }
+//       } catch (error) {
+//         if (error.response) {
+//           console.log('Lỗi Bad Request:', error.response.data)
+//           // Xử lý lỗi 400 ở đây
+//         } else {
+//           console.error('Lỗi khi gửi yêu cầu:', error)
+//         }
+//       }
+//     },
+//   },
+// }
 </script>
 <style lang='sass'>
 .logo-block

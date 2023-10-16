@@ -1,3 +1,9 @@
-<template lang='pug'>
-  Nuxt
+<template>
+  <nuxt/>
 </template>
+
+
+
+<style>
+@import "@/assets/styles/style.css";
+</style>
