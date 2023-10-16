@@ -107,9 +107,9 @@
 
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import { Box } from '~/models/Box'
 const nsStoreBox = namespace('box/store-box')
 const nsStoreMasterData = namespace('box/master-data')
-import { Box } from '~/models/Box'
 
 @Component({
   layout: 'dashboard',

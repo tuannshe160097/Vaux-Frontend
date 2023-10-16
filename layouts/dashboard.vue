@@ -1,5 +1,11 @@
 <template lang='pug'>
- Nuxt
+.grid
+    .col-2
+
+    .col-10
+        Nuxt
+    
+
 </template>
 
 <script lang='ts'>
