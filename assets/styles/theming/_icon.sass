@@ -1,33 +1,28 @@
+@import "../scss/icon_list"
 // - Custom css classes for icons
 // -- Variables
-
 $icon-size-small:  16px !default
 $icon-size-base:   18px !default
 $icon-size-medium: 20px !default
 $icon-size-large:  24px !default
+$icon-size-xlarge: 48px !default
 
 $icon-padding-base: 16px
-
-// --- List name of icons
-$icons: house-2, lock-open, sms, search-input, filter-btn, plus, delete, edit, arrow-up-right, chevron-up, footer-paginator
 
 // -- custom css
 .icon
   @include size($icon-size-base)
-  @include centerAbsolute(top)
-  content: ''
 
   &--left
+    @include centerAbsolute(top)
     left: $icon-padding-base
 
   &--right
+    @include centerAbsolute(top)
     right: $icon-padding-base
 
   &--center
     @include centerAbsolute(both)
-
-  &--base
-    @include size($icon-size-base)
 
   &--small
     @include size($icon-size-small)
@@ -35,9 +30,20 @@ $icons: house-2, lock-open, sms, search-input, filter-btn, plus, delete, edit, a
   &--large
     @include size($icon-size-large)
 
+  &--xlarge
+    @include size($icon-size-xlarge)
+
 @each $i in $icons
   .icon-#{$i}
     background-color: $text-color-base
     mask-image:       url('~/assets/icons/#{$i}.svg')
     mask-size:        cover
+    &.active
+      background-color: $primary
 
+// -- override css
+.p-input-icon-left > i:first-of-type
+  left: $icon-padding-base
+
+.p-input-icon-left > .p-inputtext
+  padding-left: $icon-size-base + 2 * $icon-padding-base

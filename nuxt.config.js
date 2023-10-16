@@ -4,7 +4,7 @@ export default {
   target: 'static',
 
   head: {
-    title: 'AirTag Management System',
+    title: 'VAUX',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -16,6 +16,11 @@ export default {
         href: 'https://fonts.googleapis.com/css2?family=Google+Sans:wght@300;400;500;700;900&display=swap',
         rel:  'stylesheet',
         type: 'text/css'
+      },
+      {
+        rel: 'icon',
+        type: 'image/x-icon',
+        href: 'https://s.yimg.com/rz/l/favicon.ico'
       }
     ]
   },
