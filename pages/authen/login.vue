@@ -4,21 +4,26 @@
   >
     <div class="grid justify-content-center col-12 md:col-6 lg:col-4">
       <div class="logo-block w-full mb-5">
-        <img class="pr-1" :src="require('assets/images/tag-user.png')" /><img
+        <img class="pr-1" :src="require('~/assets/images/tag-user.png')" /><img
           class="pt-2"
-          :src="require('assets/images/logo-text-airtag.png')"
+          :src="require('~/assets/images/logo-text-airtag.png')"
         />
       </div>
       <div class="w-full">
         <label class="block font-bold mb-2" for="inputSdt">
           Số điện thoại
         </label>
-        </div>
         <span class="p-input-icon-left mb-3 w-full">
           <div class="icon icon--left icon-sms bg-primary"></div>
-          <InputText class="w-full" id="inputSdt" v-model="sdt" ></InputText>
+          <!-- <InputNumber class="w-full" id="inputSdt" v-model="sdt" :useGrouping="false"></InputNumber> -->
+          <InputMask
+            mask="9999999999"
+            class="w-full"
+            id="inputSdt"
+            v-model="sdt"
+            slotChar=" "
+          />
         </span>
-
         <label class="block font-bold mb-2" for="inputPassword"> OTP </label>
         <span class="p-input-icon-left mb-6 w-full">
           <div class="icon icon--left icon-lock-open bg-primary"></div>
@@ -51,39 +56,10 @@
 </template>
 
 <script>
-// import { Component, Vue } from 'nuxt-property-decorator'
-import InputNumber from 'primevue/inputnumber'
 import axios from 'axios'
-// @Component({
-//   layout: 'default'
-// })
-// class Login extends Vue {
-//   checked = false
-//   sdt
-//   otp
-//   async sendOtp() {
-//     try {
-//       let result = await axios.post(
-//         'https://localhost:6565/api/SendOtp?phone=' + this.sdt,
-//         {}
-//       )
-//       console.log(result)
-//       if (result.status === 200) {
-//         console.log('Yêu cầu thành công')
-//       }
-//     } catch (error) {
-//       if (error.response) {
-//         console.log('Lỗi Bad Request:', error.response.data)
-//         // Xử lý lỗi 400 ở đây
-//       } else {
-//         console.error('Lỗi khi gửi yêu cầu:', error)
-//       }
-//     }
-//   }
-// }
-// export default Login
 export default {
   name: 'Login',
+  layout: 'default',
   data() {
     return {
       sdt: '',
@@ -101,6 +77,26 @@ export default {
         console.log(result)
         if (result.status === 200) {
           console.log('Yêu cầu thành công')
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log('Lỗi Bad Request:', error.response.data)
+          // Xử lý lỗi 400 ở đây
+        } else {
+          console.error('Lỗi khi gửi yêu cầu:', error)
+        }
+      }
+    },
+    async callLogin() {
+      try {
+        let result = await axios.post(
+          'https://localhost:6565/api/VerifyOtp?phone=' + this.sdt + '&otp=' + this.otp,
+          {}
+        )
+        console.log(result)
+        if (result.status === 200) {
+          console.log('Yêu cầu thành công' + result.data);
+          redirect('/homepage')
         }
       } catch (error) {
         if (error.response) {
