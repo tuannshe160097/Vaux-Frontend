@@ -13,19 +13,10 @@
         <label class="block font-bold mb-2" for="inputSdt">
           Số điện thoại
         </label>
-
-        <div class="field col-12 md:col-3">
-          <label for="withoutgrouping">Without Grouping</label>
-          <InputNumber
-            id="withoutgrouping"
-            v-model="sdt"
-            mode="decimal"
-            :useGrouping="false"
-          />
         </div>
         <span class="p-input-icon-left mb-3 w-full">
           <div class="icon icon--left icon-sms bg-primary"></div>
-          <InputNumber class="w-full" id="inputSdt" v-model="sdt" />
+          <InputText class="w-full" id="inputSdt" v-model="sdt" ></InputText>
         </span>
 
         <label class="block font-bold mb-2" for="inputPassword"> OTP </label>
@@ -59,74 +50,69 @@
   </section>
 </template>
 
-<script lang="ts">
+<script>
 // import { Component, Vue } from 'nuxt-property-decorator'
 import InputNumber from 'primevue/inputnumber'
 import axios from 'axios'
-@Component({
-  layout: 'default',
-  fetch({ redirect, $auth }): Promise<void> | void {
-    if ($auth.user) {
-      redirect('/')
+// @Component({
+//   layout: 'default'
+// })
+// class Login extends Vue {
+//   checked = false
+//   sdt
+//   otp
+//   async sendOtp() {
+//     try {
+//       let result = await axios.post(
+//         'https://localhost:6565/api/SendOtp?phone=' + this.sdt,
+//         {}
+//       )
+//       console.log(result)
+//       if (result.status === 200) {
+//         console.log('Yêu cầu thành công')
+//       }
+//     } catch (error) {
+//       if (error.response) {
+//         console.log('Lỗi Bad Request:', error.response.data)
+//         // Xử lý lỗi 400 ở đây
+//       } else {
+//         console.error('Lỗi khi gửi yêu cầu:', error)
+//       }
+//     }
+//   }
+// }
+// export default Login
+export default {
+  name: 'Login',
+  data() {
+    return {
+      sdt: '',
+      otp: '',
+      checked: true,
     }
   },
-})
-class Login extends Vue {
-  checked = false
-  sdt
-  otp
-  async sendOtp() {
-    try {
-      let result = await axios.post(
-        'https://localhost:6565/api/SendOtp?phone=' + this.sdt,
-        {}
-      )
-      console.log(result)
-      if (result.status === 200) {
-        console.log('Yêu cầu thành công')
+  methods: {
+    async sendOtp() {
+      try {
+        let result = await axios.post(
+          'https://localhost:6565/api/SendOtp?phone=' + this.sdt,
+          {}
+        )
+        console.log(result)
+        if (result.status === 200) {
+          console.log('Yêu cầu thành công')
+        }
+      } catch (error) {
+        if (error.response) {
+          console.log('Lỗi Bad Request:', error.response.data)
+          // Xử lý lỗi 400 ở đây
+        } else {
+          console.error('Lỗi khi gửi yêu cầu:', error)
+        }
       }
-    } catch (error) {
-      if (error.response) {
-        console.log('Lỗi Bad Request:', error.response.data)
-        // Xử lý lỗi 400 ở đây
-      } else {
-        console.error('Lỗi khi gửi yêu cầu:', error)
-      }
-    }
-  }
+    },
+  },
 }
-export default Login
-// export default {
-//   name: 'Login',
-//   data() {
-//     return {
-//       sdt: '',
-//       otp: '',
-//       checked: true,
-//     }
-//   },
-//   methods: {
-//     async sendOtp() {
-//       try {
-//         let result = await axios.post(
-//           'https://localhost:6565/api/SendOtp?phone=' + this.sdt,
-//           {}
-//         )
-//         console.log(result)
-//         if (result.status === 200) {
-//           console.log('Yêu cầu thành công')
-//         }
-//       } catch (error) {
-//         if (error.response) {
-//           console.log('Lỗi Bad Request:', error.response.data)
-//           // Xử lý lỗi 400 ở đây
-//         } else {
-//           console.error('Lỗi khi gửi yêu cầu:', error)
-//         }
-//       }
-//     },
-//   },
-// }
 </script>
 <style lang='sass'>
 .logo-block
