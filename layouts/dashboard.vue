@@ -1,10 +1,4 @@
 <template lang='pug'>
-.grid
-    .col-2
-
-    .col-10
-        Nuxt
-    
 
 </template>
 

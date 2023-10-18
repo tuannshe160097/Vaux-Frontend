@@ -5,7 +5,9 @@ export namespace User {
     email:      string,
     role:       number,
     status:     number,
-    userDetail: User.Detail
+    userDetail: User.Detail,
+    avatarUrl: string,
+    displayName: string,
   }
 
   export interface Detail {

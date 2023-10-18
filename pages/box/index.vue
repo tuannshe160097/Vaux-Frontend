@@ -1,5 +1,5 @@
 <template lang="pug">
-.box-page-container.mx-3.mt-3.flex.flex-column
+.box-page-container.flex.flex-column
   .grid.justify-content-between
     .col-fixed
       h1.font-bold.m-0.font-size-4xlarge.line-height-1 Box list
@@ -25,12 +25,12 @@
           .bg-white.border-round
             div.pt-2.pl-3.pb-1
               span.text-600.font-size-small Warehouse
-            Dropdown.w-full.border-0.mb-1(v-model="selectedWarehouse" :options="masterData.warehouse" optionLabel="name" placeholder="Select")
+            Dropdown.w-full.border-0.mb-1(v-model="selectedWarehouse" :options="masterData" optionLabel="name" placeholder="Select")
         .col
           .bg-white.border-round
             div.pt-2.pl-3.pb-1
               span.text-600.font-size-small Size
-            Dropdown.w-full.border-0.mb-1(v-model="selectedSize" :options="masterData.size" optionLabel="name" placeholder="Select")
+            Dropdown.w-full.border-0.mb-1(v-model="selectedSize" :options="masterData" optionLabel="name" placeholder="Select")
         .col
           .bg-white.border-round
             div.pt-2.pl-3.pb-1
@@ -42,7 +42,7 @@
           .bg-white.border-round
             div.pt-2.pl-3.pb-1
               span.text-600.font-size-small Location
-            Dropdown.w-full.border-0.mb-1(v-model="selectedLocation" :options="masterData.location" optionLabel="name" placeholder="Select")
+            Dropdown.w-full.border-0.mb-1(v-model="selectedLocation" :options="masterData" optionLabel="name" placeholder="Select")
     .col-3
       .grid.grid-nogutter
         .col
@@ -71,16 +71,6 @@
           template(#body="{data}") {{data.attribute.length}}*{{data.attribute.height}}*{{data.attribute.width}}
         Column(field="attribute.weight" header="WEIGHT(KG)" sortable className="p-text-right" bodyClass="font-semibold")
           template(#body="{data}") {{data.attribute.weight}}
-        Column(field="warehouse.name" header="WAREHOUSE" sortable className="p-text-right")
-          template(#body="{data}")
-            .flex.align-items-center.cursor-pointer.justify-content-end
-              span.text-primary.font-bold.font-size-small {{data.warehouse.name}}
-              .icon--small.icon-arrow-up-right.bg-primary
-        Column(field="location.name" header="LOCATION" sortable className="p-text-right")
-          template(#body="{data}")
-            .flex.align-items-center.cursor-pointer.justify-content-end
-              span.text-primary.font-bold.font-size-small {{data.location.name}}
-              .icon--small.icon-arrow-up-right.bg-primary
         Column(field="status" header="STATUS" sortable className="p-text-right")
           template(#body="{data}")
             div
@@ -109,11 +99,8 @@
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { Box } from '~/models/Box'
 const nsStoreBox = namespace('box/store-box')
-const nsStoreMasterData = namespace('box/master-data')
 
-@Component({
-  layout: 'dashboard',
-})
+@Component
 class BoxList extends Vue {
   selectedBoxes=[];
   selectedWarehouse = null
@@ -123,18 +110,13 @@ class BoxList extends Vue {
   dateFrom = null
   dateTo = null
   totalItemsCount = 50
+  masterData = []
 
   @nsStoreBox.State
   boxData!: Box.Model[]
 
   @nsStoreBox.Action
   actGetBoxData!: () => Promise<void>
-
-  @nsStoreMasterData.State
-  masterData!: any
-
-  @nsStoreMasterData.Action
-  actGetMasterData!: () => Promise<void>
 
   @nsStoreBox.Action
   actDeleteBoxById!: (
@@ -143,7 +125,6 @@ class BoxList extends Vue {
 
   async mounted() {
     await this.actGetBoxData()
-    await this.actGetMasterData()
   }
 
   async deleteBoxById(id: any) {
@@ -157,18 +138,24 @@ class BoxList extends Vue {
 export default BoxList
 </script>
 
-<style lang="sass">
-body
-  background: #E8EAEF
-  // overflow: hidden
+<style lang="sass" scoped>
 .box-page-container
-  height: calc(100vh - 1rem)
-  .p-component
+  height: calc(100vh - 24px)
+  ::v-deep.p-component
     font-family: $font-family-primary
-  .pi-calendar:before
+  ::v-deep.pi-calendar:before
     content: url('~/assets/icons/calendar.svg')
-  .p-calendar-w-btn
+  ::v-deep.p-calendar-w-btn
     .p-button
       background: none
       border: none
+  ::v-deep.text-right
+    text-align: right !important
+    .p-column-header-content
+      justify-content: end !important
+  ::v-deep.disable-button
+    pointer-events: none
+    background-color: $text-color-300
+    .icon
+      background-color: $text-color-500
 </style>

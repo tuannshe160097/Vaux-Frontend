@@ -1,5 +1,5 @@
 <template lang="pug">
-.box-page-container.mx-3.mt-3.flex.flex-column
+.box-page-container.flex.flex-column
   .grid.justify-content-between
     .col-fixed
       h1.font-bold.m-0.font-size-4xlarge.line-height-1 Danh sách người dùng
@@ -13,8 +13,7 @@
         .col-fixed
           Button.w-9rem.h-3rem
             .icon--base.icon-plus.surface-900.bg-white
-            span.text-900.ml-3.text-white Thêm mới
-
+            span.text-900.ml-3.text-white Thêm Mới
   .grid.grid-nogutter.flex-1.relative.overflow-hidden
     .col.h-full.absolute.top-0.left-0.right-0
       DataTable.w-full.airtag-datatable.h-full.flex.flex-column(
@@ -31,27 +30,32 @@
           template(#body='slotProps')
             span.font-semibold {{ slotProps.index + 1 }}
         Column(
-          field='phone',
+          field='code',
           header='SỐ ĐIỆN THOẠI',
           sortable,
           bodyClass='font-semibold'
         )
-        Column(field='email', header='EMAIL', sortable, className='w-3')
         Column(
-          field='created',
+          field='seller.email',
+          header='EMAIL',
+          sortable,
+          className='w-3'
+        )
+        Column(
+          field='createAt',
           header='NGÀY TẠO',
           sortable,
           className='p-text-right'
         )
           template(#body='{ data }') {{ new Date(data.createAt).toLocaleDateString('en-US') }}
         Column(
-          field='updated',
+          field='attribute',
           header='NGÀY CẬP NHẬT',
           sortable,
           className='p-text-right',
           bodyClass='font-semibold'
         )
-          template(#body='{ data }') {{ data.attribute.length }}*{{ data.attribute.height }}*{{ data.attribute.width }}
+          template(#body='{ data }') {{ new Date(data.createAt).toLocaleDateString('en-US') }}
         Column(
           field='status',
           header='TRẠNG THÁI',
@@ -66,7 +70,7 @@
                 span.font-bold.text-400.font-size-small DISABLE
         Column(
           :exportable='false',
-          header='HOẠT ĐỘNG',
+          header='Hoạt động',
           sortable,
           className='p-text-right'
         )
@@ -90,16 +94,13 @@
               span.ml-3 Delete {{ selectedBoxes.length }} items selected
           Paginator.p-0(:rows='20', :totalRecords='totalItemsCount')
 </template>
-    
-<script lang="ts">
+  
+  <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { Box } from '~/models/Box'
 const nsStoreBox = namespace('box/store-box')
-const nsStoreMasterData = namespace('box/master-data')
 
-@Component({
-  layout: 'dashboard',
-})
+@Component
 class BoxList extends Vue {
   selectedBoxes = []
   selectedWarehouse = null
@@ -109,6 +110,7 @@ class BoxList extends Vue {
   dateFrom = null
   dateTo = null
   totalItemsCount = 50
+  masterData = []
 
   @nsStoreBox.State
   boxData!: Box.Model[]
@@ -116,18 +118,11 @@ class BoxList extends Vue {
   @nsStoreBox.Action
   actGetBoxData!: () => Promise<void>
 
-  @nsStoreMasterData.State
-  masterData!: any
-
-  @nsStoreMasterData.Action
-  actGetMasterData!: () => Promise<void>
-
   @nsStoreBox.Action
   actDeleteBoxById!: (params: any) => Promise<any>
 
   async mounted() {
     await this.actGetBoxData()
-    await this.actGetMasterData()
   }
 
   async deleteBoxById(id: any) {
@@ -140,20 +135,26 @@ class BoxList extends Vue {
 }
 export default BoxList
 </script>
-    
-<style lang="sass">
-body
-  background: #E8EAEF
-  // overflow: hidden
+  
+  <style lang="sass" scoped>
 .box-page-container
-  height: calc(100vh - 1rem)
-  .p-component
+  height: calc(100vh - 24px)
+  ::v-deep.p-component
     font-family: $font-family-primary
-  .pi-calendar:before
-    content: url('~/assets/icons/calendar.svg')
-  .p-calendar-w-btn
-    .p-button
-      background: none
-      border: none
+    ::v-deep.pi-calendar:before
+      content: url('~/assets/icons/calendar.svg')
+    ::v-deep.p-calendar-w-btn
+      .p-button
+        background: none
+        border: none
+    ::v-deep.text-right
+      text-align: right !important
+      .p-column-header-content
+        justify-content: end !important
+    ::v-deep.disable-button
+      pointer-events: none
+      background-color: $text-color-300
+      .icon
+        background-color: $text-color-500
 </style>
-    
+  
