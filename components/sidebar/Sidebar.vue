@@ -2,13 +2,13 @@
 .sidebar(:style="{ width: sidebarWidth }")
   .menu-section.sidebar-head
     template(v-if="!collapsed")
-      img.user-avatar(:src="userImageUrl")
+      img.user-avatar(:src='require("assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png")')
       .user-info
         span.user-name {{ userDisplayName }}
         span.user-role Role Ex
     .icon.icon--xlarge.icon-menu-toggle.surface-500.cursor-pointer(:class="{ 'bg-primary': collapsed }", @click="toggleSidebar")
   .menu-section.sidebar-menu
-    SidebarItem(v-for="item in pageMenu" :key="item.id" :item="item" @select="onSelectMenu(item)")
+    SidebarItem(v-for="item in pageMenu" :key="item.id" :item="item" @select="onSelectMenu(item)" @click="showProducts")
   .menu-section.sidebar-foot
     SidebarItem(v-for="item in settingMenu" :key="item.id" :item="item" @select="onSelectMenu(item)")
 </template>
@@ -19,6 +19,8 @@ import { User } from '~/models/User'
 import { MENU_ACTION, PAGE_MENU, SETTING_MENU } from '~/utils'
 const nsSidebar = namespace('layout/store-sidebar')
 const nsUser = namespace('user-auth/user')
+
+
 
 @Component
 class MenuSidebar extends Vue {
@@ -92,7 +94,7 @@ export default MenuSidebar
   bottom: 0
   padding: 30px 16px 30px 18px
   transition: 0.3s ease
-  background: $color-white
+  background: #A16B56
 
   &-head
     @include flex-center-vert
