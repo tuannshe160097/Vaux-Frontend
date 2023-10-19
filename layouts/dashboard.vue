@@ -1,5 +1,5 @@
 <template lang='pug'>
- Nuxt
+
 </template>
 
 <script lang='ts'>
