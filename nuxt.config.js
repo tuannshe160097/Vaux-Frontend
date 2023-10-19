@@ -57,7 +57,8 @@ export default {
       'Paginator',
       'Calendar',
       'ScrollPanel',
-      'InputMask'
+      'InputMask',
+      'Menubar'
     ],
     directives: [
       'Tooltip',

@@ -96,7 +96,8 @@ export default {
         console.log(result)
         if (result.status === 200) {
           console.log('Yêu cầu thành công' + result.data);
-          redirect('/homepage')
+          this.$router.push('/')
+          // redirect('/homepage')
         }
       } catch (error) {
         if (error.response) {
