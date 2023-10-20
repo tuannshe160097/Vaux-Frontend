@@ -22,6 +22,13 @@ export default {
         type: 'image/x-icon',
         href: 'https://s.yimg.com/rz/l/favicon.ico'
       }
+    ],
+    script: [
+      {
+        src: 'https://www.google.com/recaptcha/api.js',
+        async: true,
+        defer: true
+      }
     ]
   },
 

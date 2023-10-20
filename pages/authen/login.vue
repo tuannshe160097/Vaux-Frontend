@@ -28,7 +28,13 @@
         <span class="p-input-icon-left mb-6 w-full">
           <div class="icon icon--left icon-lock-open bg-primary"></div>
           <InputText id="inputPassword" type="text" v-model="otp"></InputText>
-          <Button label="Send Otp" @click="sendOtp"></Button>
+          <Button
+            label="Send Otp"
+            class="g-recaptcha"
+            data-sitekey="6Ldx37UoAAAAAKeB-1aPHttMxc_e9aW6T2t55LQe"
+            data-callback="sendOtp"
+            data-action="submit"
+          ></Button>
         </span>
         <Button
           class="bg-primary w-full p-3 mb-3"
@@ -70,15 +76,13 @@ export default {
   methods: {
     async sendOtp() {
       try {
-        let result = await axios.post(
-          'https://localhost:6565/api/SendOtp?phone=' + this.sdt,
+        let result = await this.$axios.post(
+          process.env.BASE_URL + '/api/SendOtp?phone=' + this.sdt,
           {}
         )
-        console.log(result)
-        if (result.status === 200) {
-          console.log('Yêu cầu thành công')
-        }
+        console.log('Yêu cầu thành công')
       } catch (error) {
+        console.log(error)
         if (error.response) {
           console.log('Lỗi Bad Request:', error.response.data)
           // Xử lý lỗi 400 ở đây
@@ -89,16 +93,21 @@ export default {
     },
     async callLogin() {
       try {
-        let result = await axios.post(
-          'https://localhost:6565/api/VerifyOtp?phone=' + this.sdt + '&otp=' + this.otp,
+        let result = await this.$axios.$post(
+          process.env.BASE_URL +
+            '/api/VerifyOtp?phone=' +
+            this.sdt +
+            '&otp=' +
+            this.otp,
           {}
         )
         console.log(result)
         if (result.status === 200) {
-          console.log('Yêu cầu thành công' + result.data);
-          this.$router.push('/')
+          console.log('Yêu cầu thành công' + result.data)
           // redirect('/homepage')
         }
+        console.log(result.status)
+        //this.$router.push('/')
       } catch (error) {
         if (error.response) {
           console.log('Lỗi Bad Request:', error.response.data)
