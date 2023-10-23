@@ -62,7 +62,8 @@ export default {
       'Tag',
       'Paginator',
       'Calendar',
-      'ScrollPanel'
+      'ScrollPanel',
+      'RadioButton'
     ],
     directives: [
       'Tooltip',

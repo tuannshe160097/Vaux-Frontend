@@ -8,7 +8,7 @@
         span.user-role Role Ex
     .icon.icon--xlarge.icon-menu-toggle.surface-500.cursor-pointer(:class="{ 'bg-primary': collapsed }", @click="toggleSidebar")
   .menu-section.sidebar-menu
-    SidebarItem(v-for="item in pageMenu" :key="item.id" :item="item" @select="onSelectMenu(item)" @click="showProducts")
+    SidebarItem(v-for="item in pageMenu" :key="item.id" :item="item" @select="onSelectMenu(item)")
   .menu-section.sidebar-foot
     SidebarItem(v-for="item in settingMenu" :key="item.id" :item="item" @select="onSelectMenu(item)")
 </template>
@@ -94,7 +94,7 @@ export default MenuSidebar
   bottom: 0
   padding: 30px 16px 30px 18px
   transition: 0.3s ease
-  background: #A16B56
+  background: $primary
 
   &-head
     @include flex-center-vert

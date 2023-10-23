@@ -3,7 +3,7 @@
   .grid.justify-content-between
     .col-fixed
       h1.font-bold.m-0.font-size-4xlarge.line-height-1 Box list
-      span.text-600.font-size-small(v-if="boxData") {{boxData.length}} products found
+      span.text-600.font-size-small(v-if="boxData") {{boxData.length}} tìm kiếm
     .col-fixed
       .grid
         .col-fixed

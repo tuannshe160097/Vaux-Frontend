@@ -5,8 +5,13 @@ export enum MENU_ACTION {
 export const PAGE_MENU = [
   { id: 1, icon: 'shopping-cart', label: 'Thống kê', hideToggled: true },
   { id: 2, icon: 'shopping-cart', label: 'Quản lý tài khoản' },
-  { id: 3, to: '/admin', icon: 'shopping-cart', label: 'Thông tin quản trị viên', parentId: 2 },
-  { id: 4, to: '/user', icon: 'shopping-cart', label: 'Thông tin người dùng', parentId: 2 },
+  { id: 3, to: '/admin', icon: 'shopping-cart', label: 'Thông tin quản trị viên', parentId: 2, hideToggled: true},
+  { id: 4, to: '/expert', icon: 'shopping-cart', label: 'Thông tin người chuyên gia', parentId: 2, hideToggled: true},
+  { id: 5, to: '/user', icon: 'shopping-cart', label: 'Thông tin người dùng', parentId: 2, hideToggled: true},
+  { id: 6, to: '/category', icon: 'shopping-cart', label: 'Thông tin thể loại', hideToggled: true},
+
+
+
   // { id: 5, icon: 'shopping-cart', label: 'Shipper', hideToggled: true },
   // { id: 6, icon: 'shopping-cart', label: 'Tags', hideToggled: true },
   // { id: 7, icon: 'shopping-cart', label: 'Seller', hideToggled: true },

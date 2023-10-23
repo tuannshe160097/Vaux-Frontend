@@ -3,7 +3,7 @@
   .grid.justify-content-between
     .col-fixed
       h1.font-bold.m-0.font-size-4xlarge.line-height-1 Danh sách người dùng
-      span.text-600.font-size-small(v-if='boxData') {{ boxData.length }} products found
+      span.text-600.font-size-small(v-if='boxData') {{ boxData.length }} tìm ki
     .col-fixed
       .grid
         .col-fixed
@@ -11,9 +11,10 @@
             .icon.icon--left.icon-search-input.surface-900
             InputText.w-21rem.h-3rem(type='text', placeholder='Tìm kiếm')
         .col-fixed
-          Button.w-9rem.h-3rem
+          Button.w-9rem.h-3rem(@click="openBasic")
             .icon--base.icon-plus.surface-900.bg-white
             span.text-900.ml-3.text-white Thêm Mới
+
   .grid.grid-nogutter.flex-1.relative.overflow-hidden
     .col.h-full.absolute.top-0.left-0.right-0
       DataTable.w-full.airtag-datatable.h-full.flex.flex-column(
@@ -32,8 +33,7 @@
         Column(
           field='code',
           header='SỐ ĐIỆN THOẠI',
-          sortable,
-          bodyClass='font-semibold'
+          sortable
         )
         Column(
           field='seller.email',
@@ -52,8 +52,7 @@
           field='attribute',
           header='NGÀY CẬP NHẬT',
           sortable,
-          className='p-text-right',
-          bodyClass='font-semibold'
+          className='p-text-right'
         )
           template(#body='{ data }') {{ new Date(data.createAt).toLocaleDateString('en-US') }}
         Column(
@@ -65,9 +64,9 @@
           template(#body='{ data }')
             div
               Tag.px-2.bg-green-100(v-if='data.status')(severity='success')
-                span.font-bold.text-green-400.font-size-small AVAILABLE
+                span.font-bold.text-green-400.font-size-small Đang hoạt động
               Tag.px-2.surface-200(v-else)(severity='success')
-                span.font-bold.text-400.font-size-small DISABLE
+                span.font-bold.text-400.font-size-small Dừng hoạt động 
         Column(
           :exportable='false',
           header='Hoạt động',
@@ -95,7 +94,7 @@
           Paginator.p-0(:rows='20', :totalRecords='totalItemsCount')
 </template>
   
-  <script lang="ts">
+<script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { Box } from '~/models/Box'
 const nsStoreBox = namespace('box/store-box')
@@ -111,6 +110,7 @@ class BoxList extends Vue {
   dateTo = null
   totalItemsCount = 50
   masterData = []
+  displayBasic: boolean = false
 
   @nsStoreBox.State
   boxData!: Box.Model[]
@@ -131,6 +131,14 @@ class BoxList extends Vue {
     if (result) {
       await this.actGetBoxData()
     }
+  }
+
+  openBasic() {
+    this.displayBasic = true;
+  }
+
+  closeBasic() {
+    this.displayBasic = false;
   }
 }
 export default BoxList
@@ -156,5 +164,7 @@ export default BoxList
       background-color: $text-color-300
       .icon
         background-color: $text-color-500
+
+
 </style>
   

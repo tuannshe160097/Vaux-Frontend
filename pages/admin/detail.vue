@@ -1,6 +1,6 @@
 <template lang="pug">
-.userdetails-page-container.flex.flex-column
-    h3 Thông tin người dùng
+.adminDetails-page-container.flex.flex-column
+    h3 Thông tin quản trị viên
     .grid
         .col-4
           .card-control
@@ -90,8 +90,9 @@
               .field 
                 Button.m-7 Cấm tài khoản
                 Button.m-7 Cảnh báo
+
 </template>
-    
+      
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 
@@ -124,4 +125,4 @@ export default createAdmin
   border-radius: 50% !important
 
 </style>
-            
+              

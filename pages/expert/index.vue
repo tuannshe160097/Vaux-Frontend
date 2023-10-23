@@ -2,7 +2,7 @@
 .box-page-container.flex.flex-column
   .grid.justify-content-between
     .col-fixed
-      h1.font-bold.m-0.font-size-4xlarge.line-height-1 Danh sách quản trị viên
+      h1.font-bold.m-0.font-size-4xlarge.line-height-1 Danh sách chuyên gia
       span.text-600.font-size-small(v-if='boxData') {{ boxData.length }} tìm kiếm
     .col-fixed
       .grid
@@ -31,11 +31,6 @@
             span.font-semibold {{ slotProps.index + 1 }}
         Column(
           field='code',
-          header='Tên',
-          sortable
-        )    
-        Column(
-          field='code',
           header='SỐ ĐIỆN THOẠI',
           sortable
         )
@@ -56,7 +51,8 @@
           field='attribute',
           header='NGÀY CẬP NHẬT',
           sortable,
-          className='p-text-right'
+          className='p-text-right',
+          bodyClass='font-semibold'
         )
           template(#body='{ data }') {{ new Date(data.createAt).toLocaleDateString('en-US') }}
         Column(
@@ -97,7 +93,7 @@
               span.ml-3 Delete {{ selectedBoxes.length }} items selected
           Paginator.p-0(:rows='20', :totalRecords='totalItemsCount')
 </template>
-      
+        
 <script lang="ts">
     import { Component, namespace, Vue } from 'nuxt-property-decorator'
     import { Box } from '~/models/Box'
@@ -160,4 +156,4 @@
           .icon
             background-color: $text-color-500
 </style>
-      
+        

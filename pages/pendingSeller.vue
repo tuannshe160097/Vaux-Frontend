@@ -2,7 +2,7 @@
 .box-page-container.flex.flex-column
   .grid.justify-content-between
     .col-fixed
-      h1.font-bold.m-0.font-size-4xlarge.line-height-1 Danh sách quản trị viên
+      h1.font-bold.m-0.font-size-4xlarge.line-height-1 Danh sách yêu cầu trở thành người bán
       span.text-600.font-size-small(v-if='boxData') {{ boxData.length }} tìm kiếm
     .col-fixed
       .grid
@@ -11,9 +11,10 @@
             .icon.icon--left.icon-search-input.surface-900
             InputText.w-21rem.h-3rem(type='text', placeholder='Tìm kiếm')
         .col-fixed
-          Button.w-9rem.h-3rem
+          Button.w-9rem.h-3rem(@click="openBasic")
             .icon--base.icon-plus.surface-900.bg-white
             span.text-900.ml-3.text-white Thêm Mới
+
   .grid.grid-nogutter.flex-1.relative.overflow-hidden
     .col.h-full.absolute.top-0.left-0.right-0
       DataTable.w-full.airtag-datatable.h-full.flex.flex-column(
@@ -33,7 +34,7 @@
           field='code',
           header='Tên',
           sortable
-        )    
+        )
         Column(
           field='code',
           header='SỐ ĐIỆN THOẠI',
@@ -68,9 +69,11 @@
           template(#body='{ data }')
             div
               Tag.px-2.bg-green-100(v-if='data.status')(severity='success')
-                span.font-bold.text-green-400.font-size-small Đang hoạt động
+                span.font-bold.text-green-400.font-size-small Chấp nhận
               Tag.px-2.surface-200(v-else)(severity='success')
-                span.font-bold.text-400.font-size-small Dừng hoạt động
+                span.font-bold.text-400.font-size-small Từ chối
+              Tag.px-2.surface-200(v-else)(severity='success')
+                span.font-bold.text-400.font-size-small Đang chờ
         Column(
           :exportable='false',
           header='Hoạt động',
@@ -97,67 +100,78 @@
               span.ml-3 Delete {{ selectedBoxes.length }} items selected
           Paginator.p-0(:rows='20', :totalRecords='totalItemsCount')
 </template>
-      
+  
 <script lang="ts">
-    import { Component, namespace, Vue } from 'nuxt-property-decorator'
-    import { Box } from '~/models/Box'
-    const nsStoreBox = namespace('box/store-box')
-    
-    @Component
-    class BoxList extends Vue {
-      selectedBoxes = []
-      selectedWarehouse = null
-      selectedSize = null
-      selectedLocation = null
-      isFilter = false
-      dateFrom = null
-      dateTo = null
-      totalItemsCount = 50
-      masterData = []
-    
-      @nsStoreBox.State
-      boxData!: Box.Model[]
-    
-      @nsStoreBox.Action
-      actGetBoxData!: () => Promise<void>
-    
-      @nsStoreBox.Action
-      actDeleteBoxById!: (params: any) => Promise<any>
-    
-      async mounted() {
-        await this.actGetBoxData()
-      }
-    
-      async deleteBoxById(id: any) {
-        const ids = id ? [id] : this.selectedBoxes.map((box: Box.Model) => box.id)
-        const result = await this.actDeleteBoxById({ ids })
-        if (result) {
-          await this.actGetBoxData()
-        }
-      }
+import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import { Box } from '~/models/Box'
+const nsStoreBox = namespace('box/store-box')
+
+@Component
+class BoxList extends Vue {
+  selectedBoxes = []
+  selectedWarehouse = null
+  selectedSize = null
+  selectedLocation = null
+  isFilter = false
+  dateFrom = null
+  dateTo = null
+  totalItemsCount = 50
+  masterData = []
+  displayBasic: boolean = false
+
+  @nsStoreBox.State
+  boxData!: Box.Model[]
+
+  @nsStoreBox.Action
+  actGetBoxData!: () => Promise<void>
+
+  @nsStoreBox.Action
+  actDeleteBoxById!: (params: any) => Promise<any>
+
+  async mounted() {
+    await this.actGetBoxData()
+  }
+
+  async deleteBoxById(id: any) {
+    const ids = id ? [id] : this.selectedBoxes.map((box: Box.Model) => box.id)
+    const result = await this.actDeleteBoxById({ ids })
+    if (result) {
+      await this.actGetBoxData()
     }
-    export default BoxList
+  }
+
+  openBasic() {
+    this.displayBasic = true;
+  }
+
+  closeBasic() {
+    this.displayBasic = false;
+  }
+}
+export default BoxList
 </script>
-      
-<style lang="sass" scoped>
-    .box-page-container
-      height: calc(100vh - 24px)
-      ::v-deep.p-component
-        font-family: $font-family-primary
-        ::v-deep.pi-calendar:before
-          content: url('~/assets/icons/calendar.svg')
-        ::v-deep.p-calendar-w-btn
-          .p-button
-            background: none
-            border: none
-        ::v-deep.text-right
-          text-align: right !important
-          .p-column-header-content
-            justify-content: end !important
-        ::v-deep.disable-button
-          pointer-events: none
-          background-color: $text-color-300
-          .icon
-            background-color: $text-color-500
+  
+  <style lang="sass" scoped>
+.box-page-container
+  height: calc(100vh - 24px)
+  ::v-deep.p-component
+    font-family: $font-family-primary
+    ::v-deep.pi-calendar:before
+      content: url('~/assets/icons/calendar.svg')
+    ::v-deep.p-calendar-w-btn
+      .p-button
+        background: none
+        border: none
+    ::v-deep.text-right
+      text-align: right !important
+      .p-column-header-content
+        justify-content: end !important
+    ::v-deep.disable-button
+      pointer-events: none
+      background-color: $text-color-300
+      .icon
+        background-color: $text-color-500
+
+
 </style>
-      
+  

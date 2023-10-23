@@ -1,98 +1,101 @@
 <template lang="pug">
 .box-page-container.flex.flex-column
-  .grid.justify-content-between
-    .col-fixed
-      h1.font-bold.m-0.font-size-4xlarge.line-height-1 Box list
-      span.text-600.font-size-small(v-if="boxData") {{boxData.length}} products found
-    .col-fixed
-      .grid
-        .col-fixed
-          span.p-input-icon-left
-            .icon.icon--left.icon-search-input.surface-900
-            InputText.w-21rem.h-3rem(type="text" placeholder="Search")
-        .col-fixed
-          Button.border-0.bg-white.w-8rem.h-3rem.border-primary(@click="isFilter = !isFilter")
-            .icon--base.bg-primary(:class="isFilter ? 'icon-chevron-up' : 'icon-filter-btn'")
-            span.text-900.ml-3.text-primary Filter
-        .col-fixed
-          Button.w-9rem.h-3rem
-            .icon--base.icon-plus.surface-900.bg-white
-            span.text-900.ml-3.text-white Add items
-  .grid(v-if="isFilter")
-    .col-9
-      .grid
-        .col
-          .bg-white.border-round
-            div.pt-2.pl-3.pb-1
-              span.text-600.font-size-small Warehouse
-            Dropdown.w-full.border-0.mb-1(v-model="selectedWarehouse" :options="masterData" optionLabel="name" placeholder="Select")
-        .col
-          .bg-white.border-round
-            div.pt-2.pl-3.pb-1
-              span.text-600.font-size-small Size
-            Dropdown.w-full.border-0.mb-1(v-model="selectedSize" :options="masterData" optionLabel="name" placeholder="Select")
-        .col
-          .bg-white.border-round
-            div.pt-2.pl-3.pb-1
-              span.text-600.font-size-small Code
-            span.p-input-icon-right.w-full
-              .icon.icon--right.icon-search-input.surface-900.icon--absolute
-              InputText.border-0.w-full.mb-1(type="text" placeholder="Enter code")
-        .col
-          .bg-white.border-round
-            div.pt-2.pl-3.pb-1
-              span.text-600.font-size-small Location
-            Dropdown.w-full.border-0.mb-1(v-model="selectedLocation" :options="masterData" optionLabel="name" placeholder="Select")
-    .col-3
-      .grid.grid-nogutter
-        .col
-          .bg-white.border-round-left
-            div.pt-2.pl-3.pb-1
-              span.text-600.font-size-small From
-            Calendar.w-full.mb-1(v-model="dateFrom" :showIcon="true" inputClass="border-0" placeholder="Select")
-        .col.ml-1
-          .bg-white.border-round-right
-            div.pt-2.pl-3.pb-1
-              span.text-600.font-size-small To
-            Calendar.w-full.mb-1(v-model="dateTo" :showIcon="true" inputClass="border-0" placeholder="Select")
-  .grid.grid-nogutter.flex-1.relative.overflow-hidden
-    .col.h-full.absolute.top-0.left-0.right-0
-      DataTable.w-full.airtag-datatable.h-full.flex.flex-column(v-if="boxData" :value="boxData" responsiveLayout="scroll" :selection.sync="selectedBoxes" 
-      dataKey="id" :resizableColumns="true" :rows="20" :scrollable="false")
-        Column(selectionMode="multiple" :styless="{width: '3rem'}" :exportable="false")
-        Column(field="no" header="NO" sortable)
-          template(#body="slotProps")
-            span.font-semibold {{slotProps.index +1}} 
-        Column(field="code" header="CODE" sortable bodyClass="font-semibold")
-        Column(field="seller.email" header="SENDER EMAIL" sortable className="w-3")
-        Column(field="createAt" header="CREATE TIME" sortable className="p-text-right")
-          template(#body="{data}") {{new Date(data.createAt).toLocaleDateString("en-US")}}
-        Column(field="attribute" header="SIZE(CM)" sortable className="p-text-right" bodyClass="font-semibold")
-          template(#body="{data}") {{data.attribute.length}}*{{data.attribute.height}}*{{data.attribute.width}}
-        Column(field="attribute.weight" header="WEIGHT(KG)" sortable className="p-text-right" bodyClass="font-semibold")
-          template(#body="{data}") {{data.attribute.weight}}
-        Column(field="status" header="STATUS" sortable className="p-text-right")
-          template(#body="{data}")
+    .grid.justify-content-between
+      .col-fixed
+        h1.font-bold.m-0.font-size-4xlarge.line-height-1 Danh sách thể loại
+        span.text-600.font-size-small(v-if='boxData') {{ boxData.length }} tìm kiếm
+      .col-fixed
+        .grid
+          .col-fixed
+            span.p-input-icon-left
+              .icon.icon--left.icon-search-input.surface-900
+              InputText.w-21rem.h-3rem(type='text', placeholder='Tìm kiếm')
+          .col-fixed
+            Button.w-9rem.h-3rem(@click="openBasic")
+              .icon--base.icon-plus.surface-900.bg-white
+              span.text-900.ml-3.text-white Thêm Mới
+  
+    .grid.grid-nogutter.flex-1.relative.overflow-hidden
+      .col.h-full.absolute.top-0.left-0.right-0
+        DataTable.w-full.airtag-datatable.h-full.flex.flex-column(
+          v-if='boxData',
+          :value='boxData',
+          responsiveLayout='scroll',
+          :selection.sync='selectedBoxes',
+          dataKey='id',
+          :resizableColumns='true',
+          :rows='20',
+          :scrollable='false'
+        )
+          Column(field='id', header='SỐ', sortable)
+            template(#body='slotProps')
+              span.font-semibold {{ slotProps.index + 1 }}
+          Column(
+            field='code',
+            header='Tên',
+            sortable
+          )
+          Column(
+            field='seller.email',
+            header='Mô tả',
+            sortable,
+            className='w-3'
+          )
+          Column(
+            field='status',
+            header='TRẠNG THÁI',
+            sortable,
+            className='p-text-right'
+          )
+            template(#body='{ data }')
+              div
+                Tag.px-2.bg-green-100(v-if='data.status')(severity='success')
+                  span.font-bold.text-green-400.font-size-small Đang hoạt động
+                Tag.px-2.surface-200(v-else)(severity='success')
+                  span.font-bold.text-400.font-size-small Dừng hoạt động
+          Column(
+            :exportable='false',
+            header='Hoạt động',
+            sortable,
+            className='p-text-right'
+          )
+            template(#body='{ data }')
+              Button.border-0.p-0.h-2rem.w-2rem.justify-content-center.surface-200(
+                :disabled='!data.status'
+              )
+                .icon--small.icon-edit
+              Button.border-0.p-0.ml-1.h-2rem.w-2rem.justify-content-center.surface-200(
+                @click='deleteBoxById(data.id)',
+                :disabled='!data.status'
+              )
+                .icon--small.icon-delete
+          template(#footer)
             div
-              Tag(v-if="data.status").px-2.bg-green-100(severity="success")
-                span.font-bold.text-green-400.font-size-small AVAILABLE
-              Tag(v-else).px-2.surface-200(severity="success")
-                span.font-bold.text-400.font-size-small DISABLE
-        Column(:exportable="false" header="ACTION" sortable className="p-text-right")
-          template(#body="{data}")
-            Button.border-0.p-0.h-2rem.w-2rem.justify-content-center.surface-200(:disabled="!data.status")
-              .icon--small.icon-edit
-            Button.border-0.p-0.ml-1.h-2rem.w-2rem.justify-content-center.surface-200(@click="deleteBoxById(data.id)" :disabled="!data.status")
-              .icon--small.icon-delete
-        template(#footer)
-          div
-            .flex.align-items-center(v-if="selectedBoxes.length <= 0")
-              .icon--large.icon-footer-paginator.surface-400
-              span.ml-3.text-400.font-size-small Showing 01 - 100 of 1280
-            Button(@click="deleteBoxById(null)" v-if="selectedBoxes.length>0").p-button-danger.opacity-70
-              .icon--small.icon-delete.bg-white
-              span.ml-3 Delete {{selectedBoxes.length}} items selected
-          Paginator(:rows="20" :totalRecords="totalItemsCount").p-0
+              .flex.align-items-center(v-if='selectedBoxes.length <= 0')
+                .icon--large.icon-footer-paginator.surface-400
+                span.ml-3.text-400.font-size-small Showing 01 - 100 of 1280
+              Button.p-button-danger.opacity-70(@click='deleteBoxById(null)', v-if='selectedBoxes.length > 0')
+                .icon--small.icon-delete.bg-white
+                span.ml-3 Delete {{ selectedBoxes.length }} items selected
+            Paginator.p-0(:rows='20', :totalRecords='totalItemsCount')
+
+      Dialog(header='Thêm thể loại' :visible.sync='displayBasic' :containerstyle="{width: '500vw'}")
+        .field
+          label Tên
+          input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
+          type='text',
+          class='focus:border-primary'
+        )
+        .field
+          label Mô tả
+          br
+          Textarea.border-1.border-solid( v-model="value1" rows="15" cols="100")
+
+        template(#footer='')
+          button.p-button-text.view.border-1.border-solid(  @click='closeBasic') Bỏ qua 
+           
+          button.view.border-1.border-solid(icon='pi pi-check' @click='closeBasic' autofocus='') Thêm mới
+        </template>          
 </template>
     
 <script lang="ts">
@@ -102,7 +105,7 @@ const nsStoreBox = namespace('box/store-box')
 
 @Component
 class BoxList extends Vue {
-  selectedBoxes=[];
+  selectedBoxes = []
   selectedWarehouse = null
   selectedSize = null
   selectedLocation = null
@@ -111,6 +114,7 @@ class BoxList extends Vue {
   dateTo = null
   totalItemsCount = 50
   masterData = []
+  displayBasic: boolean = false
 
   @nsStoreBox.State
   boxData!: Box.Model[]
@@ -119,43 +123,55 @@ class BoxList extends Vue {
   actGetBoxData!: () => Promise<void>
 
   @nsStoreBox.Action
-  actDeleteBoxById!: (
-    params: any
-  ) => Promise<any>
+  actDeleteBoxById!: (params: any) => Promise<any>
 
   async mounted() {
     await this.actGetBoxData()
   }
 
   async deleteBoxById(id: any) {
-    const ids = id? [id] : this.selectedBoxes.map((box: Box.Model) => box.id)
-    const result = await this.actDeleteBoxById({ids})
+    const ids = id ? [id] : this.selectedBoxes.map((box: Box.Model) => box.id)
+    const result = await this.actDeleteBoxById({ ids })
     if (result) {
       await this.actGetBoxData()
     }
   }
+
+  openBasic() {
+    this.displayBasic = true;
+  }
+
+  closeBasic() {
+    this.displayBasic = false;
+  }
 }
 export default BoxList
 </script>
-    
-<style lang="sass" scoped>
+  
+  <style lang="sass" scoped>
 .box-page-container
   height: calc(100vh - 24px)
   ::v-deep.p-component
     font-family: $font-family-primary
-  ::v-deep.pi-calendar:before
-    content: url('~/assets/icons/calendar.svg')npm 
-  ::v-deep.p-calendar-w-btn
-    .p-button
-      background: none
-      border: none
-  ::v-deep.text-right
-    text-align: right !important
-    .p-column-header-content
-      justify-content: end !important
-  ::v-deep.disable-button
-    pointer-events: none
-    background-color: $text-color-300
-    .icon
-      background-color: $text-color-500
+    ::v-deep.pi-calendar:before
+      content: url('~/assets/icons/calendar.svg')
+    ::v-deep.p-calendar-w-btn
+      .p-button
+        background: none
+        border: none
+    ::v-deep.text-right
+      text-align: right !important
+      .p-column-header-content
+        justify-content: end !important
+    ::v-deep.disable-button
+      pointer-events: none
+      background-color: $text-color-300
+      .icon
+        background-color: $text-color-500
+
+  .view
+    width: 80px
+    height: 30px
+    
 </style>
+    

@@ -1,5 +1,5 @@
 <template lang="pug">
-.userdetails-page-container.flex.flex-column
+.box-page-container.flex.flex-column
     h3 Thông tin người dùng
     .grid
         .col-4
@@ -64,7 +64,7 @@
                   class='focus:border-primary'
                 )
               .field
-                label Quyền hạn
+                label Trạng thái
                 input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
                   type='text',
                   class='focus:border-primary'
@@ -82,16 +82,22 @@
                   class='focus:border-primary'
               )
               .field
-                label Ngày cấm
+                label Lý do tạo đơn
+                input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
+                  type='text',
+                  class='focus:border-primary'
+              )
+              .field
+                label Lý do phê duyệt/từ chối
                 input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
                   type='text',
                   class='focus:border-primary'
               )
               .field 
-                Button.m-7 Cấm tài khoản
-                Button.m-7 Cảnh báo
+                Button.m-7 Đồng ý
+                Button.m-7 Từ chối
 </template>
-    
+      
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 

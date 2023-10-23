@@ -1,6 +1,6 @@
 <template lang="pug">
 .userdetails-page-container.flex.flex-column
-      h3 Thông tin người dùng
+      h3 Tạo tài khoản chuyên gia
       .grid
           .col-4
             .card-control
@@ -28,6 +28,18 @@
                     class='focus:border-primary'
                 )
                 .field
+                  label Giới tính
+                  .field-radiobutton
+                    RadioButton(name='gender' value='Chicago' v-model='gender')
+                    label Nam
+                  .field-radiobutton
+                    RadioButton(name='gender' value='Los Angeles' v-model='gender')
+                    label Nữ
+                .field
+                  label Năm sinh
+                  br 
+                  Calendar.surface-overlay(v-model="date" dateFormat="dd/mm/yy")      
+                .field
                     label Số điện thoại
                     input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
                     type='text',
@@ -51,6 +63,30 @@
                     type='text',
                     class='focus:border-primary'
                 )
+                  .field
+                label Quyền hạn
+                input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
+                  type='text',
+                  class='focus:border-primary'
+                )
+                .field
+                  label Ngày tạo
+                  input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
+                    type='text',
+                    class='focus:border-primary'
+                )
+                .field
+                  label Ngày cập nhật
+                  input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
+                    type='text',
+                    class='focus:border-primary'
+                )
+                .field
+                  label Ngày cấm
+                  input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
+                    type='text',
+                    class='focus:border-primary'
+                )
                 .field
                   Button Tạo tài khoản
   
@@ -58,7 +94,8 @@
       
   <script lang="ts">
   import { Component, Vue } from 'nuxt-property-decorator'
-  
+
+
   
   @Component
   class createAdmin extends Vue {}
@@ -86,4 +123,4 @@
     border-radius: 50% !important
   
   </style>
-              
+                
