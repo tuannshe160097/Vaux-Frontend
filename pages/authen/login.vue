@@ -28,13 +28,7 @@
         <span class="p-input-icon-left mb-6 w-full">
           <div class="icon icon--left icon-lock-open bg-primary"></div>
           <InputText id="inputPassword" type="text" v-model="otp"></InputText>
-          <Button
-            label="Send Otp"
-            class="g-recaptcha"
-            data-sitekey="6Ldx37UoAAAAAKeB-1aPHttMxc_e9aW6T2t55LQe"
-            data-callback="sendOtp"
-            data-action="submit"
-          ></Button>
+          <Button label="Send Otp" @click="sendOtp"></Button>
         </span>
         <Button
           class="bg-primary w-full p-3 mb-3"
@@ -102,10 +96,12 @@ export default {
           {}
         )
         console.log(result)
-        if (result.status === 200) {
-          console.log('Yêu cầu thành công' + result.data)
-          // redirect('/homepage')
-        }
+        this.$cookies.set('jwt', result)
+        // if (response.status === 200) {
+        //   // const result = await response.json;
+        //   console.log('Yêu cầu thành công' + result)
+        //   // redirect('/homepage')
+        // }
         console.log(result.status)
         //this.$router.push('/')
       } catch (error) {
