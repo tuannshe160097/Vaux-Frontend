@@ -31,6 +31,11 @@
             span.font-semibold {{ slotProps.index + 1 }}
         Column(
           field='code',
+          header='Tên',
+          sortable
+        )        
+        Column(
+          field='code',
           header='SỐ ĐIỆN THOẠI',
           sortable
         )

@@ -3,7 +3,7 @@
   .grid.justify-content-between
     .col-fixed
       h1.font-bold.m-0.font-size-4xlarge.line-height-1 Danh sách người dùng
-      span.text-600.font-size-small(v-if='boxData') {{ boxData.length }} tìm ki
+      span.text-600.font-size-small(v-if='boxData') {{ boxData.length }} tìm kiếm
     .col-fixed
       .grid
         .col-fixed
@@ -30,6 +30,11 @@
         Column(field='id', header='SỐ', sortable)
           template(#body='slotProps')
             span.font-semibold {{ slotProps.index + 1 }}
+        Column(
+          field='code',
+          header='Tên',
+          sortable
+        )    
         Column(
           field='code',
           header='SỐ ĐIỆN THOẠI',
@@ -88,7 +93,7 @@
             .flex.align-items-center(v-if='selectedBoxes.length <= 0')
               .icon--large.icon-footer-paginator.surface-400
               span.ml-3.text-400.font-size-small Showing 01 - 100 of 1280
-            Button.p-button-danger.opacity-70(@click='deleteBoxById(null)', v-if='selectedBoxes.length > 0')
+            Button.p-buttonn-danger.opacity-70(@click='deleteBoxById(null)', v-if='selectedBoxes.length > 0')
               .icon--small.icon-delete.bg-white
               span.ml-3 Delete {{ selectedBoxes.length }} items selected
           Paginator.p-0(:rows='20', :totalRecords='totalItemsCount')
@@ -152,9 +157,14 @@ export default BoxList
     ::v-deep.pi-calendar:before
       content: url('~/assets/icons/calendar.svg')
     ::v-deep.p-calendar-w-btn
-      .p-button
-        background: none
-        border: none
+    .p-buttonn 
+      color: #ffffff
+      background: #A16B56
+      border: 1px solid #A16B56
+      padding: 0.5rem 0.75rem
+      font-size: 1rem
+      transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s
+      border-radius: 4px
     ::v-deep.text-right
       text-align: right !important
       .p-column-header-content

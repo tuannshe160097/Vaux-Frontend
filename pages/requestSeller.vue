@@ -55,6 +55,8 @@
                 class='focus:border-primary'
             )
             .field
+              Textarea.w-full( v-model="value1" rows="15" cols="100")
+            .field
               <Button label="Cập nhật" />
 </template>
       

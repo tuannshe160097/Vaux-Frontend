@@ -1,5 +1,5 @@
 <template lang="pug">
-.box-page-container.flex.flex-column
+.category-page-container.flex.flex-column
     .grid.justify-content-between
       .col-fixed
         h1.font-bold.m-0.font-size-4xlarge.line-height-1 Danh sách thể loại
@@ -88,13 +88,10 @@
         )
         .field
           label Mô tả
-          br
-          Textarea.border-1.border-solid( v-model="value1" rows="15" cols="100")
-
+          Textarea.w-full( v-model="value1" rows="15" cols="100")
         template(#footer='')
-          button.p-button-text.view.border-1.border-solid(  @click='closeBasic') Bỏ qua 
-           
-          button.view.border-1.border-solid(icon='pi pi-check' @click='closeBasic' autofocus='') Thêm mới
+          Button.p-button-text(label="No" icon="pi pi-times" @click="closeBasic")
+          Button(label="Thêm mới" icon='pi pi-check' @click='closeBasic' autofocus='') 
         </template>          
 </template>
     
@@ -148,8 +145,8 @@ class BoxList extends Vue {
 export default BoxList
 </script>
   
-  <style lang="sass" scoped>
-.box-page-container
+<style lang="sass" scoped>
+.category-page-container
   height: calc(100vh - 24px)
   ::v-deep.p-component
     font-family: $font-family-primary
@@ -168,10 +165,6 @@ export default BoxList
       background-color: $text-color-300
       .icon
         background-color: $text-color-500
-
-  .view
-    width: 80px
-    height: 30px
     
 </style>
     

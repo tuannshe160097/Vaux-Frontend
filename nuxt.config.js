@@ -63,7 +63,9 @@ export default {
       'Paginator',
       'Calendar',
       'ScrollPanel',
-      'RadioButton'
+      'RadioButton',
+      'Steps',
+      'Card'
     ],
     directives: [
       'Tooltip',
