@@ -33,7 +33,8 @@ export default {
   },
 
   plugins: [
-    '~/plugins/vuelidate.ts'
+    '~/plugins/vuelidate.ts',
+    '~/plugins/axios.js'
   ],
 
   components: true,

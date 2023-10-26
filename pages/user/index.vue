@@ -190,23 +190,26 @@ export default {
         const token = this.$cookies.get('jwt')
         if (token) {
           console.log('LTA: ' + token)
-          const result = await this.$axios.$get(
+          const result = await this.$axios.get(
             process.env.BASE_URL + '/api/mod/account?pageNum=1&pageSize=20',
             {
-              headers: {
-                Authorization: 'Bearer ' + token,
-              },
+              // headers: {
+              //   Authorization: 'Bearer ' + token,
+              // },
             }
           )
-          console.log(result)
-          this.boxData = result
+          console.log(result.data)
+          this.boxData = result.data
         } else {
           this.$router.push('/authen/login')
         }
       } catch (error) {
+        console.log(error)
         if (error.response) {
-          console.log('Lỗi Bad Request:', error.response.data)
-          // Xử lý lỗi 400 ở đây
+          console.log('Lỗi khi xử lý yêu cầu:', error.response.data)
+          if ([401, 403].includes(error.response.status)) {
+            this.$router.push('/authen/login')
+          }
         } else {
           console.error('Lỗi khi gửi yêu cầu:', error)
         }
@@ -216,30 +219,41 @@ export default {
 }
 </script>
   
-  <style lang="sass" scoped>
+  <style scoped>
+.box-page-container {
+  height: calc(100vh - 24px);
+}
+.box-page-container ::v-deep.p-component {
+  font-family: $font-family-primary;
+}
+.box-page-container ::v-deep.p-component ::v-deep.pi-calendar:before {
+  content: url('~/assets/icons/calendar.svg');
+}
+.box-page-container ::v-deep.p-component ::v-deep.p-calendar-w-btn,
+.box-page-container ::v-deep.p-component .p-buttonn {
+  color: #fff;
+  background: #a16b56;
+  border: 1px solid #a16b56;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+  border-radius: 4px;
+}
+.box-page-container ::v-deep.p-component ::v-deep.text-right {
+  text-align: right !important;
+}
 .box-page-container
-  height: calc(100vh - 24px)
   ::v-deep.p-component
-    font-family: $font-family-primary
-    ::v-deep.pi-calendar:before
-      content: url('~/assets/icons/calendar.svg')
-    ::v-deep.p-calendar-w-btn
-    .p-buttonn
-      color: #ffffff
-      background: #A16B56
-      border: 1px solid #A16B56
-      padding: 0.5rem 0.75rem
-      font-size: 1rem
-      transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s
-      border-radius: 4px
-    ::v-deep.text-right
-      text-align: right !important
-      .p-column-header-content
-        justify-content: end !important
-    ::v-deep.disable-button
-      pointer-events: none
-      background-color: $text-color-300
-      .icon
-        background-color: $text-color-500
+  ::v-deep.text-right
+  .p-column-header-content {
+  justify-content: end !important;
+}
+.box-page-container ::v-deep.p-component ::v-deep.disable-button {
+  pointer-events: none;
+  background-color: $text-color-300;
+}
+.box-page-container ::v-deep.p-component ::v-deep.disable-button .icon {
+  background-color: $text-color-500;
+}
 </style>
   

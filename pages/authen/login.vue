@@ -87,7 +87,7 @@ export default {
     },
     async callLogin() {
       try {
-        let result = await this.$axios.$post(
+        let result = await this.$axios.post(
           process.env.BASE_URL +
             '/api/VerifyOtp?phone=' +
             this.sdt +
@@ -95,9 +95,12 @@ export default {
             this.otp,
           {}
         )
-        console.log(result)
-        this.$cookies.set('jwt', result)
-        this.$axios.defaults.headers.common["Authorization"] = `Bearer ${result}`;
+        console.log(result.data)
+
+        this.$cookies.set('jwt', result.data)
+        this.$axios.defaults.headers.common[
+          'Authorization'
+        ] = `Bearer ${result.data}`
         // if (response.status === 200) {
         //   // const result = await response.json;
         //   console.log('Yêu cầu thành công' + result)
@@ -106,6 +109,7 @@ export default {
         console.log(result.status)
         //this.$router.push('/')
       } catch (error) {
+        console.log(error)
         if (error.response) {
           console.log('Lỗi Bad Request:', error.response.data)
           // Xử lý lỗi 400 ở đây
