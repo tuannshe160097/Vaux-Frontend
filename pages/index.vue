@@ -24,6 +24,4 @@ class Pages extends Vue {
 export default Pages
 </script>
 <style lang='sass'>
-body
-  font-family: 'Source Sans Pro', sans-serif
 </style>
