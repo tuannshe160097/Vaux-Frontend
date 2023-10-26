@@ -9,6 +9,7 @@ export default function ({ app }) {
         (config) => {
             const token = app.$cookies.get('jwt');
             if (token) config.headers.Authorization = `Bearer ${token}`;
+            // else app.$router.push('/authen/login')
             return config;
         },
         (error) => {

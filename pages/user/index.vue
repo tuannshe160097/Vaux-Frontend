@@ -63,25 +63,21 @@
             className="w-3"
           ></Column>
           <Column
-            field="created.format(dd-mm-yyyy)"
+            field="created"
             header="NGÀY TẠO"
             sortable="sortable"
             className="p-text-right"
           >
-            <template #body="{ data }">{{
-              new Date(data.createAt).toLocaleDateString('en-US')
-            }}</template>
+            <template #body="{ data }">{{ formatDate(data.created) }}</template>
           </Column>
           <Column
-            field="updated.format(dd-mm-yyyy)"
+            field="updated"
             header="NGÀY CẬP NHẬT"
             sortable="sortable"
             className="p-text-right"
             bodyClass="font-semibold"
           >
-            <template #body="{ data }">{{
-              new Date(data.createAt).toLocaleDateString('en-US')
-            }}</template>
+            <template #body="{ data }">{{ formatDate(data.updated) }}</template>
           </Column>
           <Column
             field="status"
@@ -91,14 +87,17 @@
           >
             <template #body="{ data }">
               <div>
-                <Tag class="px-2 bg-green-100" v-if="deleted" severity="success"
+                <Tag
+                  class="px-2 bg-green-100"
+                  v-if="data.deleted != null"
+                  severity="danger"
                   ><span class="font-bold text-green-400 font-size-small"
-                    >AVAILABLE</span
+                    >Bị chặn</span
                   ></Tag
                 >
-                <Tag class="px-2 surface-200" v-else="v-else" severity="success"
+                <Tag class="px-2 surface-200" v-else severity="danger"
                   ><span class="font-bold text-400 font-size-small"
-                    >DISABLE</span
+                    >Hoạt động</span
                   ></Tag
                 >
               </div>
@@ -171,13 +170,6 @@ export default {
       boxData: [],
       totalItemsCount: 150,
       selectedBoxes: [],
-      selectedWarehouse: null,
-      selectedSize: null,
-      selectedLocation: null,
-      isFilter: false,
-      dateFrom: null,
-      dateTo: null,
-      masterData: [],
     }
   },
   created() {
@@ -187,22 +179,11 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const token = this.$cookies.get('jwt')
-        if (token) {
-          console.log('LTA: ' + token)
-          const result = await this.$axios.get(
-            process.env.BASE_URL + '/api/mod/account?pageNum=1&pageSize=20',
-            {
-              // headers: {
-              //   Authorization: 'Bearer ' + token,
-              // },
-            }
-          )
-          console.log(result.data)
-          this.boxData = result.data
-        } else {
-          this.$router.push('/authen/login')
-        }
+        const result = await this.$axios.get(
+          process.env.BASE_URL + '/api/mod/account?pageNum=1&pageSize=20',
+          {}
+        )
+        this.boxData = result.data
       } catch (error) {
         console.log(error)
         if (error.response) {
@@ -214,6 +195,13 @@ export default {
           console.error('Lỗi khi gửi yêu cầu:', error)
         }
       }
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString)
+      const day = date.getDate().toString().padStart(2, '0')
+      const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
+      const year = date.getFullYear()
+      return `${day}-${month}-${year}`
     },
   },
 }
