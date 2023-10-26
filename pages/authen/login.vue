@@ -97,6 +97,7 @@ export default {
         )
         console.log(result)
         this.$cookies.set('jwt', result)
+        this.$axios.defaults.headers.common["Authorization"] = `Bearer ${result}`;
         // if (response.status === 200) {
         //   // const result = await response.json;
         //   console.log('Yêu cầu thành công' + result)

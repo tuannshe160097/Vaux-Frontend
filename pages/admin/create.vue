@@ -65,7 +65,7 @@
               <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text"
-                v-model="cccd"
+                v-model="citizenId"
               />
             </div>
             <div class="field">
@@ -73,7 +73,7 @@
               <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text"
-                v-model="address"
+                v-model="city"
               />
             </div>
             <div class="field">
@@ -96,15 +96,15 @@ export default {
       phone: '',
       email: '',
       name: '',
-      cccd: '',
-      address: '',
+      citizenId: '',
+      city: '',
     }
   },
   methods: {
     async CreateAdmin() {
       try {
         let result = await this.$axios.post(
-          process.env.BASE_URL + '/api/Admin/CreateAdmin',
+          process.env.BASE_URL + '/api/Admin/Account/CreateModerator',
           {
             name: this.name,
             phone: this.phone,
@@ -116,7 +116,13 @@ export default {
         if (result.status === 200) {
           console.log('Yêu cầu thành công')
         }
+        if (result.status === 201) {
+          this.$router.push('/authen/login')
+        }
       } catch (error) {
+        if(error.response.status === 401){
+          this.$router.push('/authen/login')
+        }
         if (error.response) {
           console.log('Lỗi Bad Request:', error.response.data)
           // Xử lý lỗi 400 ở đây
