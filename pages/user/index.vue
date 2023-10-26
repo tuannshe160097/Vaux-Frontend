@@ -224,7 +224,7 @@ export default {
     ::v-deep.pi-calendar:before
       content: url('~/assets/icons/calendar.svg')
     ::v-deep.p-calendar-w-btn
-    .p-buttonn 
+    .p-buttonn
       color: #ffffff
       background: #A16B56
       border: 1px solid #A16B56
@@ -241,7 +241,5 @@ export default {
       background-color: $text-color-300
       .icon
         background-color: $text-color-500
-
-
 </style>
   

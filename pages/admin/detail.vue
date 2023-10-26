@@ -1,106 +1,148 @@
-<template lang="pug">
-.adminDetails-page-container.flex.flex-column
-    h3 Thông tin quản trị viên
-    .grid
-        .col-4
-          .card-control
-            .card-header.font-medium.text-xl Ảnh Đại Diện
-            .card-body.p-5.text-center
-              img.rounded-circle.mb-2(src='http://bootdey.com/img/Content/avatar/avatar1.png' alt='')
-              .small.font-italic.text-muted.mb-4 JPG or PNG no larger than 5 MB
-              Button Chọn ảnh đại diện
-
-          .card-control.mt-3
-              .card-header.font-medium.text-xl Ảnh CCCD
-              .card-body.p-5.text-center
-                img.mb-2(src='http://bootdey.com/img/Content/avatar/avatar1.png' alt='')
-                .small.font-italic.text-muted.mb-4 JPG or PNG no larger than 5 MB
-                Button Chọn ảnh CCCD
-    
-        .col-8
-          .card-control
-            .card-header.font-medium.text-xl Thông tin tài khoản
-            .card-body.p-5
-              .field
-                  label Tên
-                  input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
-                  type='text',
-                  class='focus:border-primary'
-              )
-              .field
-                label Giới tính
-                .field-radiobutton
-                  RadioButton(name='gender' value='Chicago' v-model='gender')
-                  label Nam
-                .field-radiobutton
-                  RadioButton(name='gender' value='Los Angeles' v-model='gender')
-                  label Nữ
-              .field
-                label Năm sinh
-                br 
-                Calendar.surface-overlay(v-model="date" dateFormat="dd/mm/yy")      
-              .field
-                  label Số điện thoại
-                  input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
-                  type='text',
-                  class='focus:border-primary'
-              )
-              .field
-                  label Email
-                  input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
-                  type='text',
-                  class='focus:border-primary'
-              )
-              .field
-                label Số CCCD
-                input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
-                  type='text',
-                  class='focus:border-primary'
-              )
-              .field
-                label Địa chỉ
-                input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
-                  type='text',
-                  class='focus:border-primary'
-                )
-              .field
-                label Quyền hạn
-                input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
-                  type='text',
-                  class='focus:border-primary'
-              )
-              .field
-                label Ngày tạo
-                input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
-                  type='text',
-                  class='focus:border-primary'
-              )
-              .field
-                label Ngày cập nhật
-                input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
-                  type='text',
-                  class='focus:border-primary'
-              )
-              .field
-                label Ngày cấm
-                input.text-base.text-color.surface-overlay.p-2.border-1.border-solid.surface-border.border-round.appearance-none.outline-none.w-full(
-                  type='text',
-                  class='focus:border-primary'
-              )
-              .field 
-                Button.m-7 Cấm tài khoản
-                Button.m-7 Cảnh báo
-
+<template>
+  <div class="adminDetails-page-container flex flex-column">
+    <h3>Thông tin quản trị viên</h3>
+    <div class="grid">
+      <div class="col-4">
+        <div class="card-control">
+          <div class="card-header font-medium text-xl">Ảnh Đại Diện</div>
+          <div class="card-body p-5 text-center">
+            <img
+              class="rounded-circle mb-2"
+              src="http://bootdey.com/img/Content/avatar/avatar1.png"
+              alt=""
+            />
+            <div class="small font-italic text-muted mb-4">
+              JPG or PNG no larger than 5 MB
+            </div>
+            <Button>Chọn ảnh đại diện</Button>
+          </div>
+        </div>
+        <div class="card-control mt-3">
+          <div class="card-header font-medium text-xl">Ảnh CCCD</div>
+          <div class="card-body p-5 text-center">
+            <img
+              class="mb-2"
+              src="http://bootdey.com/img/Content/avatar/avatar1.png"
+              alt=""
+            />
+            <div class="small font-italic text-muted mb-4">
+              JPG or PNG no larger than 5 MB
+            </div>
+            <Button>Chọn ảnh CCCD</Button>
+          </div>
+        </div>
+      </div>
+      <div class="col-8">
+        <div class="card-control">
+          <div class="card-header font-medium text-xl">Thông tin tài khoản</div>
+          <div class="card-body p-5">
+            <div class="field">
+              <label>Tên</label>
+              <input
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                type="text"
+              />
+            </div>
+            <div class="field">
+              <label>Giới tính</label>
+              <div class="field-radiobutton">
+                <RadioButton
+                  name="gender"
+                  value="Chicago"
+                  v-model="gender"
+                ></RadioButton>
+                <label>Nam</label>
+              </div>
+              <div class="field-radiobutton">
+                <RadioButton
+                  name="gender"
+                  value="Los Angeles"
+                  v-model="gender"
+                ></RadioButton>
+                <label>Nữ</label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Năm sinh</label><br />
+              <Calendar
+                class="surface-overlay"
+                v-model="date"
+                dateFormat="dd/mm/yy"
+              >
+              </Calendar>
+            </div>
+            <div class="field">
+              <label>Số điện thoại</label>
+              <input
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                type="text"
+              />
+            </div>
+            <div class="field">
+              <label>Email</label>
+              <input
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                type="text"
+              />
+            </div>
+            <div class="field">
+              <label>Số CCCD</label>
+              <input
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                type="text"
+              />
+            </div>
+            <div class="field">
+              <label>Địa chỉ</label>
+              <input
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                type="text"
+              />
+            </div>
+            <div class="field">
+              <label>Quyền hạn</label>
+              <input
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                type="text"
+              />
+            </div>
+            <div class="field">
+              <label>Ngày tạo</label>
+              <input
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                type="text"
+              />
+            </div>
+            <div class="field">
+              <label>Ngày cập nhật</label>
+              <input
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                type="text"
+              />
+            </div>
+            <div class="field">
+              <label>Ngày cấm</label>
+              <input
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                type="text"
+              />
+            </div>
+            <div class="field">
+              <Button class="m-7">Cấm tài khoản</Button>
+              <Button class="m-7">Cảnh báo</Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
       
 <script lang="ts">
 import { Component, Vue } from 'nuxt-property-decorator'
 
-
 @Component
-class createAdmin extends Vue {
-
-}
+class createAdmin extends Vue {}
 export default createAdmin
 </script>
 
@@ -123,6 +165,5 @@ export default createAdmin
   border-bottom: 1px solid rgba(33, 40, 50, 0.125)
 .rounded-circle
   border-radius: 50% !important
-
 </style>
               

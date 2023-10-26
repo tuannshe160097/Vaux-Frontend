@@ -10,12 +10,10 @@
         />
       </div>
       <div class="w-full">
-        <label class="block font-bold mb-2" for="inputName">
-          Họ và tên
-        </label>
+        <label class="block font-bold mb-2" for="inputName"> Họ và tên </label>
         <span class="p-input-icon-left mb-3 w-full">
           <div class="icon icon--left icon-user bg-primary"></div>
-          
+
           <InputText class="w-full" id="inputName" type="text" v-model="name" />
         </span>
         <label class="block font-bold mb-2" for="inputSdt">
@@ -44,7 +42,8 @@
           @click="callRegister"
         ></Button>
         <div class="flex align-items-center justify-content-center mb-5">
-          <a class="ml-5 text-sm text-center text-primary cursor-pointer">Đã có tài khoản?</a
+          <a class="ml-5 text-sm text-center text-primary cursor-pointer"
+            >Đã có tài khoản?</a
           >
         </div>
       </div>
@@ -68,11 +67,15 @@ export default {
   methods: {
     async sendOtp() {
       try {
-        let result = await axios.post(
-          'https://localhost:6565/api/Register?name='+this.name + '&phone=' + this.sdt,
-          {}
+        // Gửi yêu cầu POST đến server
+        let result = await this.$axios.post(
+          `${process.env.BASE_URL}/api/Register`, // Sử dụng template string để tạo URL
+          {
+            phone: this.sdt,
+            name: this.name,
+          }
         )
-        console.log(result)
+
         if (result.status === 200) {
           console.log('Yêu cầu thành công')
         }
@@ -88,12 +91,15 @@ export default {
     async callRegister() {
       try {
         let result = await axios.post(
-          'https://localhost:6565/api/VerifyOtp?phone=' + this.sdt + '&otp=' + this.otp,
+          'https://localhost:6565/api/VerifyOtp?phone=' +
+            this.sdt +
+            '&otp=' +
+            this.otp,
           {}
         )
         console.log(result)
         if (result.status === 200) {
-          console.log('Yêu cầu thành công' + result.data);
+          console.log('Yêu cầu thành công' + result.data)
           this.$router.push('/authen/login')
         }
       } catch (error) {
