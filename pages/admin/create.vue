@@ -61,8 +61,8 @@
   
   
   @Component
-  class createExpert extends Vue {}
-  export default createExpert
+  class create extends Vue {}
+  export default create
   </script>
   
   <style lang="sass" scoped>

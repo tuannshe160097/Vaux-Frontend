@@ -164,7 +164,7 @@
   
   <script>
 export default {
-  name: 'CreateAdmin',
+  name: 'UserList',
   layout: 'default',
   data() {
     return {

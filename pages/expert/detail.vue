@@ -98,10 +98,10 @@ import { Component, Vue } from 'nuxt-property-decorator'
 
 
 @Component
-class createAdmin extends Vue {
+class expertDetail extends Vue {
 
 }
-export default createAdmin
+export default expertDetail
 </script>
 
 <style lang="sass" scoped>
