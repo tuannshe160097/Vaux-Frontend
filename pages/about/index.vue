@@ -1,3 +1,4 @@
+// About
 <template lang="pug">
 .userdetails-page-container.flex.flex-column
     h3 Thông tin của chúng tôi

@@ -1,101 +1,70 @@
-<template lang="pug">
-.box-page-container.flex.flex-column
-  .grid.justify-content-between
-    .col-fixed
-      h1.font-bold.m-0.font-size-4xlarge.line-height-1 Danh sách quản trị viên
-      span.text-600.font-size-small(v-if='boxData') {{ boxData.length }} tìm kiếm
-    .col-fixed
-      .grid
-        .col-fixed
-          span.p-input-icon-left
-            .icon.icon--left.icon-search-input.surface-900
-            InputText.w-21rem.h-3rem(type='text', placeholder='Tìm kiếm')
-        .col-fixed
-          Button.w-9rem.h-3rem
-            .icon--base.icon-plus.surface-900.bg-white
-            span.text-900.ml-3.text-white Thêm Mới
-  .grid.grid-nogutter.flex-1.relative.overflow-hidden
-    .col.h-full.absolute.top-0.left-0.right-0
-      DataTable.w-full.airtag-datatable.h-full.flex.flex-column(
-        v-if='boxData',
-        :value='boxData',
-        responsiveLayout='scroll',
-        :selection.sync='selectedBoxes',
-        dataKey='id',
-        :resizableColumns='true',
-        :rows='20',
-        :scrollable='false'
-      )
-        Column(field='id', header='SỐ', sortable)
-          template(#body='slotProps')
-            span.font-semibold {{ slotProps.index + 1 }}
-        Column(
-          field='code',
-          header='Tên',
-          sortable
-        )    
-        Column(
-          field='code',
-          header='SỐ ĐIỆN THOẠI',
-          sortable
-        )
-        Column(
-          field='seller.email',
-          header='EMAIL',
-          sortable,
-          className='w-3'
-        )
-        Column(
-          field='createAt',
-          header='NGÀY TẠO',
-          sortable,
-          className='p-text-right'
-        )
-          template(#body='{ data }') {{ new Date(data.createAt).toLocaleDateString('en-US') }}
-        Column(
-          field='attribute',
-          header='NGÀY CẬP NHẬT',
-          sortable,
-          className='p-text-right'
-        )
-          template(#body='{ data }') {{ new Date(data.createAt).toLocaleDateString('en-US') }}
-        Column(
-          field='status',
-          header='TRẠNG THÁI',
-          sortable,
-          className='p-text-right'
-        )
-          template(#body='{ data }')
-            div
-              Tag.px-2.bg-green-100(v-if='data.status')(severity='success')
-                span.font-bold.text-green-400.font-size-small Đang hoạt động
-              Tag.px-2.surface-200(v-else)(severity='success')
-                span.font-bold.text-400.font-size-small Dừng hoạt động
-        Column(
-          :exportable='false',
-          header='Hoạt động',
-          sortable,
-          className='p-text-right'
-        )
-          template(#body='{ data }')
-            Button.border-0.p-0.h-2rem.w-2rem.justify-content-center.surface-200(
-              :disabled='!data.status'
-            )
-              .icon--small.icon-edit
-            Button.border-0.p-0.ml-1.h-2rem.w-2rem.justify-content-center.surface-200(
-              @click='deleteBoxById(data.id)',
-              :disabled='!data.status'
-            )
-              .icon--small.icon-delete
-        template(#footer)
-          div
-            .flex.align-items-center(v-if='selectedBoxes.length <= 0')
-              .icon--large.icon-footer-paginator.surface-400
-              span.ml-3.text-400.font-size-small Showing 01 - 100 of 1280
-            Button.p-button-danger.opacity-70(@click='deleteBoxById(null)', v-if='selectedBoxes.length > 0')
-              .icon--small.icon-delete.bg-white
-              span.ml-3 Delete {{ selectedBoxes.length }} items selected
-          Paginator.p-0(:rows='20', :totalRecords='totalItemsCount')
+<template>
+<div class="box-page-container flex flex-column">
+  <div class="grid justify-content-between">
+    <div class="col-fixed">
+      <h1 class="font-bold m-0 font-size-4xlarge line-height-1">Trang chủ</h1><span class="text-600 font-size-small" v-if="boxData">{{ boxData.length }} tìm kiếm</span>
+    </div>
+    <div class="col-fixed">
+      <div class="grid">
+        <div class="col-fixed"><span class="p-input-icon-left">
+            <div class="icon icon--left icon-search-input surface-900"></div>
+            <InputText class="w-21rem h-3rem" type="text" placeholder="Tìm kiếm"></InputText></span></div>
+        <div class="col-fixed">
+          <Button class="w-9rem h-3rem">
+            <div class="icon--base icon-plus surface-900 bg-white"></div><span class="text-900 ml-3 text-white">Thêm Mới</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-nogutter flex-1 relative overflow-hidden">
+    <div class="col h-full absolute top-0 left-0 right-0">
+      <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="boxData" :value="boxData" responsiveLayout="scroll" :selection.sync="selectedBoxes" dataKey="id" :resizableColumns="true" :rows="20" :scrollable="false">
+        <Column field="id" header="SỐ" sortable="sortable">
+          <template #body="slotProps"><span class="font-semibold">{{ slotProps.index + 1 }}</span></template>
+        </Column>
+        <Column field="code" header="Tên" sortable="sortable">   </Column>
+        <Column field="code" header="SỐ ĐIỆN THOẠI" sortable="sortable"></Column>
+        <Column field="seller.email" header="EMAIL" sortable="sortable" className="w-3"></Column>
+        <Column field="createAt" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
+          <template #body="{ data }">{{ new Date(data.createAt).toLocaleDateString('en-US') }}</template>
+        </Column>
+        <Column field="attribute" header="NGÀY CẬP NHẬT" sortable="sortable" className="p-text-right">
+          <template #body="{ data }">{{ new Date(data.createAt).toLocaleDateString('en-US') }}</template>
+        </Column>
+        <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
+          <template #body="{ data }">
+            <div>
+              <Tag class="px-2 bg-green-100" v-if="data.status" severity="success"><span class="font-bold text-green-400 font-size-small">Đang hoạt động</span></Tag>
+              <Tag class="px-2 surface-200" v-else="v-else" severity="success"><span class="font-bold text-400 font-size-small">Dừng hoạt động</span></Tag>
+            </div>
+          </template>
+        </Column>
+        <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right">
+          <template #body="{ data }">
+            <Button class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200" :disabled="!data.status">
+              <div class="icon--small icon-edit"></div>
+            </Button>
+            <Button class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200" @click="deleteBoxById(data.id)" :disabled="!data.status">
+              <div class="icon--small icon-delete"></div>
+            </Button>
+          </template>
+        </Column>
+        <template footer="#footer">
+          <div>
+            <div class="flex align-items-center" v-if="selectedBoxes.length &lt;= 0">
+              <div class="icon--large icon-footer-paginator surface-400"></div><span class="ml-3 text-400 font-size-small">Showing 01 - 100 of 1280</span>
+            </div>
+            <Button class="p-button-danger opacity-70" @click="deleteBoxById(null)" v-if="selectedBoxes.length &gt; 0">
+              <div class="icon--small icon-delete bg-white"></div><span class="ml-3">Delete {{ selectedBoxes.length }} items selected</span>
+            </Button>
+          </div>
+          <Paginator class="p-0" :rows="20" :totalRecords="totalItemsCount"></Paginator>
+        </template>
+      </DataTable>
+    </div>
+  </div>
+</div>
 </template>
       
 <script lang="ts">

@@ -1,16 +1,18 @@
-<template lang="pug">
-.sidebar(:style="{ width: sidebarWidth }")
-  .menu-section.sidebar-head
-    template(v-if="!collapsed")
-      img.user-avatar(:src='require("assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png")')
-      .user-info
-        span.user-name {{ userDisplayName }}
-        span.user-role Role Ex
-    .icon.icon--xlarge.icon-menu-toggle.surface-500.cursor-pointer(:class="{ 'bg-primary': collapsed }", @click="toggleSidebar")
-  .menu-section.sidebar-menu
-    SidebarItem(v-for="item in pageMenu" :key="item.id" :item="item" @select="onSelectMenu(item)")
-  .menu-section.sidebar-foot
-    SidebarItem(v-for="item in settingMenu" :key="item.id" :item="item" @select="onSelectMenu(item)")
+<template>
+  <div class="sidebar" :style="{ width: sidebarWidth }">
+  <div class="menu-section sidebar-head">
+    <template v-if="!collapsed"><img class="user-avatar" :src="require(&quot;assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png&quot;)"/>
+      <div class="user-info"><span class="user-name">{{ userDisplayName }}</span><span class="user-role">Role Ex</span></div>
+    </template>
+    <div class="icon icon--xlarge icon-menu-toggle surface-500 cursor-pointer" :class="{ 'bg-primary': collapsed }" @click="toggleSidebar"></div>
+  </div>
+  <div class="menu-section sidebar-menu">
+    <SidebarItem v-for="item in pageMenu" :key="item.id" :item="item" @select="onSelectMenu(item)"></SidebarItem>
+  </div>
+  <div class="menu-section sidebar-foot">
+    <SidebarItem v-for="item in settingMenu" :key="item.id" :item="item" @select="onSelectMenu(item)"></SidebarItem>
+  </div>
+</div>
 </template>
 
 <script lang='ts'>

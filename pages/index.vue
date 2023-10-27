@@ -1,27 +1,22 @@
-<template lang='pug'>
-Loading
-  b-container(fluid)
-    h1.text-center WELCOME!
-    div.table
+<template>
+  <div>
+    <H1>Helloooo</H1>
+    <Button @click="Login()"> Đăng nhập </Button>
+  </div>
+</template>
+
+
 
 </template>
 
-<script lang='ts'>
-import {
-  Component,
-  Vue,
-} from 'nuxt-property-decorator'
-
-
-@Component({
-  middleware: ['authenticate'],
-  layout: 'dashboard',
-})
-class Pages extends Vue {
-
+<script>
+export default {
+  methods: {
+    Login() {
+      this.$router.push('/authen/login')
+    },
+  },
 }
-
-export default Pages
 </script>
 <style lang='sass'>
 </style>

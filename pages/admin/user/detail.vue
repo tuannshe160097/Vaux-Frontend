@@ -1,3 +1,4 @@
+// View User Detail
 <template>
   <div class="userdetails-page-container flex flex-column">
     <h3>Thông tin người dùng</h3>

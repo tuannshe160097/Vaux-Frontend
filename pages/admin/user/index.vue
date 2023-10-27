@@ -1,9 +1,10 @@
+//View all user
 <template>
-  <div class="category-page-container flex flex-column">
+  <div class="box-page-container flex flex-column">
     <div class="grid justify-content-between">
       <div class="col-fixed">
         <h1 class="font-bold m-0 font-size-4xlarge line-height-1">
-          Danh sách thể loại
+          Danh sách người dùng
         </h1>
         <span class="text-600 font-size-small" v-if="boxData"
           >{{ boxData.length }} products found</span
@@ -22,7 +23,7 @@
             ></span>
           </div>
           <div class="col-fixed">
-            <Button class="w-9rem h-3rem" @click="OpenModel">
+            <Button class="w-9rem h-3rem">
               <div class="icon--base icon-plus surface-900 bg-white"></div>
               <span class="text-900 ml-3 text-white">Thêm Mới</span>
             </Button>
@@ -43,20 +44,39 @@
           :rows="20"
           :scrollable="false"
         >
-          <Column field="id" header="SỐ" sortable="sortable">
+          <Column field="id" header="STT" sortable="sortable">
             <template #body="slotProps"
-              ><span class="font-semibold">{{
-                slotProps.index + 1
-              }}</span></template
+              ><span>{{ slotProps.index + 1 }}</span></template
             >
           </Column>
-          <Column field="code" header="Tên" sortable="sortable"></Column>
           <Column
-            field="seller.email"
-            header="Mô tả"
+            field="phone"
+            header="SỐ ĐIỆN THOẠI"
             sortable="sortable"
-            className="w-3"
+            bodyClass="font-semibold"
           ></Column>
+          <Column
+            field="name"
+            header="TÊN"
+            sortable="sortable"
+            className="w-3 font-semibold"
+          ></Column>
+          <Column
+            field="created"
+            header="NGÀY TẠO"
+            sortable="sortable"
+            className="p-text-right"
+          >
+            <template #body="{ data }">{{ formatDate(data.created) }}</template>
+          </Column>
+          <Column
+            field="updated"
+            header="NGÀY CẬP NHẬT"
+            sortable="sortable"
+            className="p-text-right"
+          >
+            <template #body="{ data }">{{ formatDate(data.updated) }}</template>
+          </Column>
           <Column
             field="status"
             header="TRẠNG THÁI"
@@ -67,15 +87,15 @@
               <div>
                 <Tag
                   class="px-2 bg-green-100"
-                  v-if="data.status"
-                  severity="success"
+                  v-if="data.deleted != null"
+                  severity="danger"
                   ><span class="font-bold text-green-400 font-size-small"
-                    >Đang hoạt động</span
+                    >Bị chặn</span
                   ></Tag
                 >
-                <Tag class="px-2 surface-200" v-else severity="success"
+                <Tag class="px-2 surface-200" v-else severity="danger"
                   ><span class="font-bold text-400 font-size-small"
-                    >Dừng hoạt động</span
+                    >Hoạt động</span
                   ></Tag
                 >
               </div>
@@ -84,20 +104,18 @@
           <Column
             :exportable="false"
             header="Hoạt động"
-            sortable="sortable"
             className="p-text-right"
           >
             <template #body="{ data }">
               <Button
                 class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
-                :disabled="!data.status"
+                @click="viewDetail(data.id)"
               >
                 <div class="icon--small icon-edit"></div>
               </Button>
               <Button
                 class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
                 @click="deleteBoxById(data.id)"
-                :disabled="!data.status"
               >
                 <div class="icon--small icon-delete"></div>
               </Button>
@@ -138,8 +156,8 @@
     </div>
   </div>
 </template>
-    
-<script>
+  
+  <script>
 export default {
   name: 'UserList',
   layout: 'default',
@@ -148,7 +166,6 @@ export default {
       boxData: [],
       totalItemsCount: 150,
       selectedBoxes: [],
-      displayBasic: false,
     }
   },
   created() {
@@ -159,7 +176,7 @@ export default {
     async fetchData() {
       try {
         const result = await this.$axios.get(
-          process.env.BASE_URL + '/api/Category',
+          process.env.BASE_URL + '/api/mod/account?pageNum=1&pageSize=20',
           {}
         )
         this.boxData = result.data
@@ -175,11 +192,58 @@ export default {
         }
       }
     },
-    OpenModel() {},
+    formatDate(dateString) {
+      const date = new Date(dateString)
+      const day = date.getDate().toString().padStart(2, '0')
+      const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
+      const year = date.getFullYear()
+      return `${day}-${month}-${year}`
+    },
+    viewDetail(id) {
+      this.$router.push('/admin/user/detail?userId='+id)
+    },
+    deleteBoxById(id){
+      
+    }
   },
 }
 </script>
   
-<style scoped>
+  <style scoped>
+.box-page-container {
+  height: calc(100vh - 24px);
+}
+.box-page-container ::v-deep.p-component {
+  font-family: $font-family-primary;
+}
+.box-page-container ::v-deep.p-component ::v-deep.pi-calendar:before {
+  content: url('~/assets/icons/calendar.svg');
+}
+.box-page-container ::v-deep.p-component ::v-deep.p-calendar-w-btn,
+.box-page-container ::v-deep.p-component .p-buttonn {
+  color: #fff;
+  background: #a16b56;
+  border: 1px solid #a16b56;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+  border-radius: 4px;
+}
+.box-page-container ::v-deep.p-component ::v-deep.text-right {
+  text-align: right !important;
+}
+.box-page-container
+  ::v-deep.p-component
+  ::v-deep.text-right
+  .p-column-header-content {
+  justify-content: end !important;
+}
+.box-page-container ::v-deep.p-component ::v-deep.disable-button {
+  pointer-events: none;
+  background-color: $text-color-300;
+}
+.box-page-container ::v-deep.p-component ::v-deep.disable-button .icon {
+  background-color: $text-color-500;
+}
 </style>
-    
+  

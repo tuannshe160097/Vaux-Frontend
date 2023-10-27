@@ -1,3 +1,4 @@
+//register
 <template>
   <section
     class="surface-0 flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden p-2"
@@ -42,7 +43,7 @@
           @click="callRegister"
         ></Button>
         <div class="flex align-items-center justify-content-center mb-5">
-          <a class="ml-5 text-sm text-center text-primary cursor-pointer"
+          <a href="/authen/login" class="ml-5 text-sm text-center text-primary cursor-pointer"
             >Đã có tài khoản?</a
           >
         </div>

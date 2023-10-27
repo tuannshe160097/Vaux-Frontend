@@ -1,3 +1,4 @@
+//view pending seller requests
 <template lang="pug">
 .box-page-container.flex.flex-column
   .grid.justify-content-between

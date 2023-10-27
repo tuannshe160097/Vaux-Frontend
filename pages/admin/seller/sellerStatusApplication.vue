@@ -1,3 +1,4 @@
+//view pending seller requests details
 <template lang="pug">
 .box-page-container.flex.flex-column
     h3 Thông tin người dùng

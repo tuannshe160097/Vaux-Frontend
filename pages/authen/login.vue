@@ -21,7 +21,7 @@
             class="w-full"
             id="inputSdt"
             v-model="sdt"
-            slotChar=" "
+            slotChar=""
           />
         </span>
         <label class="block font-bold mb-2" for="inputPassword"> OTP </label>
@@ -46,8 +46,8 @@
             ></Checkbox>
             <label class="text-sm" for="rememberCheck">Save password</label>
           </div>
-          <a class="ml-5 text-sm text-right text-primary cursor-pointer"
-            >Forgot password?</a
+          <a href="/authen/register" class="ml-5 text-sm text-right text-primary cursor-pointer"
+            >Chưa có tài khoản?</a
           >
         </div>
       </div>
@@ -107,7 +107,7 @@ export default {
         //   // redirect('/homepage')
         // }
         console.log(result.status)
-        //this.$router.push('/')
+        this.$router.push('/')
       } catch (error) {
         console.log(error)
         if (error.response) {
