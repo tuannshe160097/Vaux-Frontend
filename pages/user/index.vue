@@ -43,11 +43,9 @@
           :rows="20"
           :scrollable="false"
         >
-          <Column field="id" header="SỐ" sortable="sortable">
+          <Column field="id" header="STT" sortable="sortable">
             <template #body="slotProps"
-              ><span class="font-semibold">{{
-                slotProps.index + 1
-              }}</span></template
+              ><span>{{ slotProps.index + 1 }}</span></template
             >
           </Column>
           <Column
@@ -57,10 +55,10 @@
             bodyClass="font-semibold"
           ></Column>
           <Column
-            field="email"
-            header="EMAIL"
+            field="name"
+            header="TÊN"
             sortable="sortable"
-            className="w-3"
+            className="w-3 font-semibold"
           ></Column>
           <Column
             field="created"
@@ -75,7 +73,6 @@
             header="NGÀY CẬP NHẬT"
             sortable="sortable"
             className="p-text-right"
-            bodyClass="font-semibold"
           >
             <template #body="{ data }">{{ formatDate(data.updated) }}</template>
           </Column>
@@ -106,20 +103,18 @@
           <Column
             :exportable="false"
             header="Hoạt động"
-            sortable="sortable"
             className="p-text-right"
           >
             <template #body="{ data }">
               <Button
                 class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
-                :disabled="!data.status"
+                @click="viewDetail(data.id)"
               >
                 <div class="icon--small icon-edit"></div>
               </Button>
               <Button
                 class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
                 @click="deleteBoxById(data.id)"
-                :disabled="!data.status"
               >
                 <div class="icon--small icon-delete"></div>
               </Button>
@@ -203,6 +198,12 @@ export default {
       const year = date.getFullYear()
       return `${day}-${month}-${year}`
     },
+    viewDetail(id) {
+      this.$router.push('/user/detail?userId='+id)
+    },
+    deleteBoxById(id){
+      
+    }
   },
 }
 </script>

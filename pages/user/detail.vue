@@ -41,6 +41,7 @@
               <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text"
+                v-model="name"
               />
             </div>
             <div class="field">
@@ -48,6 +49,7 @@
               <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text"
+                v-model="phone"
               />
             </div>
             <div class="field">
@@ -55,6 +57,7 @@
               <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text"
+                v-model="email"
               />
             </div>
             <div class="field">
@@ -62,6 +65,7 @@
               <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text"
+                v-model="cccd"
               />
             </div>
             <div class="field">
@@ -69,6 +73,7 @@
               <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text"
+                v-model="address"
               />
             </div>
             <div class="field">
@@ -76,6 +81,7 @@
               <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text"
+                v-model="role"
               />
             </div>
             <div class="field">
@@ -83,6 +89,8 @@
               <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text"
+                v-model="dateCreated"
+                disabled
               />
             </div>
             <div class="field">
@@ -90,6 +98,8 @@
               <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text"
+                v-model="dateUpdated"
+                disabled
               />
             </div>
             <div class="field">
@@ -97,6 +107,8 @@
               <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text"
+                v-model="dateDeleted"
+                disabled
               />
             </div>
             <div class="field"><Button label="Cập nhật" /></div>
@@ -113,16 +125,15 @@ export default {
   layout: 'default',
   data() {
     return {
-      // boxData: [],
-      // totalItemsCount: 150,
-      // selectedBoxes: [],
-      // selectedWarehouse: null,
-      // selectedSize: null,
-      // selectedLocation: null,
-      // isFilter: false,
-      // dateFrom: null,
-      // dateTo: null,
-      // masterData: [],
+      name: '',
+      phone: '',
+      email: '',
+      cccd: '',
+      address: '',
+      role: '',
+      dateCreated: '',
+      dateUpdated: '',
+      dateDeleted: '',
     }
   },
   created() {
@@ -131,31 +142,47 @@ export default {
   methods: {
     async fetchData() {
       try {
-        const token = this.$cookies.get('jwt')
-        const userId = this.$route.params.userId
-        if (token) {
-          console.log('LTA: ' + userId)
-          const result = await this.$axios.$get(
-            process.env.BASE_URL + `/api/mod/account/${userId}`,
-            {
-              headers: {
-                Authorization: 'Bearer ' + token,
-              },
-            }
-          )
-          console.log(result)
-          this.boxData = result
-        } else {
-          this.$router.push('/authen/login')
-        }
+        const userId = this.$route.query.userId
+        console.log('LTA: ' + userId)
+        const result = await this.$axios.get(
+          process.env.BASE_URL + `/api/mod/account/${userId}`,
+          {}
+        )
+        console.log(result.data)
+        this.name = result.data.name
+        this.phone = result.data.phone
+        this.email = result.data.email
+        this.cccd = result.data.citizenId
+        this.address =
+          result.data.houseNumber +
+          ', ' +
+          result.data.street +
+          ', ' +
+          result.data.district +
+          ', ' +
+          result.data.city
+        this.role = result.data.role.title
+        this.dateCreated = this.formatDate(result.data.created)
+        this.dateUpdated = this.formatDate(result.data.updated)
+        this.dateDeleted = result.data.deleted?this.formatDate(result.data.deleted):''
       } catch (error) {
+        console.log(error)
         if (error.response) {
-          console.log('Lỗi Bad Request:', error.response.data)
-          // Xử lý lỗi 400 ở đây
+          console.log('Lỗi khi xử lý yêu cầu:', error.response.data)
+          if ([401, 403].includes(error.response.status)) {
+            this.$router.push('/authen/login')
+          }
         } else {
           console.error('Lỗi khi gửi yêu cầu:', error)
         }
       }
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString)
+      const day = date.getDate().toString().padStart(2, '0')
+      const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
+      const year = date.getFullYear()
+      return `${day}-${month}-${year}`
     },
   },
 }

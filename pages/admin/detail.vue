@@ -48,7 +48,7 @@
               <div class="field-radiobutton">
                 <RadioButton
                   name="gender"
-                  value="Chicago"
+                  value="Male"
                   v-model="gender"
                 ></RadioButton>
                 <label>Nam</label>
@@ -56,7 +56,7 @@
               <div class="field-radiobutton">
                 <RadioButton
                   name="gender"
-                  value="Los Angeles"
+                  value="Female"
                   v-model="gender"
                 ></RadioButton>
                 <label>Nữ</label>
@@ -138,32 +138,76 @@
   </div>
 </template>
       
-<script lang="ts">
-import { Component, Vue } from 'nuxt-property-decorator'
-
-@Component
-class adminDetail extends Vue {}
-export default adminDetail
+<script>
+export default {
+  name: 'UserDetail',
+  layout: 'default',
+  data() {
+    return {
+      gender : "Male",
+      totalItemsCount: 150,
+      selectedBoxes: [],
+    }
+  },
+  created() {
+    // Gọi API khi component được tạo
+    this.fetchData()
+  },
+  methods: {
+    async fetchData() {
+      try {
+        const result = await this.$axios.get(
+          process.env.BASE_URL + '/api/mod/account?pageNum=1&pageSize=20',
+          {}
+        )
+        this.boxData = result.data
+      } catch (error) {
+        console.log(error)
+        if (error.response) {
+          console.log('Lỗi khi xử lý yêu cầu:', error.response.data)
+          if ([401, 403].includes(error.response.status)) {
+            this.$router.push('/authen/login')
+          }
+        } else {
+          console.error('Lỗi khi gửi yêu cầu:', error)
+        }
+      }
+    },
+    formatDate(dateString) {
+      const date = new Date(dateString)
+      const day = date.getDate().toString().padStart(2, '0')
+      const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
+      const year = date.getFullYear()
+      return `${day}-${month}-${year}`
+    },
+    viewDetail(id) {
+      this.$router.push('/user/detail?id=' + id)
+    },
+  },
+}
 </script>
 
-<style lang="sass" scoped>
-.card-control
-  display: block
-  background: $color-white
-  font-weight: 1
-  font-size: 0.875rem
-  line-height: 1
-  color: #69707a
-  background-clip: padding-box
-  border: 1px solid #c5ccd6
-  appearance: none
-  border-radius: 0.35rem
-.card-header
-  padding: 1.2rem 1.35rem
-  margin-bottom: 0
-  background-color: rgba(33, 40, 50, 0.03)
-  border-bottom: 1px solid rgba(33, 40, 50, 0.125)
-.rounded-circle
-  border-radius: 50% !important
+<style scoped>
+.card-control {
+  display: block;
+  background: $color-white;
+  font-weight: 1;
+  font-size: 0.875rem;
+  line-height: 1;
+  color: #69707a;
+  background-clip: padding-box;
+  border: 1px solid #c5ccd6;
+  appearance: none;
+  border-radius: 0.35rem;
+}
+.card-header {
+  padding: 1.2rem 1.35rem;
+  margin-bottom: 0;
+  background-color: rgba(33, 40, 50, 0.03);
+  border-bottom: 1px solid rgba(33, 40, 50, 0.125);
+}
+.rounded-circle {
+  border-radius: 50% !important;
+}
 </style>
               
