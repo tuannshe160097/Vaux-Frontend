@@ -135,6 +135,23 @@
           </template>
         </DataTable>
       </div>
+      <Dialog header="Thêm mới thể loại " :visible.sync="displayBasic" :containerStyle="{width: '50vw'}">
+        <div class="field">
+              <label>Tên</label>
+              <input
+                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                type="text"
+              />
+        </div>
+        <div class="field">      
+              <label>Mô tả</label>
+              <Textarea class="w-full" v-model="value1" rows="15" cols="100" />
+        </div>
+          <template #footer>
+              <Button label="Hủy bỏ" icon="pi pi-times" @click="CloseModel" class="p-button-text"/>
+              <Button label="Thêm mới" icon="pi pi-check" @click="CloseModel" autofocus />
+          </template>
+      </Dialog>
     </div>
   </div>
 </template>
@@ -175,7 +192,13 @@ export default {
         }
       }
     },
-    OpenModel() {},
+    OpenModel() {
+    this.displayBasic = true;
+  },
+
+    CloseModel() {
+    this.displayBasic = false;
+  }
   },
 }
 </script>
