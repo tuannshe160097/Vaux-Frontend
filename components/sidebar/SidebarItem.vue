@@ -1,13 +1,15 @@
-<template lang="pug">
-.menu-item.flex-row.pt-1(v-show="isShow" @click="select(item)")
-  nuxt-link(v-if="!!item.to" :to="item.to")
-    SidebarItemValue(:item="item")
-  div(v-if="!item.to")
-    SidebarItemValue(:item="item")
+<template>
+  <div v-show="isShow" class="menu-item flex-row pt-1" @click="select(item)">
+    <NuxtLink v-if="!!item.to" :to="item.to">
+      <SidebarItemValue :item="item" />
+    </NuxtLink>
+    <div v-if="!item.to">
+      <SidebarItemValue :item="item" />
+    </div>
+  </div>
 </template>
 
 <script lang='ts'>
-
 import { Component, Emit, InjectReactive, namespace, Prop, Vue } from 'nuxt-property-decorator'
 const nsSidebar = namespace('layout/store-sidebar')
 

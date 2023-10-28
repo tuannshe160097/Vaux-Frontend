@@ -1,9 +1,11 @@
 import { Middleware } from '@nuxt/types'
 
-const authenticate: Middleware = ({ store, redirect }) => {
-  // if (!store.$auth.user || !store.state.commons['store-token'].token) {
-  //   redirect('/login')
-  // }
+const authenticate: Middleware = async ({ store, redirect }) => {
+  if (!store.$auth.loggedIn) {
+    redirect('/login');
+  } else if (!store.state['user-auth']['store-user'].user) {
+    await store.dispatch('user-auth/store-user/actGetUserDetail')
+  }
 }
 
 export default authenticate

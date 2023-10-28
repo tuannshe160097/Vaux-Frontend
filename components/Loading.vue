@@ -1,6 +1,6 @@
-<template lang='pug'>
-  b-overlay(:show='loading')
-    slot
+<template>
+  <div :show='loading'>
+  </div>
 </template>
 <script lang='ts'>
 import { Component, namespace, Vue } from 'nuxt-property-decorator'

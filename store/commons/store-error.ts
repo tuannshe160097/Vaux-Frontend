@@ -7,10 +7,10 @@ import { ErrorResponse } from '~/utils'
 })
 export default class StoreError extends VuexModule {
 
-  public error: ErrorResponse = {}
+  public error: ErrorResponse | string = {}
 
   @Mutation
   setError(error: ErrorResponse) {
-    this.error = { ...this.error, ...error }
+    this.error = error
   }
 }

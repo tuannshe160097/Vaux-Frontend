@@ -62,7 +62,11 @@ export default {
       'Tag',
       'Paginator',
       'Calendar',
-      'ScrollPanel'
+      'ScrollPanel',
+      'InputMask',
+      'Toast',
+      'Textarea',
+      'ConfirmDialog'
     ],
     directives: [
       'Tooltip',
@@ -71,7 +75,8 @@ export default {
   },
 
   axios: {
-    proxy: process.env.NODE_ENV === 'development'
+    // proxy: process.env.NODE_ENV === 'development',
+    baseURL: 'https://localhost:6565'
   },
 
   auth: {
@@ -88,13 +93,17 @@ export default {
           autoFetch: false
         },
         endpoints: {
-          login:  { url: '/api/auth/login',  method: 'post' },
-          logout: { url: '/api/auth/logout', method: 'post' },
+          login:  { url: '/api/VerifyOtp',  method: 'post' },
+          logout: false, // { url: '/api/auth/logout', method: 'post' },
           user:   false // { url: '/api/auth/user',   method: 'get' }
         }
       }
     },
-    plugins: ['~/plugins/auth.ts']
+    plugins: ['~/plugins/auth.ts'],
+    redirect: {
+      logout: '/login',
+      home: '/dashboard'
+    }
   },
 
   styleResources: {
@@ -104,7 +113,7 @@ export default {
 
   proxy: {
     '/api/': {
-      target: process.env.API_URL,
+      target: process.env.BE_API_URL,
       pathRewrite: { '^/api/': '' },
       changeOrigin: true
     }

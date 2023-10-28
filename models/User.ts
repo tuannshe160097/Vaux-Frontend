@@ -3,11 +3,13 @@ export namespace User {
   export interface Model {
     id:         number,
     email:      string,
-    role:       number,
+    role:       {
+      title: string
+    },
     status:     number,
     userDetail: User.Detail,
     avatarUrl: string,
-    displayName: string,
+    name: string,
   }
 
   export interface Detail {

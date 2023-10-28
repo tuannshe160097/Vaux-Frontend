@@ -1,8 +1,11 @@
-<template lang="pug">
-.layout-wrapper.layout-static
-  MenuSidebar
-  .main-container(:style="{ marginLeft: sidebarWidth }")
-    Nuxt
+<template>
+  <div class="layout-wrapper.layout-static">
+    <MenuSidebar />
+    <div class="main-container" :style="{ marginLeft: sidebarWidth }">
+      <Nuxt />
+      <Toast />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -26,5 +29,5 @@ export default Dashboard
 .main-container
   background-color: $bg-body-base
   height: 100vh
-  padding: $space-size-24
+  padding: $space-size-16
 </style>
