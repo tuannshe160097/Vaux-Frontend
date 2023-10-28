@@ -51,9 +51,11 @@
               }}</span></template
             >
           </Column>
-          <Column field="code" header="Tên" sortable="sortable">   </Column>
-        <Column field="code" header="SỐ ĐIỆN THOẠI" sortable="sortable"></Column>
-        <Column field="seller.email" header="EMAIL" sortable="sortable" className="w-3"></Column>
+          <Column field="code" header="Tên sản phẩm" sortable="sortable">   </Column>
+        <Column field="code" header="Thể loại" sortable="sortable"></Column>
+        <Column field="code" header="Người bán" sortable="sortable"></Column>
+
+        <Column field="seller.email" header="Mô tả" sortable="sortable" className="w-3"></Column>
         <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
           <template #body="{ data }">
             <div>
@@ -62,7 +64,6 @@
             </div>
           </template>
         </Column>
-        <Column field="seller.email" header="Lý do chấp nhận/từ chối" sortable="sortable" className="w-3"></Column>
         <Column field="createAt" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
           <template #body="{ data }">{{ new Date(data.createAt).toLocaleDateString('en-US') }}</template>
         </Column>

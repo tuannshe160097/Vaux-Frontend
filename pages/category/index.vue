@@ -8,7 +8,7 @@
         .grid
           .col-fixed
             span.p-input-icon-left
-              .icon.icon--left.icon-search-input.surface-900
+              .icon.icon--left.icon-research.surface-900
               InputText.w-21rem.h-3rem(type='text', placeholder='Tìm kiếm')
           .col-fixed
             Button.w-9rem.h-3rem(@click="openBasic")
@@ -63,12 +63,12 @@
               Button.border-0.p-0.h-2rem.w-2rem.justify-content-center.surface-200(
                 :disabled='!data.status'
               )
-                .icon--small.icon-edit
+                .icon--small.icon-compose
               Button.border-0.p-0.ml-1.h-2rem.w-2rem.justify-content-center.surface-200(
                 @click='deleteBoxById(data.id)',
                 :disabled='!data.status'
               )
-                .icon--small.icon-delete
+                .icon--small.icon-bin
           template(#footer)
             div
               .flex.align-items-center(v-if='selectedBoxes.length <= 0')

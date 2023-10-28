@@ -65,7 +65,7 @@ export default {
       'ScrollPanel',
       'RadioButton',
       'Steps',
-      'Card'
+      'Card',
     ],
     directives: [
       'Tooltip',
