@@ -66,7 +66,7 @@ export default buyerDetail
 <style lang="sass" scoped>
 .card-control
   display: block
-  background: $color-white
+  background: $white
   font-weight: 1
   font-size: 0.875rem
   line-height: 1

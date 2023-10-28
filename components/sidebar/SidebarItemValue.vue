@@ -79,10 +79,11 @@ export default SidebarItemValue
     border-radius: 3px
     background-color: $bg-orange
 .menu-item
-  .nuxt-link-active
+  .nuxt-link-exact-active
     .item-value
-      border-radius: 4px
-      background-color: $text-color-300
+      border-radius: 10px
+      background-color: $second-yellow
+      color:$primary
 .child-item
   margin-left: 40px
   .item-collapsed
@@ -98,7 +99,7 @@ export default SidebarItemValue
   position: relative
   color: $text-color-base
   font-size: $font-size-medium
-  font-weight: $font-weight-bold
+  font-weight: $font-weight-semi-bold
   .item-collapsed
     display: none
   &.active
@@ -108,7 +109,7 @@ export default SidebarItemValue
      position: absolute
      top: 40px
      width: 230px
-     background-color: $color-white
+     background-color: $white
      border: 1px solid $bg-body-base
      box-shadow: 0px 10px 30px rgba(0, 10, 24, 0.1)
      border-radius: 8px
@@ -119,12 +120,13 @@ export default SidebarItemValue
        display: block
        text-decoration: none
        color: $text-color-900
+       background-color: $primary-dark
        &:hover
         border-radius: 4px
-        background-color: $text-color-300
+        background-color: $second-yellow
        &.nuxt-link-active
         background: $primary
-        color: $color-white
+        color: $white
         border-radius: 4px
 
    &::before
@@ -136,14 +138,21 @@ export default SidebarItemValue
     height: 35px
     background-color: $primary
 
-  &:hover, &.active
-    border-radius: 4px
-    background-color: $text-color-300
+  &:hover
+    color: $white
+    border-radius: 10px
+
+  &.active
+    border-radius: 10px
+    background-color: $second-yellow
+    color : $primary
 
   .item__label
     @include flex-center-space-between
     width: 100%
     min-height: 56px
+    .icon 
+      color:$primary
   .item__icon
     padding: $space-size-16
 

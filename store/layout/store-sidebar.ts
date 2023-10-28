@@ -1,6 +1,6 @@
 import { Module, Mutation, VuexModule } from 'vuex-module-decorators'
 
-export const SIDEBAR_WIDTH = 270
+export const SIDEBAR_WIDTH = 266
 export const SIDEBAR_WIDTH_COLLAPSED = 90
 
 @Module({

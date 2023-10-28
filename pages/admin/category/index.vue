@@ -46,12 +46,12 @@
         >
           <Column field="id" header="STT" sortable="sortable">
             <template #body="slotProps"
-              ><span class="font-semibold">{{
+              ><span class="">{{
                 slotProps.index + 1
               }}</span></template
             >
           </Column>
-          <Column field="name" header="Tên" sortable="sortable"></Column>
+          <Column field="name" className="font-semibold" header="Tên" sortable="sortable"></Column>
           <Column
             field="description"
             header="Mô tả"
@@ -68,7 +68,7 @@
               <div>
                 <Tag
                   class="px-2 bg-green-100"
-                  v-if="data.status"
+                  v-if="data.deleted == null"
                   severity="success"
                   ><span class="font-bold text-green-400 font-size-small"
                     >Đang hoạt động</span
@@ -91,14 +91,13 @@
             <template #body="{ data }">
               <Button
                 class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
-                :disabled="!data.status"
+                @click="Detail(data.id)"
               >
                 <div class="icon--small icon-edit"></div>
               </Button>
               <Button
                 class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
-                @click="deleteBoxById(data.id)"
-                :disabled="!data.status"
+                @click="Detail(data.id)"
               >
                 <div class="icon--small icon-delete"></div>
               </Button>
@@ -136,22 +135,32 @@
           </template>
         </DataTable>
       </div>
-      <Dialog header="Thêm mới thể loại " :visible.sync="displayBasic" :containerStyle="{width: '50vw'}">
+      <Dialog
+        header="Thêm mới thể loại "
+        :visible.sync="displayBasic"
+        :containerStyle="{ width: '50vw' }"
+      >
         <div class="field">
-              <label>Tên</label>
-              <input
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                type="text"
-              />
+          <label>Tên</label>
+          <input
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+            type="text"
+            v-model="name"
+          />
         </div>
-        <div class="field">      
-              <label>Mô tả</label>
-              <Textarea class="w-full" v-model="value1" rows="15" cols="100" />
+        <div class="field">
+          <label>Mô tả</label>
+          <Textarea class="w-full" v-model="detail" rows="15" cols="100" />
         </div>
-          <template #footer>
-              <Button label="Hủy bỏ" icon="pi pi-times" @click="CloseModel" class="p-button-text"/>
-              <Button label="Thêm mới" icon="pi pi-check" @click="CloseModel" autofocus />
-          </template>
+        <template #footer>
+          <Button
+            label="Hủy bỏ"
+            icon="pi pi-times"
+            @click="CloseModel"
+            class="p-button-text"
+          />
+          <Button label="Thêm mới" icon="pi pi-check" @click="AddNewCat" />
+        </template>
       </Dialog>
     </div>
   </div>
@@ -167,6 +176,9 @@ export default {
       totalItemsCount: 150,
       selectedBoxes: [],
       displayBasic: false,
+      detail: '',
+      name: '',
+      selectedId: 0,
     }
   },
   created() {
@@ -194,12 +206,42 @@ export default {
       }
     },
     OpenModel() {
-    this.displayBasic = true;
-  },
+      this.selectedId = 0
+      this.name = ''
+      this.detail = ''
+      this.displayBasic = true
+    },
 
     CloseModel() {
-    this.displayBasic = false;
-  }
+      this.selectedId = 0
+      this.displayBasic = false
+    },
+    async Detail(id) {
+      try {
+        const result = await this.$axios.get(
+          process.env.BASE_URL + '/api/Category/' + id,
+          {}
+        )
+        console.log(result.data.description)
+        this.selectedId = id
+        this.name = result.data.name
+        this.detail = result.data.description
+        console.log(this.detail)
+        this.displayBasic = true
+      } catch (error) {
+        console.log(error)
+        if (error.response) {
+          console.log('Lỗi khi xử lý yêu cầu:', error.response.data)
+          if ([401, 403].includes(error.response.status)) {
+            this.$router.push('/authen/login')
+          }
+        } else {
+          console.error('Lỗi khi gửi yêu cầu:', error)
+        }
+      }
+    },
+
+    AddNewCat() {},
   },
 }
 </script>
@@ -208,6 +250,5 @@ export default {
 .category-page-container {
   height: calc(100vh - 24px);
 }
-
 </style>
     
