@@ -129,14 +129,13 @@ export default MenuSidebar
   top: 0
   left: 0
   bottom: 0
-  padding: 30px 0
+  padding: 0
   transition: 0.3s ease
   background: $primary
 
   &-head
     @include flex-center-vert
-    padding: 0 20px
-    padding-bottom: $space-size-24
+    padding: 21px 20px
 
     .user-avatar
       @include size(48px)
