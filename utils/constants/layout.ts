@@ -3,7 +3,7 @@ export enum MENU_ACTION {
 }
 
 export const PAGE_MENU = [
-  { id: 1, icon: 'shopping-cart', label: 'Thống kê', hideToggled: true },
+  { id: 1, to: '/dashboard', icon: 'shopping-cart', label: 'Thống kê', hideToggled: true },
   { id: 2, icon: 'shopping-cart', label: 'Quản lý tài khoản' },
   { id: 3, to: '/admin', icon: 'shopping-cart', label: 'Thông tin quản trị viên', parentId: 2, hideToggled: true},
   { id: 4, to: '/expert', icon: 'shopping-cart', label: 'Thông tin người chuyên gia', parentId: 2, hideToggled: true},

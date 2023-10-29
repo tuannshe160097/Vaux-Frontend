@@ -1,41 +1,24 @@
 <template>
   <div class="sidebar" :style="{ width: sidebarWidth }">
     <div class="menu-section sidebar-head">
-      <template v-if="!collapsed"
-        ><img
-          class="user-avatar"
-          :src="
-            require('assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png')
-          "
-        />
+      <template v-if="!collapsed">
+        <img class="user-avatar" :src='require("assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png")'/>
         <div class="user-info">
-          <span class="user-name">{{ userDisplayName }}</span
-          ><span class="user-role">Role Ex</span>
+          <span class="user-name">{{ userDisplayName }}</span>
+          <span>{{ userDisplayName }}</span>
         </div>
       </template>
-      <div
+      <div 
         class="icon icon--xlarge icon-menu-toggle surface-500 cursor-pointer"
         :class="{ 'bg-primary': collapsed }"
         @click="toggleSidebar"
       ></div>
     </div>
-    <hr />
     <div class="menu-section sidebar-menu">
-      <SidebarItem
-        v-for="item in pageMenu"
-        :key="item.id"
-        :item="item"
-        @select="onSelectMenu(item)"
-      ></SidebarItem>
+      <SidebarItem v-for="item in pageMenu" :key="item.id" :item="item" @select="onSelectMenu(item)"/>
     </div>
     <div class="menu-section sidebar-foot">
-      <hr />
-      <SidebarItem
-        v-for="item in settingMenu"
-        :key="item.id"
-        :item="item"
-        @select="onSelectMenu(item)"
-      ></SidebarItem>
+      <SidebarItem v-for="item in settingMenu" :key="item.id" :item="item" @select="onSelectMenu(item)"/>
     </div>
   </div>
 </template>
@@ -51,7 +34,9 @@ import {
 import { User } from '~/models/User'
 import { MENU_ACTION, PAGE_MENU, SETTING_MENU } from '~/utils'
 const nsSidebar = namespace('layout/store-sidebar')
-const nsUser = namespace('user-auth/user')
+const nsUser = namespace('user-auth/store-user')
+
+
 
 @Component
 class MenuSidebar extends Vue {
@@ -66,7 +51,7 @@ class MenuSidebar extends Vue {
   @nsSidebar.Mutation('toggleSidebar')
   toggleSidebar: any
 
-  @nsUser.Mutation('user')
+  @nsUser.State('user')
   user!: User.Model | undefined
 
   // -- [ Properties ] ----------------------------------------------------------
@@ -85,7 +70,11 @@ class MenuSidebar extends Vue {
   }
 
   get userDisplayName() {
-    return this.user?.displayName || 'Unknown'
+    return this.user?.name || 'Unknown'
+  }
+
+  get userDisplayRole() {
+    return this.user?.role?.title || 'Role Ex'
   }
   // -- [ Methods ] ------------------------------------------------------------
 
@@ -99,6 +88,7 @@ class MenuSidebar extends Vue {
     }
     // handle specific actions
     if (item.action === MENU_ACTION.LOGOUT) {
+      this.$cookies.remove('auth._token');
       this.$auth.logout()
     }
   }

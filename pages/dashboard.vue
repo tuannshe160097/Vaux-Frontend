@@ -1,5 +1,5 @@
 <template>
-  <h1 class="text-center">WELCOME!</h1>
+  <h1 class="text-center">Trang thống kê!</h1>
 </template>
 
 <script lang='ts'>
@@ -10,11 +10,11 @@ import { Component, Vue } from 'nuxt-property-decorator'
   middleware: ['authenticate'],
   layout: 'admin',
 })
-class Pages extends Vue {
+class DashboardPages extends Vue {
 
 }
 
-export default Pages
+export default DashboardPages
 </script>
 <style lang='sass' scoped>
 </style>

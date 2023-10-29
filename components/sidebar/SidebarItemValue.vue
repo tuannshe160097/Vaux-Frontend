@@ -1,15 +1,21 @@
-<template lang="pug">
-.item-value(:class="{ 'active': active, 'child-item': !!item.parentId }")
-  ul.item-collapsed.p-2(v-if='collapsed && parentItems.length > 0' :class="{'active-child': isShowChildren}")
-    li(v-for="parent in parentItems" :key="parent.id" @click.stop="handleSelect")
-      nuxt-link.item-collapsed__children.py-3.pl-4(:to="parent.to") {{parent.label}}
-  .item__icon(v-if="!!item.icon")
-    .icon.icon--large(:class="`icon-${item.icon} ${iconMenuCssClasses}`")
-  transition(name="fade")
-    .item__label(v-if="!collapsed" :class="{ 'pl-16': !!item.parentId, 'last-item': item.isLast }")
-      span {{ item.label }}
-      span.icon.toggle.icon-chevron-down.surface-500(:class="iconSelectCssClasses")
-      Badge.mr-2.badge-notify(v-if="item.label === 'Notifications'" :value="3")
+<template>
+  <div class="item-value" :class="{ 'active': active, 'child-item': !!item.parentId }">
+    <ul v-if="collapsed &amp;&amp; parentItems.length &gt; 0" class="item-collapsed p-2" :class="{'active-child': isShowChildren}">
+        <li v-for="parent in parentItems" :key="parent.id" @click.stop="handleSelect">
+            <nuxt-link class="item-collapsed__children py-3 pl-4" :to="parent.to">{{parent.label}}</nuxt-link>
+        </li>
+    </ul>
+    <div v-if="!!item.icon" class="item__icon">
+        <div class="icon icon--large" :class="`icon-${item.icon} ${iconMenuCssClasses}`"></div>
+    </div>
+    <transition name="fade">
+        <div v-if="!collapsed" class="item__label" :class="{ 'pl-16': !!item.parentId, 'last-item': item.isLast }">
+          <span>{{ item.label }}</span>
+          <span class="icon toggle icon-chevron-down surface-500" :class="iconSelectCssClasses"></span>
+          <Badge v-if="item.label === 'Notifications'" class="mr-2 badge-notify" :value="3"></Badge>
+        </div>
+    </transition>
+  </div>
 </template>
 
 <script lang='ts'>

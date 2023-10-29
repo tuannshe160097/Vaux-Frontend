@@ -1,9 +1,11 @@
-<template lang='pug'>
-  .container
-    h1(v-if='error.statusCode === 404') {{ pageNotFound }}
-    template(v-else) {{ otherError }}
-    NuxtLink(to='/') Home page
+<template>
+  <div class="container">
+    <h1 v-if='error.statusCode === 404'>{{ pageNotFound }}</h1>
+    <template v-else>{{ otherError }}</template>
+    <nuxt-link to="/">Home page</nuxt-link>
+  </div>
 </template>
+
 <script lang='ts'>
 import { Component, Prop, Provide, Vue } from 'nuxt-property-decorator'
 
