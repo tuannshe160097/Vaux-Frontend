@@ -39,6 +39,7 @@ const auth: Plugin = ({ app, $auth, store }) => {
       $auth.logout()
     }
     const errorResponse: ErrorResponse = error.response.data
+    debugger
     if (errorResponse) {
       store.commit('commons/store-error/setError', errorResponse)
     }
