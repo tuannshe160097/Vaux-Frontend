@@ -1,4 +1,4 @@
-$header-table-color: #F9F9FC
+$header-table-color: #EAD9D2
 $table-bg-color: #FFFFFF
   
 .airtag-datatable
@@ -12,6 +12,19 @@ $table-bg-color: #FFFFFF
     text-transform: uppercase
     color: $text-color-800 !important
     white-space: nowrap
+    .pi-sort-alt:before
+      content: url('~/assets/icons/sort.svg')
+    .pi-sort-amount-up-alt:before
+      content: url('~/assets/icons/sortDesc.svg')
+    .pi-sort-amount-down
+      transform: rotate(180deg) !important
+      &:before
+          content: url('~/assets/icons/sortDesc.svg')
+    &:first-child 
+      border-radius: 10px 0 0 10px
+    &:last-child 
+      border-radius: 0 10px 10px 0
+  
   .p-datatable-wrapper
     flex: 1
     background: $table-bg-color
@@ -25,6 +38,9 @@ $table-bg-color: #FFFFFF
         position: sticky
         top: 0
         z-index: 1
+      .p-datatable-tbody
+        tr:nth-child(even)
+          background-color : #FBF8F7
   .p-datatable-footer
     background-color: $table-bg-color
     min-height: 65px

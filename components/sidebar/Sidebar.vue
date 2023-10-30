@@ -2,23 +2,23 @@
   <div class="sidebar" :style="{ width: sidebarWidth }">
     <div class="menu-section sidebar-head">
       <template v-if="!collapsed">
-        <img class="user-avatar" :src='require("assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png")'/>
+        <img class="user-avatar"
+          :src='require("assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png")' />
         <div class="user-info">
           <span class="user-name">{{ userDisplayName }}</span>
           <span>{{ userDisplayName }}</span>
         </div>
       </template>
-      <div 
-        class="icon icon--xlarge icon-menu-toggle surface-500 cursor-pointer"
-        :class="{ 'bg-primary': collapsed }"
-        @click="toggleSidebar"
-      ></div>
+      <div class="icon icon--xlarge icon-menu-toggle surface-500 cursor-pointer" :class="{ 'bg-primary': collapsed }"
+        @click="toggleSidebar"></div>
     </div>
+    <hr />
     <div class="menu-section sidebar-menu">
-      <SidebarItem v-for="item in pageMenu" :key="item.id" :item="item" @select="onSelectMenu(item)"/>
+      <SidebarItem v-for="item in pageMenu" :key="item.id" :item="item" @select="onSelectMenu(item)" />
     </div>
     <div class="menu-section sidebar-foot">
-      <SidebarItem v-for="item in settingMenu" :key="item.id" :item="item" @select="onSelectMenu(item)"/>
+      <hr />
+      <SidebarItem v-for="item in settingMenu" :key="item.id" :item="item" @select="onSelectMenu(item)" />
     </div>
   </div>
 </template>
@@ -74,7 +74,7 @@ class MenuSidebar extends Vue {
 
   onSelectMenu(item: any) {
     this.selectedItem = !item.parentId && item.id === this.selectedItem?.id ? null : item
-    if(!item.parentId) {
+    if (!item.parentId) {
       this.parentItems = this.pageMenu.filter(value => value.parentId === item.id)
     }
     // handle specific actions
@@ -84,12 +84,12 @@ class MenuSidebar extends Vue {
     }
   }
 
-  @Watch('$route.path',{ immediate: true, deep: true })
-  handleSelect (){
-    if(this.$route && this.$route.params){
-      this.selectedItem = this.pageMenu.filter((item)=> this.$route.path === item.to )[0]
-    }else {
-      this.selectedItem = this.pageMenu.filter((item)=> this.$route.path.slice(0, item.to?.length) === item.to )[0]
+  @Watch('$route.path', { immediate: true, deep: true })
+  handleSelect() {
+    if (this.$route && this.$route.params) {
+      this.selectedItem = this.pageMenu.filter((item) => this.$route.path === item.to)[0]
+    } else {
+      this.selectedItem = this.pageMenu.filter((item) => this.$route.path.slice(0, item.to?.length) === item.to)[0]
     }
   }
 
@@ -107,14 +107,13 @@ export default MenuSidebar
   top: 0
   left: 0
   bottom: 0
-  padding: 30px 16px 30px 18px
+  padding: 0
   transition: 0.3s ease
-  background: #A16B56
+  background: $primary
 
   &-head
     @include flex-center-vert
-    border-bottom: 1px solid $text-color-400
-    padding-bottom: $space-size-24
+    padding: 21px 20px
 
     .user-avatar
       @include size(48px)
@@ -131,15 +130,22 @@ export default MenuSidebar
       font-weight: $font-weight-bold
 
   &-menu
+    padding: 0 15px
     padding-top: $space-size-16
     overflow-x: auto
+    font-size : 400
 
   &-foot
     padding-top: $space-size-4
-    border-top: 1px solid $text-color-400
     min-height: 130px
     margin-top: auto
 
   .menu-section
     position: relative
+
+  hr
+    margin: 0
+    border: 0
+    border-top : 1px solid $primary-orange
+    @include flex-center-vert
 </style>

@@ -17,7 +17,7 @@ export default class StoreCategory extends VuexModule {
   async actGetCategory(params: any): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreCategory.STATE_URL.GET_CATEGORY)
-      return await $api.get(url, params) 
+     return await $api.get(url, params) 
     } catch (error) {}
   }
 
@@ -33,7 +33,7 @@ export default class StoreCategory extends VuexModule {
   async actUpdateCategory(params: any): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreCategory.STATE_URL.UPDATE_CATEGORY, { id: params?.id })
-      return await $api.put(url, params) 
+     return await $api.put(url, params) 
     } catch (error) {}
   }
   //Lta xoa 

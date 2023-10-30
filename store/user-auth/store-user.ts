@@ -10,6 +10,8 @@ export default class StoreUser extends VuexModule {
   private static readonly STATE_URL = {
     SEND_OTP: '/SendOtp?phone=:phone',
     USER_GET: '/Profile',
+    REGISTER: '/Register',
+    VERIFY: '/VerifyOtp?phone=:phone&otp=:otp',
   }
 
   public user: User.Model | undefined
@@ -24,8 +26,8 @@ export default class StoreUser extends VuexModule {
   async actSendOTPCode(phone: string): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreUser.STATE_URL.SEND_OTP, { phone })
-      return await $api.post(url) 
-    } catch (error) {}
+      return await $api.post(url)
+    } catch (error) { }
   }
 
   @Action({ commit: 'setUser', rawError: true })
@@ -34,6 +36,25 @@ export default class StoreUser extends VuexModule {
       const url = PathBind.transform(this.context, StoreUser.STATE_URL.USER_GET)
       const response: any = await $api.get(url)
       return response
-    } catch (error) {}
+    } catch (error) { }
   }
+  @Action({ rawError: true })
+  async actRegister(params: any): Promise<any | undefined> {
+    try {
+      const url = PathBind.transform(this.context, StoreUser.STATE_URL.REGISTER)
+      return await $api.post(url, params)
+    } catch (error) {
+
+    }
+  }
+  @Action({ rawError: true })
+  async actVerify(params: any): Promise<string | undefined> {
+    try {
+      const url = PathBind.transform(this.context, StoreUser.STATE_URL.VERIFY,{ phone: params?.phone, otp: params?.otp })
+      return await $api.post(url)
+    } catch (error) {
+
+    }
+  }
+
 }
