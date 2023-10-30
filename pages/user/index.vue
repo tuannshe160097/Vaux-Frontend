@@ -1,9 +1,9 @@
 <template>
-  <div class="category-page-container flex flex-column">
+  <div class="viewAllUser-page-container flex flex-column">
     <div class="grid justify-content-between">
       <div class="col-fixed">
         <h1 class="font-bold m-0 font-size-4xlarge line-height-1">
-          Danh sách thể loại
+          Danh sách nguời dùng
         </h1>
         <span class="text-600 font-size-small" v-if="categories"
           >{{ totalItemsCount }} tìm kiếm</span
@@ -13,12 +13,20 @@
         <div class="grid">
           <div class="col-fixed">
             <span class="p-input-icon-left">
-            <div class="icon icon--left icon-research surface-900"></div>
-            <InputText class="w-21rem h-3rem" type="text" placeholder="Tìm kiếm"></InputText>
-          </span>
+              <div class="icon icon--left icon-research surface-900"></div>
+              <InputText
+                class="w-21rem h-3rem"
+                type="text"
+                placeholder="Tìm kiếm"
+              ></InputText>
+            </span>
           </div>
           <div class="col-fixed">
-            <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="openModelCategory(null)"></Button>
+            <Button
+              class="w-9rem h-3rem"
+              type="button"
+              label="Thêm Mới"
+            ></Button>
           </div>
         </div>
       </div>
@@ -37,16 +45,27 @@
         >
           <Column field="id" header="STT" sortable="sortable">
             <template #body="slotProps">
-              <span class="">{{  slotProps.index + 1 }}</span>
+              <span class="">{{ slotProps.index + 1 }}</span>
             </template>
           </Column>
-          <Column field="name" className="font-semibold" header="Tên" sortable="sortable"></Column>
           <Column
-            field="description"
-            header="Mô tả"
+            field="name"
+            className="font-semibold"
+            header="Tên"
             sortable="sortable"
-            className="w-3"
           ></Column>
+          <Column
+            field="phone"
+            header="SỐ ĐIỆN THOẠI"
+            sortable="sortable"
+          ></Column>
+        <Column field="email" header="EMAIL" sortable="sortable" className="w-3"></Column>
+        <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
+          <template #body="{ data }">{{ new Date(data.created).toLocaleDateString('en-US') }}</template>
+        </Column>
+        <Column field="updated" header="NGÀY CẬP NHẬT" sortable="sortable" className="p-text-right">
+          <template #body="{ data }">{{ new Date(data.updated).toLocaleDateString('en-US') }}</template>
+        </Column>
           <Column
             field="status"
             header="TRẠNG THÁI"
@@ -80,14 +99,12 @@
             <template #body="{ data }">
               <Button
                 class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
-                @click="openModelCategory(data)"
               >
                 <div class="icon--small icon-compose"></div>
               </Button>
               <Button
                 class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
                 @click="onDeleteCategory(data)"
-                
               >
                 <div class="icon--small icon-bin"></div>
               </Button>
@@ -95,9 +112,7 @@
           </Column>
           <template #footer="">
             <div>
-              <div
-                class="flex align-items-center"
-              >
+              <div class="flex align-items-center">
                 <div
                   class="icon--large icon-footer-paginator surface-400"
                 ></div>
@@ -132,7 +147,13 @@
         </div>
         <div class="field">
           <label>Mô tả</label>
-          <Textarea class="text-left w-full" v-model="sDescription" rows="15" cols="100" placeholder="Vui lòng nhập mô tả"/>
+          <Textarea
+            class="text-left w-full"
+            v-model="sDescription"
+            rows="15"
+            cols="100"
+            placeholder="Vui lòng nhập mô tả"
+          />
         </div>
         <template #footer>
           <Button
@@ -147,34 +168,39 @@
       <ConfirmDialog></ConfirmDialog>
     </div>
   </div>
-
 </template>
 
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { confirmDelete } from '~/utils/commons/helper'
-const nsStoreCategory = namespace('category/store-category')
+const nsStoreCategory = namespace('user/store-user')
 
 @Component({
   middleware: ['authenticate'],
   layout: 'admin',
 })
-class CategoryList extends Vue {
-
+class UserList extends Vue {
   categories = []
   sName: string = ''
   sDescription: string = ''
   categorySelected: any = null
-  displayBasic= false
+  displayBasic = false
 
   @nsStoreCategory.Action
-  actGetCategory!: () => Promise<any>
+  actGetAccount!: () => Promise<any>
 
   @nsStoreCategory.Action
-  actAddCategory!: (params: { name: string, description: string}) => Promise<any>
+  actAddCategory!: (params: {
+    name: string
+    description: string
+  }) => Promise<any>
 
   @nsStoreCategory.Action
-  actUpdateCategory!: (params: { id: string, name: string, description: string}) => Promise<any>
+  actUpdateCategory!: (params: {
+    id: string
+    name: string
+    description: string
+  }) => Promise<any>
 
   get totalItemsCount() {
     return this.categories?.length || 0
@@ -185,42 +211,55 @@ class CategoryList extends Vue {
   }
 
   async mounted() {
-    this.categories = await this.actGetCategory() || []
+    this.categories = (await this.actGetAccount()) || []
   }
 
   async onSaveCategory() {
     let response = null
     const params = {
       name: this.sName || '',
-      description: this.sDescription || ''
+      description: this.sDescription || '',
     }
 
     if (this.categorySelected) {
-      response = await this.actUpdateCategory({ id: this.categorySelected?.id, ...params })
+      response = await this.actUpdateCategory({
+        id: this.categorySelected?.id,
+        ...params,
+      })
     } else {
       response = await this.actAddCategory(params)
     }
     if (response) {
-      this.categories = await this.actGetCategory() || []
-      this.$toast.add({ severity: 'success', summary: 'Success Message', detail: 'Yêu cầu thành công', life: 3000})
+      this.categories = (await this.actGetAccount()) || []
+      this.$toast.add({
+        severity: 'success',
+        summary: 'Success Message',
+        detail: 'Yêu cầu thành công',
+        life: 3000,
+      })
       this.closeModel()
     }
   }
 
-  openModelCategory(row?: any) {
-    if (row) {
-      this.categorySelected = row
-      this.setParamsModel(row)
-    } else {
-      this.setParamsModel()
-    }
-    this.displayBasic = true
-  }
+  // openModelCategory(row?: any) {
+  //   if (row) {
+  //     this.categorySelected = row
+  //     this.setParamsModel(row)
+  //   } else {
+  //     this.setParamsModel()
+  //   }
+  //   this.displayBasic = true
+  // }
 
   onDeleteCategory(row?: any) {
     const _this: any = this
     confirmDelete(_this, () => {
-      this.$toast.add({severity:'info', summary:'Xác nhận', detail:'Record deleted', life: 3000});
+      this.$toast.add({
+        severity: 'info',
+        summary: 'Xác nhận',
+        detail: 'Record deleted',
+        life: 3000,
+      })
     })
   }
 
@@ -231,14 +270,13 @@ class CategoryList extends Vue {
 
   setParamsModel(row?: any) {
     this.sName = row?.name || ''
-    this.sDescription = row?.description ||''
+    this.sDescription = row?.description || ''
   }
 }
-export default CategoryList
+export default UserList
 </script>
 
 <style lang="sass" scoped>
-.category-page-container
+.viewAllUser-page-container
   height: calc(100vh - 24px)
-
 </style>
