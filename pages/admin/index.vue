@@ -53,7 +53,7 @@
         <template footer="#footer">
           <div>
             <div class="flex align-items-center" v-if="selectedBoxes.length &lt;= 0">
-              <div class="icon--large icon-footer-paginator surface-400"></div><span class="ml-3 text-400 font-size-small">Showing 01 - 100 of 1280</span>
+              <div class="icon--large icon-footer surface-400"></div><span class="ml-3 text-400 font-size-small">Showing 01 - 100 of 1280</span>
             </div>
             <Button class="p-button-danger opacity-70" @click="deleteBoxById(null)" v-if="selectedBoxes.length &gt; 0">
               <div class="icon--small icon-delete bg-white"></div><span class="ml-3">Delete {{ selectedBoxes.length }} items selected</span>

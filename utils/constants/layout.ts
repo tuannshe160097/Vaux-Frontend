@@ -3,12 +3,12 @@ export enum MENU_ACTION {
 }
 
 export const PAGE_MENU = [
-  { id: 1, to: '/dashboard', icon: 'shopping-cart', label: 'Thống kê', hideToggled: true },
-  { id: 2, icon: 'shopping-cart', label: 'Quản lý tài khoản' },
-  { id: 3, to: '/admin', icon: 'shopping-cart', label: 'Thông tin quản trị viên', parentId: 2 },
-  { id: 4, to: '/user', icon: 'shopping-cart', label: 'Thông tin người dùng', parentId: 2 },
-  { id: 5, to: '/admin/user', icon: 'shopping-cart', label: 'Danh sách người dùng', parentId: 2 },
-  { id: 6, to: '/admin/category', icon: 'shopping-cart', label: 'Thể loại', hideToggled: true },
+  { id: 1, to: '/dashboard', icon: 'dashboard', label: 'Thống kê', hideToggled: true },
+  { id: 2, icon: 'account', label: 'Quản lý tài khoản' },
+  { id: 3, to: '/admin', icon: 'admin', label: 'Thông tin quản trị viên', parentId: 2 },
+  { id: 4, to: '/user', icon: 'expert', label: 'Thông tin người dùng', parentId: 2 },
+  { id: 5, to: '/admin/user', icon: 'user', label: 'Danh sách người dùng', parentId: 2 },
+  { id: 6, to: '/admin/category', icon: 'category', label: 'Thể loại', hideToggled: true },
   // { id: 5, icon: 'shopping-cart', label: 'Shipper', hideToggled: true },
   // { id: 6, icon: 'shopping-cart', label: 'Tags', hideToggled: true },
   // { id: 7, icon: 'shopping-cart', label: 'Seller', hideToggled: true },
@@ -18,6 +18,6 @@ export const PAGE_MENU = [
 
 export const SETTING_MENU = [
   { id: 100, icon: 'notification', label: 'Notifications', hideToggled: true },
-  { id: 200, icon: 'setting', label: 'Setting' },
-  { id: 201, label: 'Logout', parentId: 200, action: MENU_ACTION.LOGOUT, isLast: true }
+  { id: 200, icon: 'settings', label: 'Setting' },
+  { id: 201, icon: 'logout', label: 'Logout', parentId: 200, action: MENU_ACTION.LOGOUT, isLast: true }
 ]

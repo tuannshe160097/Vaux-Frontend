@@ -12,11 +12,10 @@
         <div class="col-fixed">
           <div class="grid">
             <div class="col-fixed">
-              <InputText
-                class="w-21rem h-3rem"
-                type="text"
-                placeholder="Tìm kiếm"
-              ></InputText>
+              <span class="p-input-icon-left">
+                <div class="icon icon--left icon-research surface-900"></div>
+                <InputText class="w-21rem h-3rem" type="text" placeholder="Tìm kiếm"></InputText>
+              </span>
             </div>
             <div class="col-fixed">
               <Button
@@ -57,8 +56,12 @@
               field="description"
               header="Mô tả"
               sortable="sortable"
-              className="w-3"
-            ></Column>
+              className="overflow-ellipsis"
+            >
+              <template #body="{ data }">
+                <p class="element">{{ data.description }}</p>
+              </template>
+            </Column>
             <Column
               field="status"
               header="TRẠNG THÁI"
@@ -94,13 +97,13 @@
                   class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
                   @click="openModelCategory(data)"
                 >
-                  <div class="icon--small icon-edit"></div>
+                  <div class="icon--small icon-compose"></div>
                 </Button>
                 <Button
                   class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
                   @click="onDeleteCategory(data)"
                 >
-                  <div class="icon--small icon-delete"></div>
+                  <div class="icon--small icon-bin"></div>
                 </Button>
               </template>
             </Column>
@@ -200,10 +203,7 @@ class CategoryList extends Vue {
 
   //LTA nsStoreCategory.Action  => Xóa()
   @nsStoreCategory.Action
-  actDeleteCategory!: (params: {
-    id: string
-  }) => Promise<any>
-
+  actDeleteCategory!: (params: { id: string }) => Promise<any>
 
   get totalItemsCount() {
     return this.categories?.length || 0
@@ -287,32 +287,32 @@ class CategoryList extends Vue {
 export default CategoryList
 </script>
 
-<style scoped>
+<style lang="sass" scoped>
+.box-page-container
+  height: calc(100vh - 100px)
 
-.box-page-container {
-  height: calc(100vh - 100px);
-}
-.header {
-  height: 90px;
-  background: #fff;
-  width: auto;
-  align-items: center;
-  display: flex;
-  padding: 2rem;
-  color: #a16b56;
-  text-transform: uppercase;
-}
-.card-body {
-  margin: 1rem;
-  background: #fff;
-  border-radius: 10px;
-  padding: 1rem;
-}
-table .p-datatable-thead {
-  background: #ead9d2;
-}
+.header
+  height: 90px
+  background: #fff
+  width: auto
+  align-items: center
+  display: flex
+  padding: 2rem
+  color: #a16b56
+  text-transform: uppercase
 
-.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
-  background-color: #fbf8f7 !important;
-}
+.card-body
+  margin: 1rem
+  background: #fff
+  border-radius: 10px
+  padding: 1rem
+
+table .p-datatable-thead
+  background: #ead9d2
+
+.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even)
+  background-color: #fbf8f7 !important
+
+.element
+  @include overflow-ellipsis(400px)
 </style>
