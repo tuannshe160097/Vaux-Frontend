@@ -53,6 +53,13 @@
   -webkit-box-orient: vertical
   -webkit-line-clamp: $num-line
 
+//- overflow-ellipsis 
+@mixin overflow-ellipsis($num-width)
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: ellipsis
+  max-width: $num-width
+
 //- Responsive
 $mobile-width: 480px
 $tablet-width: 768px
