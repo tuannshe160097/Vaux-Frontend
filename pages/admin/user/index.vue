@@ -3,9 +3,7 @@
   <div class="box-page-container flex flex-column container">
     <div class="header container">
       <div class="col-fixed">
-        <h2 class="font-bold m-0 text-uppercase">
-          Danh sách người dùng
-        </h2>
+        <h2 class="font-bold m-0 text-uppercase">Danh sách người dùng</h2>
       </div>
     </div>
     <div class="card-body">
@@ -128,7 +126,7 @@
                 </Button>
               </template>
             </Column>
-            <template #footer="footer">
+            <template #footer="">
               <div>
                 <div
                   class="flex align-items-center"
@@ -165,54 +163,54 @@
   </div>
 </template>
   
-  <script>
-export default {
-  name: 'UserList',
-  layout: 'default',
-  data() {
-    return {
-      boxData: [],
-      totalItemsCount: 150,
-      selectedBoxes: [],
+  <script lang="ts">
+import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import { formatDate } from '~/utils/commons/helper'
+const nsStoreUser = namespace('user/store-user')
+
+@Component({
+  middleware: ['authenticate'],
+  layout: 'admin',
+})
+
+class UserList extends Vue {
+  pageNum: number = 1
+  pageSize: number = 10
+  boxData = []
+  totalItemsCount: number = 150
+  selectedBoxes = []
+  @nsStoreUser.Action
+  actSearchUser!: (params: {
+    pageNum: number
+    pageSize: number
+  }) => Promise<any>
+
+  async mounted() {
+    const params = {
+      pageNum: this.pageNum || 1,
+      pageSize: this.pageSize || 10,
     }
-  },
-  created() {
-    // Gọi API khi component được tạo
-    this.fetchData()
-  },
-  methods: {
-    async fetchData() {
-      try {
-        const result = await this.$axios.get(
-          process.env.BASE_URL + '/api/mod/account?pageNum=1&pageSize=20',
-          {}
-        )
-        this.boxData = result.data
-      } catch (error) {
-        console.log(error)
-        if (error.response) {
-          console.log('Lỗi khi xử lý yêu cầu:', error.response.data)
-          if ([401, 403].includes(error.response.status)) {
-            this.$router.push('/authen/login')
-          }
-        } else {
-          console.error('Lỗi khi gửi yêu cầu:', error)
-        }
-      }
-    },
-    formatDate(dateString) {
-      const date = new Date(dateString)
-      const day = date.getDate().toString().padStart(2, '0')
-      const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
-      const year = date.getFullYear()
-      return `${day}-${month}-${year}`
-    },
-    viewDetail(id) {
-      this.$router.push('/admin/user/detail?userId=' + id)
-    },
-    deleteBoxById(id) {},
-  },
+    const response = await this.actSearchUser(params)
+    if (response) {
+      this.boxData = response.records
+      this.totalItemsCount = response.totalRecords
+    }
+  }
+
+  formatDate(dateString: string) {
+    const date = new Date(dateString)
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
+    const year = date.getFullYear()
+    return `${day}-${month}-${year}`
+  }
+  viewDetail(id: any) {
+    this.$router.push('/admin/user/detail?userId=' + id)
+  }
+  deleteBoxById(id: any) {}
 }
+
+export default UserList
 </script>
   
   <style scoped>
@@ -235,13 +233,12 @@ export default {
   border-radius: 10px;
   padding: 1rem;
 }
-table .p-datatable-thead{
-  background: #EAD9D2;
+table .p-datatable-thead {
+  background: #ead9d2;
 }
 
 .p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
-  background-color: #FBF8F7 !important;
+  background-color: #fbf8f7 !important;
 }
-
 </style>
   

@@ -39,7 +39,7 @@ const nsStoreUser = namespace('user-auth/store-user')
 })
 class Login extends Vue {
 
-  sPhoneNumber: string = '0855068490'
+  sPhoneNumber: string = ''
   sOTP: string | null = null
   isCheckedSavePw = false
 

@@ -10,6 +10,7 @@ export default class StoreCategory extends VuexModule {
     GET_CATEGORY: '/Category',
     ADD_CATEGORY: '/Mod/Category',
     UPDATE_CATEGORY: '/Mod/Category/:id',
+    DELETE_CATEGORY: '/Mod/Category/:id',
   }
 
 
@@ -37,4 +38,11 @@ export default class StoreCategory extends VuexModule {
     } catch (error) {}
   }
   //Lta xoa 
+  @Action({ rawError: true })
+  async actDeleteCategory(params: any): Promise<string | undefined> {
+    try {
+      const url = PathBind.transform(this.context, StoreCategory.STATE_URL.UPDATE_CATEGORY, { id: params?.id })
+     return await $api.put(url, params) 
+    } catch (error) {}
+  }
 }

@@ -10196,3 +10196,22 @@ ul {
 .table-underline tbody tr {
     border-bottom: 1px solid #00000044;
 }
+.box-page-container {
+  height: calc(100vh - 100px);
+}
+.header {
+  height: 90px;
+  background: #fff;
+  width: auto;
+  align-items: center;
+  display: flex;
+  padding: 2rem;
+  color: #a16b56;
+  text-transform: uppercase;
+}
+.card-body {
+  margin: 1rem;
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+}

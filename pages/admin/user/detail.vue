@@ -1,7 +1,11 @@
 // View User Detail
 <template>
-  <div class="userdetails-page-container flex flex-column">
-    <h3>Thông tin người dùng</h3>
+  <div class="box-page-container flex flex-column">
+    <div class="header container">
+      <div class="col-fixed">
+        <h2 class="font-bold m-0 text-uppercase">Thông tin người dùng</h2>
+      </div>
+    </div>
     <div class="grid">
       <div class="col-4">
         <div class="card-control">
@@ -120,73 +124,73 @@
   </div>
 </template>
     
-<script >
-export default {
-  name: 'DetailUser',
-  layout: 'default',
-  data() {
-    return {
-      name: '',
-      phone: '',
-      email: '',
-      cccd: '',
-      address: '',
-      role: '',
-      dateCreated: '',
-      dateUpdated: '',
-      dateDeleted: '',
-    }
-  },
-  created() {
+<script lang="ts" >
+import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import { formatDate } from '~/utils/commons/helper'
+const nsStoreUser = namespace('user/store-user')
+
+@Component({
+  middleware: ['authenticate'],
+  layout: 'admin',
+})
+class DetailUser extends Vue {
+  name: string = ''
+  phone: string = ''
+  email: string = ''
+  cccd: string = ''
+  address: string = ''
+  role: string = ''
+  dateCreated: string = ''
+  dateUpdated: string = ''
+  dateDeleted: string = ''
+  @nsStoreUser.Action
+  actGetUser!: (params: { userId: string }) => Promise<any>
+
+  async mounted() {
     this.fetchData()
-  },
-  methods: {
-    async fetchData() {
-      try {
-        const userId = this.$route.query.userId
-        console.log('LTA: ' + userId)
-        const result = await this.$axios.get(
-          process.env.BASE_URL + `/api/mod/account/${userId}`,
-          {}
-        )
-        console.log(result.data)
-        this.name = result.data.name
-        this.phone = result.data.phone
-        this.email = result.data.email
-        this.cccd = result.data.citizenId
-        this.address =
-          result.data.houseNumber +
-          ', ' +
-          result.data.street +
-          ', ' +
-          result.data.district +
-          ', ' +
-          result.data.city
-        this.role = result.data.role.title
-        this.dateCreated = this.formatDate(result.data.created)
-        this.dateUpdated = this.formatDate(result.data.updated)
-        this.dateDeleted = result.data.deleted?this.formatDate(result.data.deleted):''
-      } catch (error) {
-        console.log(error)
-        if (error.response) {
-          console.log('Lỗi khi xử lý yêu cầu:', error.response.data)
-          if ([401, 403].includes(error.response.status)) {
-            this.$router.push('/authen/login')
-          }
-        } else {
-          console.error('Lỗi khi gửi yêu cầu:', error)
-        }
+  }
+  async fetchData() {
+    const userId = this.$route.query.userId
+    if (userId) {
+      const params = {
+        userId: userId || '',
       }
-    },
-    formatDate(dateString) {
-      const date = new Date(dateString)
-      const day = date.getDate().toString().padStart(2, '0')
-      const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
-      const year = date.getFullYear()
-      return `${day}-${month}-${year}`
-    },
-  },
+      const result = await this.actGetUser(params)
+      console.log(result)
+      this.name = result.name
+      this.phone = result.phone
+      this.email = result.email
+      this.cccd = result.citizenId
+      this.address = ''
+      if(result.houseNumber){
+        this.address += result.houseNumber
+      }
+      if(result.street){
+        this.address += (', ' + result.street)
+      }
+      if(result.district){
+        this.address += (', ' + result.district)
+      }
+      if(result.city){
+        this.address += (', ' + result.city)
+      }
+      this.role = result.role.title
+      this.dateCreated = this.formatDate(result.created)
+      this.dateUpdated = this.formatDate(result.updated)
+      this.dateDeleted = result.deleted
+        ? this.formatDate(result.deleted)
+        : ''
+    }
+  }
+  formatDate(dateString:string) {
+    const date = new Date(dateString)
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
+    const year = date.getFullYear()
+    return `${day}-${month}-${year}`
+  }
 }
+export default DetailUser
 </script>
 
 <style lang="sass" scoped>
