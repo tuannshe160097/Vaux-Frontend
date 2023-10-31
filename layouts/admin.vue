@@ -27,6 +27,29 @@ export default Dashboard
 
 <style lang="sass">
 .main-container
-  background-color: $bg-body-base
-  height: 100vh
+  height: auto
+.header
+  height: 90px
+  background: #fff
+  width: auto
+  align-items: center
+  display: flex
+  padding: 2rem
+  color: #a16b56
+  text-transform: uppercase
+  box-shadow: -2px 5px 20px rgba(161, 107, 86, 0.1)
+
+.card-body
+  margin: 1rem
+  background: #fff
+  border-radius: 10px
+  padding: 1rem
+  box-shadow: -2px 5px 20px rgba(2.25, 0, 112.62, 0.1)
+
+table .p-datatable-thead
+  background: #ead9d2
+
+.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even)
+  background-color: #fbf8f7 !important
+
 </style>

@@ -116,13 +116,13 @@
                   class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
                   @click="viewDetail(data.id)"
                 >
-                  <div class="icon--small icon-edit"></div>
+                  <div class="icon--small icon-compose"></div>
                 </Button>
                 <Button
                   class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
                   @click="deleteBoxById(data.id)"
                 >
-                  <div class="icon--small icon-delete"></div>
+                  <div class="icon--small icon-bin"></div>
                 </Button>
               </template>
             </Column>
@@ -172,7 +172,6 @@ const nsStoreUser = namespace('user/store-user')
   middleware: ['authenticate'],
   layout: 'admin',
 })
-
 class UserList extends Vue {
   pageNum: number = 1
   pageSize: number = 10
@@ -216,29 +215,6 @@ export default UserList
   <style scoped>
 .box-page-container {
   height: calc(100vh - 100px);
-}
-.header {
-  height: 90px;
-  background: #fff;
-  width: auto;
-  align-items: center;
-  display: flex;
-  padding: 2rem;
-  color: #a16b56;
-  text-transform: uppercase;
-}
-.card-body {
-  margin: 1rem;
-  background: #fff;
-  border-radius: 10px;
-  padding: 1rem;
-}
-table .p-datatable-thead {
-  background: #ead9d2;
-}
-
-.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
-  background-color: #fbf8f7 !important;
 }
 </style>
   

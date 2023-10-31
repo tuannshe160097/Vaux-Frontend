@@ -291,28 +291,6 @@ export default CategoryList
 .box-page-container
   height: calc(100vh - 100px)
 
-.header
-  height: 90px
-  background: #fff
-  width: auto
-  align-items: center
-  display: flex
-  padding: 2rem
-  color: #a16b56
-  text-transform: uppercase
-
-.card-body
-  margin: 1rem
-  background: #fff
-  border-radius: 10px
-  padding: 1rem
-
-table .p-datatable-thead
-  background: #ead9d2
-
-.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even)
-  background-color: #fbf8f7 !important
-
 .element
   @include overflow-ellipsis(400px)
 </style>
