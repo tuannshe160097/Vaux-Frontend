@@ -22,17 +22,19 @@
     <div class="card-body">
       <div class="row justify-content-between">
         <div class="col-fixed">
-          <div class="grid">
-            <div class="col-fixed">
+          <div class="grid formgrid">
+            <div class="col-3">
               <span class="p-input-icon-left">
                 <div class="icon icon--left icon-research surface-900"></div>
                 <InputText
                   class="w-21rem h-3rem"
                   type="text"
                   placeholder="Tìm kiếm"
+                  v-model="search"
                 ></InputText>
               </span>
             </div>
+            
           </div>
         </div>
       </div>
@@ -122,15 +124,20 @@
                     class="icon--large icon-footer-paginator surface-400"
                   ></div>
                   <span class="ml-3 text-400 font-size-small"
-                    >Showing 01 - 100 of 1280</span
+                    >Showing {{ (pPagenum - 1) * pPageSize + 1 }} -
+                    {{ pPagenum * pPageSize }} of {{ totalRecords }}</span
                   >
                 </div>
               </div>
               <Paginator
                 class="p-0"
-                :rows="20"
-                :totalRecords="totalItemsCount"
-              ></Paginator>
+                :rows="pPageSize"
+                :totalRecords="totalRecords"
+                template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
+                 @page="onPage($event)"
+              >
+                
+              </Paginator>
             </template>
           </DataTable>
         </div>
@@ -191,9 +198,13 @@ class CategoryList extends Vue {
   sDescription: string = ''
   categorySelected: any = null
   displayBasic = false
+  search: string = ''
+  pPagenum: number = 1
+  pPageSize: number = 5
+  totalRecords: number = 0
 
   @nsStoreCategory.Action
-  actGetCategory!: () => Promise<any>
+  actGetCategory!: (params: any) => Promise<any>
   //actGetCategory!: (params: any) => Promise<any>
 
   @nsStoreCategory.Action
@@ -224,10 +235,16 @@ class CategoryList extends Vue {
   async mounted() {
     this.getCategory()
   }
-  async getCategory() {
-    const response = await this.actGetCategory()
+  async getCategory(pageNum:number = this.pPagenum) {
+    const params = {
+      pageNum: pageNum,
+      pageSize: this.pPageSize,
+      search: this.search,
+    }
+    const response = await this.actGetCategory(params)
     if (response) {
       this.categories = response.records
+      this.totalRecords = response.totalRecords
     }
   }
 
@@ -296,6 +313,9 @@ class CategoryList extends Vue {
   setParamsModel(row?: any) {
     this.sName = row?.name || ''
     this.sDescription = row?.description || ''
+  }
+  onPage(event:any){
+    this.getCategory(event.page+1)
   }
 }
 export default CategoryList
