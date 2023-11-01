@@ -9,6 +9,8 @@ export default class StoreCategory extends VuexModule {
     private static readonly STATE_URL = {
         SEARCH_USER: '/mod/account?:pageNum&:pageSize',
         GET_USER: '/mod/account/:userId',
+        CREATE_MOD: '/Admin/Account/CreateModerator',
+        CREATE_EXPERT: '/Mod/Account/CreateExpert',
     }
 
 
@@ -27,6 +29,23 @@ export default class StoreCategory extends VuexModule {
             return await $api.get(url)
         } catch (error) { }
     }
+
+    @Action({ rawError: true })
+    async actCreateUser(params: any): Promise<string | undefined> {
+        try {
+            if (params.subject == 'MOD') {
+                const url = PathBind.transform(this.context, StoreCategory.STATE_URL.CREATE_MOD)
+                return await $api.post(url, params)
+            }
+            else if(params.subject == 'EXP'){
+                const url = PathBind.transform(this.context, StoreCategory.STATE_URL.CREATE_EXPERT)
+                return await $api.post(url, params)
+            } else{
+                throw new Error("Chưa có chủ thể")
+            }
+        } catch (error) { }
+    }
+
 
     //   @Action({ rawError: true })
     //   async actUpdateCategory(params: any): Promise<string | undefined> {

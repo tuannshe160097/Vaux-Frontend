@@ -1,11 +1,19 @@
 //View all user
 <template>
   <div class="box-page-container flex flex-column container">
-    <div class="header container">
+    <div class="flex justify-content-between header container">
       <div class="col-fixed">
         <h2 class="font-bold m-0 text-uppercase">Danh sách người dùng</h2>
       </div>
+      <div class="col-fixed">
+        <div class="grid align-content-center">
+          <div class="col-fixed">
+            <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="onAddNew()"></Button>
+          </div>
+        </div>
+      </div>
     </div>
+
     <div class="card-body">
       <div class="row justify-content-between">
         <div class="col-fixed">
@@ -204,7 +212,10 @@ class UserList extends Vue {
     return `${day}-${month}-${year}`
   }
   viewDetail(id: any) {
-    this.$router.push('/admin/user/detail?userId=' + id)
+    this.$router.push('/admin/user/view?userId=' + id)
+  }
+  onAddNew(){
+    this.$router.push('/admin/user/detail')
   }
   deleteBoxById(id: any) {}
 }

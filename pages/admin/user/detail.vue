@@ -1,122 +1,166 @@
 // View User Detail
 <template>
   <div class="box-page-container flex flex-column">
-    <div class="header container">
+    <div class="header flex justify-content-between container">
       <div class="col-fixed">
-        <h2 class="font-bold m-0 text-uppercase">Thông tin người dùng</h2>
+        <div v-if="curThread === 'ADD'">
+          <div v-if="curSubject === 'MOD'">
+            <h2 class="font-bold m-0 text-uppercase">
+              Tạo tài khoản moderator
+            </h2>
+          </div>
+          <div v-else-if="curSubject === 'EXP'">
+            <h2 class="font-bold m-0 text-uppercase">
+              Tạo tài khoản chuyên gia kiểm định
+            </h2>
+          </div>
+        </div>
+        <div v-else-if="curThread === 'UPDATE'">
+          <h2 class="font-bold m-0 text-uppercase">
+            Cập nhật thông tin người dùng
+          </h2>
+        </div>
+        <div v-else>
+          <h2 class="font-bold m-0 text-uppercase">Thông tin người dùng</h2>
+        </div>
+      </div>
+      <div class="col-fixed">
+        <div class="grid align-content-center">
+          <!-- <div class="col-fixed">
+            <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="onAddNew()"></Button>
+          </div> -->
+        </div>
       </div>
     </div>
-    <div class="grid">
-      <div class="col-4">
-        <div class="card-control">
-          <div class="card-header font-medium text-xl">Ảnh Đại Diện</div>
-          <div class="card-body p-5 text-center">
-            <img
-              class="rounded-circle mb-2"
-              src="http://bootdey.com/img/Content/avatar/avatar1.png"
-              alt=""
-            />
-            <div class="small font-italic text-muted mb-4">
-              JPG or PNG no larger than 5 MB
+
+    <div class="card-body">
+      <div class="col-fixed grid">
+        <div class="md:col-8 sm:col-12">
+          <div class="card-control card">
+            <div class="card-header font-medium text-xl">
+              Thông tin tài khoản
             </div>
-            <Button>Chọn ảnh đại diện</Button>
+            <div class="p-4 grid formgrid">
+              <div class="field col-8">
+                <label>Tên</label>
+                <InputText class="w-100" type="text" v-model="name" />
+              </div>
+              <div class="field col-4">
+                <label>Số điện thoại</label>
+                <InputText class="w-100" type="text" v-model="phone" />
+              </div>
+              <div class="field col-4">
+                <label>Email</label>
+                <InputText class="w-100" type="text" v-model="email" />
+              </div>
+              <div class="field col-3">
+                <label>Số CCCD</label>
+                <InputText class="w-100" type="text" v-model="cccd" />
+              </div>
+              <div class="field col-2">
+                <label>Giới tính</label>
+                <Dropdown
+                  class="w-100"
+                  v-model="gender"
+                  :options="oGenders"
+                  optionLabel="name"
+                  optionValue="value"
+                />
+              </div>
+              <div class="field col-3">
+                <label>Ngày sinh</label>
+                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" />
+              </div>
+              <div class="field col-6">
+                <label>Địa chỉ</label>
+                <InputText class="w-100" type="text" v-model="houseNumber" />
+              </div>
+              <div class="field col-2">
+                <label>Phường, xã</label>
+                <InputText class="w-100" type="text" v-model="street" />
+              </div>
+              <div class="field col-2">
+                <label>Quận, huyện</label>
+                <InputText class="w-100" type="text" v-model="district" />
+              </div>
+              <div class="field col-2">
+                <label>Thành phố</label>
+                <InputText class="w-100" type="text" v-model="city" />
+              </div>
+              <div class="field col-12">
+                <label>Quyền hạn</label>
+                <input
+                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                  type="text"
+                  v-model="role"
+                />
+              </div>
+
+              <div class="field col-4">
+                <label>Ngày tạo</label>
+                <input
+                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                  type="text"
+                  v-model="dateCreated"
+                  disabled
+                />
+              </div>
+              <div class="field col-4">
+                <label>Ngày cập nhật</label>
+                <input
+                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                  type="text"
+                  v-model="dateUpdated"
+                  disabled
+                />
+              </div>
+              <div class="field col-4">
+                <label>Ngày cấm</label>
+                <input
+                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                  type="text"
+                  v-model="dateDeleted"
+                  disabled
+                />
+              </div>
+              <div class="field col-12 justify-content-center flex">
+                <div v-if="curThread === 'ADD'">
+                  <Button label="Tạo mới" @click="createUser()" />
+                </div>
+                <div v-else-if="curThread === 'UPDATE'">
+                  <Button label="Cập nhật" />
+                </div>
+                <div v-else>
+                  <Button label="Button" />
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="card-control mt-3">
-          <div class="card-header font-medium text-xl">Ảnh CCCD</div>
-          <div class="card-body p-5 text-center">
-            <img
-              class="mb-2"
-              src="http://bootdey.com/img/Content/avatar/avatar1.png"
-              alt=""
-            />
-            <div class="small font-italic text-muted mb-4">
-              JPG or PNG no larger than 5 MB
+        <div class="md:col-4 sm:col">
+          <div class="card-control">
+            <div class="card-header font-medium text-xl">Ảnh Đại Diện</div>
+            <div class="p-5 text-center">
+              <ImagePreview
+                src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
+                alt="Image"
+                class="wm-100"
+                width="250"
+                preview
+              />
+              <Button>Xóa ảnh</Button>
             </div>
-            <Button>Chọn ảnh CCCD</Button>
           </div>
-        </div>
-      </div>
-      <div class="col-8">
-        <div class="card-control">
-          <div class="card-header font-medium text-xl">Thông tin tài khoản</div>
-          <div class="card-body p-5">
-            <div class="field">
-              <label>Tên</label>
-              <input
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                type="text"
-                v-model="name"
+          <div class="card-control mt-3">
+            <div class="card-header font-medium text-xl">Ảnh CCCD</div>
+            <div class="p-5 text-center">
+              <img
+                class="w-100"
+                src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
+                alt=""
               />
+              <Button>Xóa ảnh</Button>
             </div>
-            <div class="field">
-              <label>Số điện thoại</label>
-              <input
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                type="text"
-                v-model="phone"
-              />
-            </div>
-            <div class="field">
-              <label>Email</label>
-              <input
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                type="text"
-                v-model="email"
-              />
-            </div>
-            <div class="field">
-              <label>Số CCCD</label>
-              <input
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                type="text"
-                v-model="cccd"
-              />
-            </div>
-            <div class="field">
-              <label>Địa chỉ</label>
-              <input
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                type="text"
-                v-model="address"
-              />
-            </div>
-            <div class="field">
-              <label>Quyền hạn</label>
-              <input
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                type="text"
-                v-model="role"
-              />
-            </div>
-            <div class="field">
-              <label>Ngày tạo</label>
-              <input
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                type="text"
-                v-model="dateCreated"
-                disabled
-              />
-            </div>
-            <div class="field">
-              <label>Ngày cập nhật</label>
-              <input
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                type="text"
-                v-model="dateUpdated"
-                disabled
-              />
-            </div>
-            <div class="field">
-              <label>Ngày cấm</label>
-              <input
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                type="text"
-                v-model="dateDeleted"
-                disabled
-              />
-            </div>
-            <div class="field"><Button label="Cập nhật" /></div>
           </div>
         </div>
       </div>
@@ -138,20 +182,37 @@ class DetailUser extends Vue {
   phone: string = ''
   email: string = ''
   cccd: string = ''
-  address: string = ''
+  houseNumber: string = ''
+  city: string = ''
+  district: string = ''
+  street: string = ''
   role: string = ''
+  dob: string = ''
+  gender: any = 'MALE'
   dateCreated: string = ''
   dateUpdated: string = ''
   dateDeleted: string = ''
+  curThread: string = 'ADD'
+  curSubject: string = 'MOD'
+  oGenders = [
+    { name: 'Nam', value: 'MALE' },
+    { name: 'Nữ', value: 'FEMALE' },
+  ]
+
   @nsStoreUser.Action
   actGetUser!: (params: { userId: string }) => Promise<any>
+  @nsStoreUser.Action
+  actCreateUser!: (params: any) => Promise<any>
 
   async mounted() {
     this.fetchData()
   }
   async fetchData() {
-    const userId = this.$route.query.userId
+    console.log(this.$route.query.subject)
+    const userId = Array.isArray(this.$route.query.userId) ? this.$route.query.userId[0] : this.$route.query.userId
+    this.curSubject = (Array.isArray(this.$route.query.subject) ? this.$route.query.subject[0] : this.$route.query.subject )|| 'MOD'
     if (userId) {
+      this.curThread = 'UPDATE'
       const params = {
         userId: userId || '',
       }
@@ -161,28 +222,46 @@ class DetailUser extends Vue {
       this.phone = result.phone
       this.email = result.email
       this.cccd = result.citizenId
-      this.address = ''
-      if(result.houseNumber){
-        this.address += result.houseNumber
-      }
-      if(result.street){
-        this.address += (', ' + result.street)
-      }
-      if(result.district){
-        this.address += (', ' + result.district)
-      }
-      if(result.city){
-        this.address += (', ' + result.city)
-      }
+      this.houseNumber = result.houseNumber
+      this.street = result.street
+      this.district = result.district
+      this.city = result.city
       this.role = result.role.title
       this.dateCreated = this.formatDate(result.created)
       this.dateUpdated = this.formatDate(result.updated)
-      this.dateDeleted = result.deleted
-        ? this.formatDate(result.deleted)
-        : ''
+      this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
+    } else {
     }
   }
-  formatDate(dateString:string) {
+
+  async createUser() {
+    const params = {
+      subject: this.curSubject || '',
+      name: this.name,
+      phone: this.phone,
+      email: this.email,
+      houseNumber: this.houseNumber,
+      city: this.city,
+      district: this.district,
+      street: this.street,
+      citizenId: this.cccd,
+      gender: this.gender,
+      doB: this.dob,
+    }
+    console.log(params)
+    const result = await this.actCreateUser(params)
+    console.log(result)
+    if (result) {
+      this.$toast.add({
+        severity: 'success',
+        summary: 'Success Message',
+        detail: 'Yêu cầu thành công',
+        life: 3000,
+      })
+    }
+  }
+
+  formatDate(dateString: string) {
     const date = new Date(dateString)
     const day = date.getDate().toString().padStart(2, '0')
     const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
@@ -212,5 +291,7 @@ export default DetailUser
   border-bottom: 1px solid rgba(33, 40, 50, 0.125)
 .rounded-circle
   border-radius: 50% !important
+.w-100
+  width: 100%
 </style>
             

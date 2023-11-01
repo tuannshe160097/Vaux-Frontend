@@ -1,10 +1,17 @@
 <template>
   <div class="box-page-container flex flex-column container">
-    <div class="header container">
+    <div class="flex justify-content-between header container">
       <div class="col-fixed">
         <h2 class="font-bold m-0 font-size-4xlarge line-height-1">
           Danh sách thể loại
         </h2>
+      </div>
+      <div class="col-fixed">
+        <div class="grid align-content-center">
+          <div class="col-fixed">
+            <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="openModelCategory(null)"></Button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="card-body">
@@ -16,14 +23,6 @@
                 <div class="icon icon--left icon-research surface-900"></div>
                 <InputText class="w-21rem h-3rem" type="text" placeholder="Tìm kiếm"></InputText>
               </span>
-            </div>
-            <div class="col-fixed">
-              <Button
-                class="w-9rem h-3rem"
-                type="button"
-                label="Thêm Mới"
-                @click="openModelCategory(null)"
-              ></Button>
             </div>
           </div>
         </div>
