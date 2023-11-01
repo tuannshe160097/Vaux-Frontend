@@ -32,18 +32,17 @@ export default class StoreCategory extends VuexModule {
     }
 
     @Action({ rawError: true })
-    async actCreateUser(params: any): Promise<string | undefined> {
+    async actCreateMod(params: any): Promise<string | undefined> {
         try {
-            if (params.subject == 'MOD') {
-                const url = PathBind.transform(this.context, StoreCategory.STATE_URL.CREATE_MOD)
-                return await $api.post(url, params)
-            }
-            else if(params.subject == 'EXP'){
-                const url = PathBind.transform(this.context, StoreCategory.STATE_URL.CREATE_EXPERT)
-                return await $api.post(url, params)
-            } else{
-                throw new Error("Chưa có chủ thể")
-            }
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.CREATE_MOD)
+            return await $api.post(url, params)
+        } catch (error) { }
+    }
+    @Action({ rawError: true })
+    async actCreateExpert(params: any): Promise<string | undefined> {
+        try {
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.CREATE_EXPERT)
+            return await $api.post(url, params)
         } catch (error) { }
     }
 
@@ -51,7 +50,7 @@ export default class StoreCategory extends VuexModule {
     async actUpdateUser(params: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.UPDATE_USER, { userId: params?.userId })
-            return await $api.put(url,params)
+            return await $api.put(url, params)
         } catch (error) { }
     }
 

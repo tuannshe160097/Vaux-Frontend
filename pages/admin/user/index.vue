@@ -8,12 +8,12 @@
       <div class="col-fixed">
         <div class="grid align-content-center">
           <div class="col-fixed">
-            <Button
+            <!-- <Button
               class="w-9rem h-3rem"
               type="button"
               label="Thêm Mới"
               @click="onAddNew()"
-            ></Button>
+            ></Button> -->
           </div>
         </div>
       </div>

@@ -6,13 +6,16 @@
         <div v-if="curThread === 'ADD'">
           <div v-if="curSubject === 'MOD'">
             <h2 class="font-bold m-0 text-uppercase">
-              Tạo tài khoản moderator
+              Tạo tài khoản quản trị viên
             </h2>
           </div>
           <div v-else-if="curSubject === 'EXP'">
             <h2 class="font-bold m-0 text-uppercase">
               Tạo tài khoản chuyên gia kiểm định
             </h2>
+          </div>
+          <div v-else>
+            <h2 class="font-bold m-0 text-uppercase">Tạo tài khoản</h2>
           </div>
         </div>
         <div v-else-if="curThread === 'UPDATE'">
@@ -47,8 +50,8 @@
               <div class="card-action">
                 <label class="text-normal">Quyền hạn:</label>
                 <Dropdown
-                  v-model="gender"
-                  :options="oGenders"
+                  v-model="curSubject"
+                  :options="oRoles"
                   optionLabel="name"
                   optionValue="value"
                 />
@@ -105,14 +108,6 @@
               <div class="field col-4">
                 <label>Thành phố</label>
                 <InputText class="w-100" type="text" v-model="city" />
-              </div>
-              <div class="field col-12">
-                <label>Quyền hạn</label>
-                <input
-                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="role"
-                />
               </div>
 
               <div class="field col-4">
@@ -191,6 +186,7 @@
     
 <script lang="ts" >
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import { GENDER_OPTION, ROLE_OPTION_ADMIN, ROLE_OPTION_MOD } from '~/utils'
 const nsStoreUser = namespace('user/store-user')
 
 @Component({
@@ -198,6 +194,7 @@ const nsStoreUser = namespace('user/store-user')
   layout: 'admin',
 })
 class DetailUser extends Vue {
+  //data
   name: string = ''
   phone: string = ''
   email: string = ''
@@ -206,39 +203,47 @@ class DetailUser extends Vue {
   city: string = ''
   district: string = ''
   street: string = ''
-  role: string = ''
   dob: string = ''
   gender: any = 'MALE'
   dateCreated: string = ''
   dateUpdated: string = ''
   dateDeleted: string = ''
+  //temp
   curThread: string = 'ADD'
-  curSubject: string = 'MOD'
+  curSubject: string = ''
   curUserId: string = ''
-  oGenders = [
-    { name: 'Nam', value: 'MALE' },
-    { name: 'Nữ', value: 'FEMALE' },
-  ]
+  //option data
+  oGenders = GENDER_OPTION
+  oRoles: any = null
 
   @nsStoreUser.Action
   actGetUser!: (params: { userId: string }) => Promise<any>
   @nsStoreUser.Action
-  actCreateUser!: (params: any) => Promise<any>
+  actCreateMod!: (params: any) => Promise<any>
+  @nsStoreUser.Action
+  actCreateExpert!: (params: any) => Promise<any>
   @nsStoreUser.Action
   actUpdateUser!: (params: any) => Promise<any>
 
   async mounted() {
     this.fetchData()
+    const role = this.$cookies.get('auth.role')
+    if (role == 1) {
+      this.oRoles = ROLE_OPTION_MOD
+    } else if (role == 5) {
+      this.oRoles = ROLE_OPTION_ADMIN
+    }
   }
   async fetchData() {
     this.curUserId =
       (Array.isArray(this.$route.query.userId)
         ? this.$route.query.userId[0]
         : this.$route.query.userId) || ''
-    this.curSubject =
-      (Array.isArray(this.$route.query.subject)
-        ? this.$route.query.subject[0]
-        : this.$route.query.subject) || 'MOD'
+
+    // this.curSubject =
+    //   (Array.isArray(this.$route.query.subject)
+    //     ? this.$route.query.subject[0]
+    //     : this.$route.query.subject) || 'MOD'
     if (this.curUserId) {
       this.curThread = 'UPDATE'
       const params = {
@@ -255,7 +260,6 @@ class DetailUser extends Vue {
       this.district = result.district
       this.city = result.city
       this.dob = this.formatDate(result.doB)
-      this.role = result.role.title
       this.dateCreated = this.formatDate(result.created)
       this.dateUpdated = this.formatDate(result.updated)
       this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
@@ -265,7 +269,7 @@ class DetailUser extends Vue {
 
   async createUser() {
     const params = {
-      subject: this.curSubject || '',
+      subject: this.curSubject,
       name: this.name,
       phone: this.phone,
       email: this.email,
@@ -277,7 +281,23 @@ class DetailUser extends Vue {
       gender: this.gender,
       doB: this.dob,
     }
-    const result = await this.actCreateUser(params)
+    let result
+    if (this.curSubject === 'MOD') {
+      result = await this.actCreateMod(params)
+    } else if (this.curSubject === 'EXP') {
+      result = await this.actCreateExpert(params)
+    } else {
+      // this.$toast.add({
+      //   severity: 'error',
+      //   summary: 'Error Message',
+      //   detail: "Chưa chọn loại tài khoản muốn tạo",
+      //   life: 3000
+      // })
+      this.$store.commit(
+        'commons/store-error/setError',
+        'Chưa chọn loại tài khoản muốn tạo'
+      )
+    }
     if (result) {
       this.$toast.add({
         severity: 'success',
