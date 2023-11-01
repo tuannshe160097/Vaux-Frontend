@@ -9,6 +9,7 @@ export default class StoreCategory extends VuexModule {
     private static readonly STATE_URL = {
         SEARCH_USER: '/mod/account?:pageNum&:pageSize',
         GET_USER: '/mod/account/:userId',
+        UPDATE_USER: '/Admin/Account/:userId',
         CREATE_MOD: '/Admin/Account/CreateModerator',
         CREATE_EXPERT: '/Mod/Account/CreateExpert',
     }
@@ -43,6 +44,14 @@ export default class StoreCategory extends VuexModule {
             } else{
                 throw new Error("Chưa có chủ thể")
             }
+        } catch (error) { }
+    }
+
+    @Action({ rawError: true })
+    async actUpdateUser(params: any): Promise<string | undefined> {
+        try {
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.UPDATE_USER, { userId: params?.userId })
+            return await $api.put(url,params)
         } catch (error) { }
     }
 

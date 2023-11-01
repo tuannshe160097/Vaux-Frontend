@@ -69,7 +69,7 @@
               </div>
               <div class="field col-3">
                 <label>Ngày sinh</label>
-                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" />
+                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" :locale="vn" />
               </div>
               <div class="field col-6">
                 <label>Địa chỉ</label>
@@ -128,7 +128,7 @@
                   <Button label="Tạo mới" @click="createUser()" />
                 </div>
                 <div v-else-if="curThread === 'UPDATE'">
-                  <Button label="Cập nhật" />
+                  <Button label="Cập nhật" @click="UpdateUser()" />
                 </div>
                 <div v-else>
                   <Button label="Button" />
@@ -145,8 +145,8 @@
                 src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
                 alt="Image"
                 class="wm-100"
-                width="250"
                 preview
+                imageStyle="width: 100%"
               />
               <Button>Xóa ảnh</Button>
             </div>
@@ -154,10 +154,12 @@
           <div class="card-control mt-3">
             <div class="card-header font-medium text-xl">Ảnh CCCD</div>
             <div class="p-5 text-center">
-              <img
-                class="w-100"
+              <ImagePreview
                 src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
-                alt=""
+                alt="Image"
+                class="wm-100"
+                preview
+                imageStyle="width: 100%"
               />
               <Button>Xóa ảnh</Button>
             </div>
@@ -194,6 +196,7 @@ class DetailUser extends Vue {
   dateDeleted: string = ''
   curThread: string = 'ADD'
   curSubject: string = 'MOD'
+  curUserId: string = ''
   oGenders = [
     { name: 'Nam', value: 'MALE' },
     { name: 'Nữ', value: 'FEMALE' },
@@ -203,18 +206,25 @@ class DetailUser extends Vue {
   actGetUser!: (params: { userId: string }) => Promise<any>
   @nsStoreUser.Action
   actCreateUser!: (params: any) => Promise<any>
+  @nsStoreUser.Action
+  actUpdateUser!: (params: any) => Promise<any>
 
   async mounted() {
     this.fetchData()
   }
   async fetchData() {
-    console.log(this.$route.query.subject)
-    const userId = Array.isArray(this.$route.query.userId) ? this.$route.query.userId[0] : this.$route.query.userId
-    this.curSubject = (Array.isArray(this.$route.query.subject) ? this.$route.query.subject[0] : this.$route.query.subject )|| 'MOD'
-    if (userId) {
+    this.curUserId =
+      (Array.isArray(this.$route.query.userId)
+        ? this.$route.query.userId[0]
+        : this.$route.query.userId) || ''
+    this.curSubject =
+      (Array.isArray(this.$route.query.subject)
+        ? this.$route.query.subject[0]
+        : this.$route.query.subject) || 'MOD'
+    if (this.curUserId) {
       this.curThread = 'UPDATE'
       const params = {
-        userId: userId || '',
+        userId: this.curUserId || '',
       }
       const result = await this.actGetUser(params)
       console.log(result)
@@ -226,6 +236,7 @@ class DetailUser extends Vue {
       this.street = result.street
       this.district = result.district
       this.city = result.city
+      this.dob = this.formatDate(result.doB)
       this.role = result.role.title
       this.dateCreated = this.formatDate(result.created)
       this.dateUpdated = this.formatDate(result.updated)
@@ -248,9 +259,7 @@ class DetailUser extends Vue {
       gender: this.gender,
       doB: this.dob,
     }
-    console.log(params)
     const result = await this.actCreateUser(params)
-    console.log(result)
     if (result) {
       this.$toast.add({
         severity: 'success',
@@ -260,7 +269,32 @@ class DetailUser extends Vue {
       })
     }
   }
-
+  async UpdateUser() {
+    console.log(this.dob)
+    const params = {
+      userId: this.curUserId,
+      name: this.name,
+      phone: this.phone,
+      email: this.email,
+      houseNumber: this.houseNumber,
+      city: this.city,
+      district: this.district,
+      street: this.street,
+      citizenId: this.cccd,
+      gender: this.gender,
+      doB: this.dob,
+    }
+    const result = await this.actUpdateUser(params)
+    if (result) {
+      this.$toast.add({
+        severity: 'success',
+        summary: 'Success Message',
+        detail: 'Cập nhật thành công',
+        life: 3000,
+      })
+      this.$router.push('/admin/user/view?userId=' + this.curUserId)
+    }
+  }
   formatDate(dateString: string) {
     const date = new Date(dateString)
     const day = date.getDate().toString().padStart(2, '0')

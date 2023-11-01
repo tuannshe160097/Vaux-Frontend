@@ -20,29 +20,25 @@
           <div class="card-control">
             <div class="card-header font-medium text-xl">Ảnh Đại Diện</div>
             <div class=" p-5 text-center">
-              <img
-                class="rounded-circle mb-2"
-                src="http://bootdey.com/img/Content/avatar/avatar1.png"
-                alt=""
+              <ImagePreview
+                src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
+                alt="Image"
+                class="wm-100"
+                preview
+                imageStyle="width: 100%"
               />
-              <div class="small font-italic text-muted mb-4">
-                JPG or PNG no larger than 5 MB
-              </div>
-              <Button>Chọn ảnh đại diện</Button>
             </div>
           </div>
           <div class="card-control mt-3">
             <div class="card-header font-medium text-xl">Ảnh CCCD</div>
             <div class="p-5 text-center">
-              <img
-                class="mb-2"
-                src="http://bootdey.com/img/Content/avatar/avatar1.png"
-                alt=""
+              <ImagePreview
+                src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
+                alt="Image"
+                class="wm-100"
+                preview
+                imageStyle="width: 100%"
               />
-              <div class="small font-italic text-muted mb-4">
-                JPG or PNG no larger than 5 MB
-              </div>
-              <Button>Chọn ảnh CCCD</Button>
             </div>
           </div>
         </div>
@@ -58,6 +54,7 @@
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                   type="text"
                   v-model="name"
+                  disabled
                 />
               </div>
               <div class="field">
@@ -66,6 +63,7 @@
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                   type="text"
                   v-model="phone"
+                  disabled
                 />
               </div>
               <div class="field">
@@ -74,6 +72,7 @@
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                   type="text"
                   v-model="email"
+                  disabled
                 />
               </div>
               <div class="field">
@@ -82,6 +81,7 @@
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                   type="text"
                   v-model="cccd"
+                  disabled
                 />
               </div>
               <div class="field">
@@ -90,6 +90,7 @@
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                   type="text"
                   v-model="address"
+                  disabled
                 />
               </div>
               <div class="field">
@@ -98,6 +99,7 @@
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                   type="text"
                   v-model="role"
+                  disabled
                 />
               </div>
               <div class="field">
@@ -127,7 +129,7 @@
                   disabled
                 />
               </div>
-              <div class="field"><Button label="Cập nhật" /></div>
+              <div class="field"><Button label="Sửa" @click="Edit()" /></div>
             </div>
           </div>
         </div>
@@ -155,7 +157,8 @@ class ViewUser extends Vue {
   dateCreated: string = ''
   dateUpdated: string = ''
   dateDeleted: string = ''
-  curThread: string = 'ADD'
+  curUserId: string =''
+  curUserRoleId: any
 
   @nsStoreUser.Action
   actGetUser!: (params: { userId: string }) => Promise<any>
@@ -166,12 +169,11 @@ class ViewUser extends Vue {
   async fetchData() {
     const userId = Array.isArray(this.$route.query.userId) ? this.$route.query.userId[0] : this.$route.query.userId
     if (userId) {
-      this.curThread = 'UPDATE'
+      this.curUserId = userId
       const params = {
         userId: userId || '',
       }
       const result = await this.actGetUser(params)
-      console.log(result)
       this.name = result.name
       this.phone = result.phone
       this.email = result.email
@@ -190,6 +192,7 @@ class ViewUser extends Vue {
         this.address += ', ' + result.city
       }
       this.role = result.role.title
+      this.curUserRoleId = result.role.id
       this.dateCreated = this.formatDate(result.created)
       this.dateUpdated = this.formatDate(result.updated)
       this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
@@ -201,6 +204,14 @@ class ViewUser extends Vue {
     const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
     const year = date.getFullYear()
     return `${day}-${month}-${year}`
+  }
+
+  Edit(){
+    let url = '/admin/user/detail?userId=' + this.curUserId
+    if(this.curUserRoleId == 5) url + '&subject=ADM'
+    else if(this.curUserRoleId == 1) url + '&subject=MOD'
+    else if(this.curUserRoleId == 2) url + '&subject=EXP'
+    this.$router.push(url)
   }
 }
 export default ViewUser
