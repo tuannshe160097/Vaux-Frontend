@@ -6,7 +6,7 @@
           <label class="block font-bold mb-1">
             Số điện thoại
           </label>
-          <InputMask v-model="sPhoneNumber" mask="9999999999" class="w-full" slot-char=" " placeholder="Số điện thoại" />
+          <InputMask v-model="sPhoneNumber" mask="9999999999" class="w-full" slot-char="" placeholder="Số điện thoại" />
         </div>
         <div class="form-group mt-3">
           <Button label="Send OTP" class="p-button-outlined w-full" @click="sendOtp"></Button>
@@ -17,12 +17,8 @@
         </div>
         <div class="form-group mt-3">
           <Button class="bg-primary w-full p-3 mb-3" type="button" label="Sign In" @click="callLogin"></Button>
-          <div class="flex align-items-center justify-content-between mb-5">
-            <div class="flex align-items-center">
-              <Checkbox v-model="isCheckedSavePw" class="mr-2" :binary="true"></Checkbox>
-              <label class="text-sm" for="rememberCheck">Save password</label>
-            </div>
-            <a class="ml-5 text-sm text-right text-primary cursor-pointer">Forgot password?</a>
+          <div class="flex align-items-center justify-content-center mb-5">
+            <a class="ml-5 text-sm text-right text-primary cursor-pointer" href="/authen/register">Chưa có tài khoản?</a>
           </div>
         </div>
       </div>

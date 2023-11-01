@@ -325,7 +325,5 @@ export default DetailUser
   border-bottom: 1px solid rgba(33, 40, 50, 0.125)
 .rounded-circle
   border-radius: 50% !important
-.w-100
-  width: 100%
 </style>
             

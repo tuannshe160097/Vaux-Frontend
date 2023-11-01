@@ -8,7 +8,12 @@
       <div class="col-fixed">
         <div class="grid align-content-center">
           <div class="col-fixed">
-            <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="onAddNew()"></Button>
+            <Button
+              class="w-9rem h-3rem"
+              type="button"
+              label="Thêm Mới"
+              @click="onAddNew()"
+            ></Button>
           </div>
         </div>
       </div>
@@ -17,24 +22,28 @@
     <div class="card-body">
       <div class="row justify-content-between">
         <div class="col-fixed">
-          <div class="grid">
-            <div class="col-fixed">
-              <span class="p-input-icon-left">
-                <div
-                  class="icon icon--left icon-search-input surface-900"
-                ></div>
-                <InputText
-                  class="w-21rem h-3rem"
-                  type="text"
-                  placeholder="Tìm kiếm"
-                ></InputText
-              ></span>
+          <div class="grid formgrid">
+            <div class="col-3 field">
+              <label>Tên, mail, sđt</label>
+              <InputText
+                class="w-100"
+                type="text"
+                placeholder="Tìm kiếm"
+                v-model="search"
+              ></InputText>
             </div>
-            <div class="col-fixed">
-              <Button class="w-9rem h-3rem">
-                <div class="icon--base icon-plus surface-900 bg-white"></div>
-                <span class="text-900 ml-3 text-white">Thêm Mới</span>
-              </Button>
+            <div class="col-3 field">
+              <label>Quyền</label>
+              <Dropdown
+                class="w-100"
+                v-model="role"
+                :options="oRoles"
+                optionLabel="name"
+                optionValue="value"
+              />
+            </div>
+            <div class="col field pt-5">
+              <Button label="Tìm kiếm" style="height: 36px" @click="Search()" />
             </div>
           </div>
         </div>
@@ -77,7 +86,7 @@
               className="p-text-right"
             >
               <template #body="{ data }">{{
-                formatDate(data.created)
+                dayjs('2019-01-25').format('DD/MM/YYYY')
               }}</template>
             </Column>
             <Column
@@ -173,6 +182,7 @@
   
   <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
+// import { dayjs } from 'dayjs'
 import { formatDate } from '~/utils/commons/helper'
 const nsStoreUser = namespace('user/store-user')
 
@@ -186,16 +196,25 @@ class UserList extends Vue {
   boxData = []
   totalItemsCount: number = 150
   selectedBoxes = []
+  search: string = ''
+  role: number = 0
+  oRoles = [
+    { name: 'Tất cả', value: 0 },
+    { name: 'Quản trị viên', value: 1 },
+    { name: 'Kiểm định viên', value: 2 },
+    { name: 'Người bán', value: 3 },
+    { name: 'Người mua', value: 4 },
+    { name: 'Admin', value: 5 },
+  ]
   @nsStoreUser.Action
-  actSearchUser!: (params: {
-    pageNum: number
-    pageSize: number
-  }) => Promise<any>
+  actSearchUser!: (params: any) => Promise<any>
 
   async mounted() {
     const params = {
       pageNum: this.pageNum || 1,
       pageSize: this.pageSize || 10,
+      search: this.search,
+      role: this.role != 0 ? this.role : '',
     }
     const response = await this.actSearchUser(params)
     if (response) {
@@ -203,7 +222,19 @@ class UserList extends Vue {
       this.totalItemsCount = response.totalRecords
     }
   }
-
+  async Search() {
+    const params = {
+      pageNum: this.pageNum || 1,
+      pageSize: this.pageSize || 10,
+      search: this.search,
+      role: this.role != 0 ? this.role : '',
+    }
+    const response = await this.actSearchUser(params)
+    if (response) {
+      this.boxData = response.records
+      this.totalItemsCount = response.totalRecords
+    }
+  }
   formatDate(dateString: string) {
     const date = new Date(dateString)
     const day = date.getDate().toString().padStart(2, '0')
@@ -214,7 +245,7 @@ class UserList extends Vue {
   viewDetail(id: any) {
     this.$router.push('/admin/user/view?userId=' + id)
   }
-  onAddNew(){
+  onAddNew() {
     this.$router.push('/admin/user/detail')
   }
   deleteBoxById(id: any) {}

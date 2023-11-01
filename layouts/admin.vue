@@ -69,4 +69,6 @@ table .p-datatable-thead
 .p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even)
   background-color: #fbf8f7 !important
 
+.w-100
+  width: 100%
 </style>
