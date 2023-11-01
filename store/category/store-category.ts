@@ -41,8 +41,8 @@ export default class StoreCategory extends VuexModule {
   @Action({ rawError: true })
   async actDeleteCategory(params: any): Promise<string | undefined> {
     try {
-      const url = PathBind.transform(this.context, StoreCategory.STATE_URL.UPDATE_CATEGORY, { id: params?.id })
-     return await $api.put(url, params) 
+      const url = PathBind.transform(this.context, StoreCategory.STATE_URL.DELETE_CATEGORY, { id: params?.id })
+     return await $api.delete(url, params) 
     } catch (error) {}
   }
 }

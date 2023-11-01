@@ -9,7 +9,12 @@
       <div class="col-fixed">
         <div class="grid align-content-center">
           <div class="col-fixed">
-            <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="openModelCategory(null)"></Button>
+            <Button
+              class="w-9rem h-3rem"
+              type="button"
+              label="Thêm Mới"
+              @click="openModelCategory(null)"
+            ></Button>
           </div>
         </div>
       </div>
@@ -21,7 +26,11 @@
             <div class="col-fixed">
               <span class="p-input-icon-left">
                 <div class="icon icon--left icon-research surface-900"></div>
-                <InputText class="w-21rem h-3rem" type="text" placeholder="Tìm kiếm"></InputText>
+                <InputText
+                  class="w-21rem h-3rem"
+                  type="text"
+                  placeholder="Tìm kiếm"
+                ></InputText>
               </span>
             </div>
           </div>
@@ -259,9 +268,10 @@ class CategoryList extends Vue {
     this.displayBasic = true
   }
 
-  onDeleteCategory(row?: any) {
+  async onDeleteCategory(row?: any) {
     const _this: any = this
     confirmDelete(_this, () => {
+      this.deleteCategory(row.id)
       this.$toast.add({
         severity: 'info',
         summary: 'Xác nhận',
@@ -272,7 +282,12 @@ class CategoryList extends Vue {
       //
     })
   }
-
+  async deleteCategory(id: string) {
+    const response = await this.actDeleteCategory({
+      id: id,
+    })
+    this.getCategory()
+  }
   closeModel() {
     this.displayBasic = false
     this.categorySelected = null
