@@ -77,7 +77,7 @@
               className="p-text-right"
             >
               <template #body="{ data }">{{
-                formatDate(data.created)
+                data.created | dateTimeFomat
               }}</template>
             </Column>
             <Column
@@ -87,7 +87,7 @@
               className="p-text-right"
             >
               <template #body="{ data }">{{
-                formatDate(data.updated)
+                data.updated | dateTimeFomat
               }}</template>
             </Column>
             <Column
@@ -171,9 +171,8 @@
   </div>
 </template>
   
-  <script lang="ts">
+<script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-import { formatDate } from '~/utils/commons/helper'
 const nsStoreUser = namespace('user/store-user')
 
 @Component({
@@ -186,6 +185,7 @@ class UserList extends Vue {
   boxData = []
   totalItemsCount: number = 150
   selectedBoxes = []
+  
   @nsStoreUser.Action
   actSearchUser!: (params: {
     pageNum: number
@@ -204,13 +204,6 @@ class UserList extends Vue {
     }
   }
 
-  formatDate(dateString: string) {
-    const date = new Date(dateString)
-    const day = date.getDate().toString().padStart(2, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
-    const year = date.getFullYear()
-    return `${day}-${month}-${year}`
-  }
   viewDetail(id: any) {
     this.$router.push('/admin/user/view?userId=' + id)
   }
@@ -223,7 +216,7 @@ class UserList extends Vue {
 export default UserList
 </script>
   
-  <style scoped>
+<style scoped>
 .box-page-container {
   height: calc(100vh - 100px);
 }

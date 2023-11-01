@@ -172,7 +172,6 @@
     
 <script lang="ts" >
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-import { formatDate } from '~/utils/commons/helper'
 const nsStoreUser = namespace('user/store-user')
 
 @Component({
