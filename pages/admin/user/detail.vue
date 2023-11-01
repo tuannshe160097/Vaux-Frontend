@@ -6,7 +6,7 @@
         <h2 class="font-bold m-0 text-uppercase">Thông tin người dùng</h2>
       </div>
     </div>
-    <div class="grid">
+    <div class="grid card-body">
       <div class="col-4">
         <div class="card-control">
           <div class="card-header font-medium text-xl">Ảnh Đại Diện</div>
@@ -194,6 +194,15 @@ export default DetailUser
 </script>
 
 <style lang="sass" scoped>
+.header
+  height: 90px
+  background: #fff
+  width: auto
+  align-items: center
+  display: flex
+  padding: 2rem
+  color: #a16b56
+  text-transform: uppercase
 .card-control
   display: block
   background: $white
@@ -212,5 +221,20 @@ export default DetailUser
   border-bottom: 1px solid rgba(33, 40, 50, 0.125)
 .rounded-circle
   border-radius: 50% !important
+
+.card-body
+  margin: 1rem
+  background: #fff
+  border-radius: 10px
+  padding: 1rem
+
+table .p-datatable-thead
+  background: #ead9d2
+
+.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even)
+  background-color: #fbf8f7 !important
+
+.element
+  @include overflow-ellipsis(400px)
 </style>
             

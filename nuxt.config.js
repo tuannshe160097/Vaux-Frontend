@@ -66,7 +66,8 @@ export default {
       'InputMask',
       'Toast',
       'Textarea',
-      'ConfirmDialog'
+      'ConfirmDialog',
+      'FileUpload'
     ],
     directives: [
       'Tooltip',
