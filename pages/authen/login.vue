@@ -69,6 +69,7 @@ class Login extends Vue {
       const response: any = await this.$auth.loginWith('local', { params: { phone: this.sPhoneNumber, otp: this.sOTP } })
       if (response?.data) {
         this.$cookies.set('auth._token', response?.data.jwt, { path: '/', maxAge: 3600 })
+        this.$cookies.set('auth.role', response?.data.role.id, { path: '/', maxAge: 3600 })
         await this.$auth.setUserToken(response.data.jwt)
         this.$router.push('/dashboard')
       }
