@@ -37,27 +37,41 @@
       <div class="col-fixed grid">
         <div class="md:col-8 sm:col-12">
           <div class="card-control card">
-            <div class="card-header font-medium text-xl">
-              Thông tin tài khoản
+            <div
+              class="card-header justify-content-between flex align-items-center"
+              style="padding: 0.8rem 1.5rem !important"
+            >
+              <div class="title text-xl flex">
+                <span>Thông tin tài khoản</span>
+              </div>
+              <div class="card-action">
+                <label class="text-normal">Quyền hạn:</label>
+                <Dropdown
+                  v-model="gender"
+                  :options="oGenders"
+                  optionLabel="name"
+                  optionValue="value"
+                />
+              </div>
             </div>
             <div class="p-4 grid formgrid">
-              <div class="field col-8">
+              <div class="field col-6">
                 <label>Tên</label>
                 <InputText class="w-100" type="text" v-model="name" />
               </div>
-              <div class="field col-4">
+              <div class="field col-6">
                 <label>Số điện thoại</label>
                 <InputText class="w-100" type="text" v-model="phone" />
               </div>
-              <div class="field col-4">
+              <div class="field col-6">
                 <label>Email</label>
                 <InputText class="w-100" type="text" v-model="email" />
               </div>
-              <div class="field col-3">
+              <div class="field col-6">
                 <label>Số CCCD</label>
                 <InputText class="w-100" type="text" v-model="cccd" />
               </div>
-              <div class="field col-2">
+              <div class="field col-6">
                 <label>Giới tính</label>
                 <Dropdown
                   class="w-100"
@@ -67,23 +81,28 @@
                   optionValue="value"
                 />
               </div>
-              <div class="field col-3">
-                <label>Ngày sinh</label>
-                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" :locale="vn" />
-              </div>
               <div class="field col-6">
+                <label>Ngày sinh</label>
+                <Calendar
+                  class="w-100"
+                  v-model="dob"
+                  dateFormat="dd-mm-yy"
+                  :locale="vn"
+                />
+              </div>
+              <div class="field col-12">
                 <label>Địa chỉ</label>
                 <InputText class="w-100" type="text" v-model="houseNumber" />
               </div>
-              <div class="field col-2">
+              <div class="field col-4">
                 <label>Phường, xã</label>
                 <InputText class="w-100" type="text" v-model="street" />
               </div>
-              <div class="field col-2">
+              <div class="field col-4">
                 <label>Quận, huyện</label>
                 <InputText class="w-100" type="text" v-model="district" />
               </div>
-              <div class="field col-2">
+              <div class="field col-4">
                 <label>Thành phố</label>
                 <InputText class="w-100" type="text" v-model="city" />
               </div>

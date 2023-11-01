@@ -42,8 +42,7 @@ export default class StoreCategory extends VuexModule {
                 const url = PathBind.transform(this.context, StoreCategory.STATE_URL.CREATE_EXPERT)
                 return await $api.post(url, params)
             } else{
-                this.$store.commit('commons/store-error/setError', 'Vui lòng nhập Số điện thoại')
-                //throw new Error("Chưa có chủ thể")
+                throw new Error("Chưa có chủ thể")
             }
         } catch (error) { }
     }

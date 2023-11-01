@@ -42,8 +42,14 @@
                 optionValue="value"
               />
             </div>
-            <div class="col field pt-5">
-              <Button label="Tìm kiếm" style="height: 36px" @click="Search()" />
+            <div class="col field justify-content-end flex pt-5">
+              <Button class="mr-2" label="Tìm kiếm" style="height: 36px" @click="Search()" />
+              <Button
+                class=""
+                label="Thêm Mới"
+                style="height: 36px"
+                @click="onAddNew()"
+              />
             </div>
           </div>
         </div>
@@ -86,7 +92,7 @@
               className="p-text-right"
             >
               <template #body="{ data }">{{
-                dayjs('2019-01-25').format('DD/MM/YYYY')
+                formatDate(data.created)
               }}</template>
             </Column>
             <Column
@@ -182,7 +188,6 @@
   
   <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-// import { dayjs } from 'dayjs'
 import { formatDate } from '~/utils/commons/helper'
 const nsStoreUser = namespace('user/store-user')
 
