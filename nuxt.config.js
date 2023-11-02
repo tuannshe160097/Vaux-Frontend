@@ -101,7 +101,7 @@ export default {
     plugins: ['~/plugins/auth.ts'],
     redirect: {
       logout: '/authen/login',
-      home: '/dashboard'
+      home: '/'
     }
   },
 

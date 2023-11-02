@@ -67,7 +67,7 @@ class Login extends Vue {
         this.$cookies.set('auth._token', response?.data.jwt, { path: '/', maxAge: 3600 })
         this.$cookies.set('auth.role', response?.data.role.id, { path: '/', maxAge: 3600 })
         await this.$auth.setUserToken(response.data.jwt)
-        this.$router.push('/dashboard')
+        this.$router.push('/')
       }
     } catch (error) {
       this.$store.commit('commons/store-error/setError', error.response.data)
