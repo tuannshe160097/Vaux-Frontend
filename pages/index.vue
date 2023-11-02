@@ -2,19 +2,12 @@
   <h1 class="text-center">WELCOME!</h1>
 </template>
 
-<script lang='ts'>
+<script>
 import { Component, Vue } from 'nuxt-property-decorator'
 
-
-@Component({
-  middleware: ['authenticate'],
-  layout: 'admin',
-})
-class Pages extends Vue {
-
+export default {
+  
 }
-
-export default Pages
 </script>
 <style lang='sass' scoped>
 </style>
