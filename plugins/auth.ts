@@ -35,7 +35,7 @@ const auth: Plugin = ({ app, $auth, store }) => {
     return response
   }, (error) => {
     
-    if (error.response && error.response.status === 401) {
+    if (error.response && [401, 403].includes(error.response.status)) {
       $auth.logout()
     }
     const errorResponse: ErrorResponse = error.response.data

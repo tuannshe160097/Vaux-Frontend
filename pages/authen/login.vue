@@ -37,7 +37,6 @@ class Login extends Vue {
 
   sPhoneNumber: string = ''
   sOTP: string | null = null
-  isCheckedSavePw = false
 
   @nsStoreUser.Action
   actSendOTPCode!: (phone: string) => Promise<string>

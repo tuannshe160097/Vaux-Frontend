@@ -16,21 +16,20 @@ export default {
   methods: {
     async redirect() {
       const role = this.$cookies.get('auth.role')
-      console.log(role)
       if (role == 1 || role == 2 || role == 5) {
         this.$router.push('/dashboard')
-      }
-      else if (role == 3 || role == 4) {
+      } else if (role == 3 || role == 4) {
         this.$router.push('/homepage')
-      } else
+      } else {
+        this.$router.push('/authen/login')
+      }
+    },
+    logout() {
+      this.$cookies.remove('auth._token')
+      this.$auth.logout()
       this.$router.push('/authen/login')
     },
-    logout(){
-      this.$cookies.remove('auth._token');
-      this.$auth.logout()
-    }
-
-  }
+  },
 }
 </script>
 <style lang='sass' scoped>

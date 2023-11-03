@@ -10,7 +10,7 @@ import { Component, namespace, Vue, Watch } from 'nuxt-property-decorator'
 const nsStoreError = namespace('commons/store-error')
 
 @Component
-class Dashboard extends Vue {
+class lPublic extends Vue {
 
   @nsStoreError.State
   error!: string
@@ -22,14 +22,14 @@ class Dashboard extends Vue {
         severity: 'error',
         summary: 'Error Message',
         detail: _error,
-        life: 3000
+        life: 15000
       })
       this.$store.commit('commons/store-error/setError')
     }
   }
 }
 
-export default Dashboard
+export default lPublic
 </script>
 
 <style lang='sass' scoped>
