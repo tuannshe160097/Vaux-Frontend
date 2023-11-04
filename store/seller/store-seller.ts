@@ -1,5 +1,10 @@
 import { Module, VuexModule, Action } from 'vuex-module-decorators'
 import { $api, PathBind } from '~/utils'
+import { NuxtAxiosInstance } from '@nuxtjs/axios'
+import { AxiosRequestConfig, AxiosResponse } from 'axios'
+interface CustomAxiosRequestConfig extends AxiosRequestConfig {
+    isThirdPartyAPI?: boolean;
+}
 @Module({
     stateFactory: true,
     namespaced: true
@@ -11,6 +16,9 @@ export default class StoreCategory extends VuexModule {
         GET_SELLER: '/Seller/Application/Get/:userId',
         APPROVE_SELLER: '/Seller/Application/Approve/:applicationId',
         DENY_SELLER: '/Seller/Application/Deny/:applicationId',
+        
+        BASE_URL_PROV: 'https://provinces.open-api.vn',
+        GET_PROVINCE: '/p/',
     }
 
     @Action({ rawError: true })
@@ -20,12 +28,32 @@ export default class StoreCategory extends VuexModule {
             return await $api.get(url)
         } catch (error) { }
     }
+    @Action({ rawError: true })
+    async actGetCategory(params: any): Promise<string | undefined> {
+        //thirdParty
+        const config: CustomAxiosRequestConfig = {
+            baseURL: StoreCategory.STATE_URL.BASE_URL_PROV,
+            isThirdPartyAPI: true,
+        };
+        try {
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.GET_PROVINCE)
+            return await $api.get(url, config)
+        } catch (error) { }
+    }
 
     @Action({ rawError: true })
     async actCreateSeller(params: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.CREATE_SELLER)
-            return await $api.post(url, params)
+            //formData
+            const response: any = await $api.post(url, params.formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                })
+
+            return response
         } catch (error) { }
     }
     @Action({ rawError: true })

@@ -1,10 +1,12 @@
 import { Middleware } from '@nuxt/types'
 
-const authenticate: Middleware = async ({ store, redirect }) => {
+const authenticate: Middleware = async ({ store, redirect, route }) => {
+  const requiredRole = route.meta;
+  console.log('Lta: ' , requiredRole)
   if (!store.$auth.loggedIn) {
     redirect('/authen/login');
   } else if (!store.state['user-auth']['store-user'].user) {
-    await store.dispatch('user-auth/store-user/actGetUserDetail')
+    const user  = await store.dispatch('user-auth/store-user/actGetUserDetail')
   }
 }
 

@@ -11,17 +11,21 @@ declare module 'vue/types/vue' {
 const auth: Plugin = ({ app, $auth, store }) => {
   const axiosInstance = axios.create()
 
-  axiosInstance.interceptors.request.use((config) => {
+  axiosInstance.interceptors.request.use((config:any) => {
     const token = app.$cookies.get('auth._token')
-    
+
     if ($auth.loggedIn && token) {
       config.headers.Authorization = `Bearer ${token}`
     }
-    
+
     if (process.env.NODE_ENV !== 'development') {
       config.baseURL = process.env.BE_API_URL
     } else {
-      config.url = process.env.BE_API_URL + '/api' + config.url
+      if (config?.isThirdPartyAPI) {
+        config.headers = null
+        config.url = '/api' + config.url
+      }
+      else { config.url = process.env.BE_API_URL + '/api' + config.url }
     }
     // store.commit('commons/store-common/setViewLoading', true)
     return config
@@ -34,7 +38,7 @@ const auth: Plugin = ({ app, $auth, store }) => {
     // store.commit('commons/store-common/setViewLoading', false)
     return response
   }, (error) => {
-    
+
     if (error.response && [401, 403].includes(error.response.status)) {
       $auth.logout()
     }

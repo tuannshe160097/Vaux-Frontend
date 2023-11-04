@@ -162,6 +162,7 @@
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { GENDER_OPTION } from '~/utils'
+const nsStoreSeller = namespace('seller/store-seller')
 
 @Component({
   layout: 'public',
@@ -211,20 +212,46 @@ class requestSeller extends Vue {
     'filePortrait',
     'fileCitizenId',
   ]
-
   errors: Record<string, boolean> = {}
+
   //option data
   oGenders = GENDER_OPTION
-  onSubmit() {
-    this.checkValid()
+
+  @nsStoreSeller.Action
+  actCreateSeller!: (params: any) => Promise<any>
+  @nsStoreSeller.Action
+  actGetCategory!: (params: any) => Promise<any>
+
+  async onSubmit() {
+    const response=await this.actGetCategory(null)
+    console.log(response)
+    // this.checkValid()
+    // let response = null
+    // const params = {
+    //   CitizenId: this.cccd || '',
+    //   Content: this.email || '',
+    //   Email: this.email || '',
+    //   City: this.city || '',
+    //   District: this.district || '',
+    //   Street: this.street || '',
+    //   HouseNumber: this.houseNumber || '',
+    //   gender: this.gender || '',
+    //   DoB: this.dob || '',
+    //   RawPortrait : this.filePortrait || null,
+    //   RawCitizenIdImage : this.fileCitizenId || null,
+    // }
+
+    // response = await this.actCreateSeller(params)
   }
   onUploadFile(event: Event, imgFor: string) {
     const inputElement = event.target as HTMLInputElement
     const files = inputElement.files
     if (files && files.length > 0) {
-      if (files[0].size / 1024 / 1024 > 5) {
-        //khong hoat dong???
-        this.$store.commit('commons/store-error/setError')
+      if (files[0].size / 1024 / 1024 > 3) {
+        this.$store.commit(
+          'commons/store-error/setError',
+          'File tải lên quá lớn'
+        )
         return
       }
       if (imgFor === 'Portrait') {
@@ -236,69 +263,6 @@ class requestSeller extends Vue {
       }
     }
   }
-  //   checkValid() {
-  //   this.igender = false;
-  //   this.idob = false;
-  //   this.iphone = false;
-  //   this.iemail = false;
-  //   this.icccd = false;
-  //   this.icity = false;
-  //   this.idistrict = false;
-  //   this.istreet = false;
-  //   this.ihouseNumber = false;
-
-  //   if (this.gender == null || this.gender === '') {
-  //     this.igender = true;
-  //     this.$store.commit('commons/store-error/setError', 'Chưa chọn giới tính');
-  //   }
-  //   if (this.dob == null || this.dob === '') {
-  //     this.idob = true;
-  //     this.$store.commit('commons/store-error/setError', 'Chưa điền ngày sinh');
-  //   }
-  //   if (this.phone == null || this.phone === '') {
-  //     this.iphone = true;
-  //     this.$store.commit(
-  //       'commons/store-error/setError',
-  //       'Chưa điền số điện thoại'
-  //     );
-  //   }
-  //   if (this.email == null || this.email === '') {
-  //     this.iemail = true;
-  //     this.$store.commit('commons/store-error/setError', 'Chưa điền email');
-  //   }
-  //   if (this.cccd == null || this.cccd === '') {
-  //     this.icccd = true;
-  //     this.$store.commit('commons/store-error/setError', 'Chưa điền số cccd');
-  //   }
-  //   if (this.city == null || this.city === '') {
-  //     this.icity = true;
-  //     this.$store.commit('commons/store-error/setError', 'Chưa chọn thành phố');
-  //   }
-  //   if (this.district == null || this.district === '') {
-  //     this.idistrict = true;
-  //     this.$store.commit(
-  //       'commons/store-error/setError',
-  //       'Chưa chọn quận, huyện'
-  //     );
-  //   }
-  //   if (this.street == null || this.street === '') {
-  //     this.istreet = true;
-  //     this.$store.commit('commons/store-error/setError', 'Chưa chọn Phường, xã');
-  //   }
-  //   if (this.houseNumber == null || this.houseNumber === '') {
-  //     this.ihouseNumber = true;
-  //     this.$store.commit('commons/store-error/setError', 'Chưa điền địa chỉ');
-  //   }
-  //   if (this.filePortrait == null) {
-  //     this.$store.commit(
-  //       'commons/store-error/setError',
-  //       'Chưa có ảnh chân dung'
-  //     );
-  //   }
-  //   if (this.fileCitizenId == null) {
-  //     this.$store.commit('commons/store-error/setError', 'Chưa có ảnh cccd');
-  //   }
-  // }
   checkValid() {
     const invalidFields: string[] = this.validateFields(this.requiredFields)
 
@@ -349,8 +313,5 @@ export default requestSeller
   border-bottom: 1px solid rgba(33, 40, 50, 0.125)
 .rounded-circle
   border-radius: 50% !important
-.required
-  color: red
-  margin-left: 4px
 </style>
                 

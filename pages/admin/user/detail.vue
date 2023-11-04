@@ -192,6 +192,9 @@ const nsStoreUser = namespace('user/store-user')
 @Component({
   middleware: ['authenticate'],
   layout: 'admin',
+  meta: {
+    role: 3
+  }
 })
 class DetailUser extends Vue {
   //data
