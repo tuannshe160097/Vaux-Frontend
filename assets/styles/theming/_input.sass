@@ -1,14 +1,48 @@
 .p-input-icon-left > .p-inputtext
   padding-left: 3.125rem
-
 .p-inputtext, .p-dropdown
   height:32px
-
-
 .p-inputtext
-    line-height: inherit
-    border-radius: 10px
+  line-height: inherit
+  border-radius: 10px
 .p-dropdown
-    border-radius: 10px
+  border-radius: 10px
 .input-invalid
   border-color: $primary-danger !important
+.p-inputtext:enabled:focus 
+  outline: 0 none
+  outline-offset: 0
+  box-shadow: 0 0 0 0.2rem rgba(161, 107, 86, 0.5)
+  border-color: #371C15
+
+.p-dropdown:not(.p-disabled).p-focus 
+  outline: 0 none
+  outline-offset: 0
+  box-shadow: 0 0 0 0.2rem rgba(161, 107, 86, 0.5)
+  border-color: #371C15
+.p-dropdown-panel .p-dropdown-items .p-dropdown-item.p-highlight 
+  color: #ffffff
+  background: #A16B56
+.p-datepicker table td > span.p-highlight 
+  color: #ffffff
+  background: #A16B56
+.p-button:focus 
+  box-shadow: 0 0 0 0.2rem rgba(161, 107, 86, 0.5)
+.btn-success
+  color: #ffffff
+  background: $primary-success
+  border: 1px solid $primary-success
+.btn-success:enabled:hover 
+  background: #58807f
+  color: #ffffff
+  border-color: #58807f
+.btn-danger
+  color: #ffffff
+  background: $primary-danger
+  border: 1px solid $primary-danger
+.btn-danger:enabled:hover 
+  background: #ab0c0c
+  color: #ffffff
+  border-color: #ab0c0c
+
+
