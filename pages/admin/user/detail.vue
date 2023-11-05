@@ -90,7 +90,6 @@
                   class="w-100"
                   v-model="dob"
                   dateFormat="dd-mm-yy"
-                  :locale="vn"
                 />
               </div>
               <div class="field col-12">
@@ -193,7 +192,7 @@ const nsStoreUser = namespace('user/store-user')
   middleware: ['authenticate'],
   layout: 'admin',
   meta: {
-    role: 3
+    role: [1,5]
   }
 })
 class DetailUser extends Vue {

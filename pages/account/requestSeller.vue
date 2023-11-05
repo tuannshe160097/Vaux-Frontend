@@ -10,7 +10,7 @@
         <div class="col-8">
           <div class="card-control">
             <div class="card-header font-medium text-xl">
-              Thông tin tài khoản
+              Thông tin yêu cầu nâng quyền tài khoản
             </div>
             <div class="p-5 grid grid-form">
               <div class="field col-6">
@@ -149,6 +149,16 @@
                 </div>
               </div>
               <div class="field col-12">
+                <label>Ghi chú</label>
+                <Textarea
+                  class="text-left w-full"
+                  v-model="sDescription"
+                  rows="15"
+                  cols="100"
+                  placeholder="Vui lòng nhập mô tả"
+                />
+              </div>
+              <div class="field col-12">
                 <Button label="Yêu cầu" @click="onSubmit()" />
               </div>
             </div>
@@ -223,7 +233,7 @@ class requestSeller extends Vue {
   actGetCategory!: (params: any) => Promise<any>
 
   async onSubmit() {
-    const response=await this.actGetCategory(null)
+    const response = await this.actGetCategory(null)
     console.log(response)
     // this.checkValid()
     // let response = null

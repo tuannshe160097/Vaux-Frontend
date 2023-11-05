@@ -1,0 +1,253 @@
+// View User Detail
+<template>
+  <div class="box-page-container flex flex-column">
+    <div class="header flex justify-content-between container">
+      <div class="col-fixed">
+        <h2 class="font-bold m-0 text-uppercase">Thông tin người dùng</h2>
+      </div>
+      <div class="col-fixed">
+        <div class="grid align-content-center">
+          <!-- <div class="col-fixed">
+            <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="onAddNew()"></Button>
+          </div> -->
+        </div>
+      </div>
+    </div>
+
+    <div class="card-body">
+      <div class="col-fixed grid">
+        <div class="col-2"></div>
+        <div class="md:col-8 sm:col-12">
+          <div class="card-control card">
+            <div
+              class="card-header justify-content-between flex align-items-center"
+              style="padding: 0.8rem 1.5rem !important"
+            >
+              <div class="title text-xl flex">
+                <span>Thông tin tài khoản</span>
+              </div>
+              <div class="card-action"></div>
+            </div>
+            <div class="p-4 grid formgrid">
+              <div class="field col-12">
+                <label>Họ và tên</label>
+                <InputText class="w-100" type="text" v-model="name" disabled/>
+              </div>
+              <div class="field col-12">
+                <label>Số điện thoại</label>
+                <InputText class="w-100" type="text" v-model="phone" />
+              </div>
+              <div class="field col-4">
+                <label>Email</label>
+                <InputText class="w-100" type="text" v-model="email" />
+              </div>
+              <div class="field col-4">
+                <label>Giới tính</label>
+                <Dropdown
+                  class="w-100"
+                  v-model="gender"
+                  :options="oGenders"
+                  optionLabel="name"
+                  optionValue="value"
+                />
+              </div>
+              <div class="field col-4">
+                <label>Ngày sinh</label>
+                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" />
+              </div>
+              <div class="field col-12">
+                <label>Địa chỉ</label>
+                <InputText class="w-100" type="text" v-model="houseNumber" />
+              </div>
+              <div class="field col-4">
+                <label>Phường, xã</label>
+                <InputText class="w-100" type="text" v-model="street" />
+              </div>
+              <div class="field col-4">
+                <label>Quận, huyện</label>
+                <InputText class="w-100" type="text" v-model="district" />
+              </div>
+              <div class="field col-4">
+                <label>Thành phố</label>
+                <InputText class="w-100" type="text" v-model="city" />
+              </div>
+              <div class="field col-12">
+                <label>Số CCCD</label>
+                <InputText class="w-100" type="text" v-model="cccd" />
+              </div>
+              <div class="field col-6">
+                <label>Ảnh chân dung</label>
+                <div
+                  class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full"
+                >
+                  <ImagePreview
+                    :src="portraitUrl || require('~/assets/images/default.jpg')"
+                    alt="Image"
+                    imageClass="w-max-100"
+                    imageStyle="height:200px;object-fit: contain"
+                  />
+                </div>
+              </div>
+              <div class="field col-6">
+                <label>Ảnh cccd/cmnd</label>
+                <div
+                  class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full"
+                >
+                  <ImagePreview
+                    :src="
+                      citizenIdUrl || require('~/assets/images/default.jpg')
+                    "
+                    imageClass="w-max-100"
+                    imageStyle="height:200px;"
+                    alt="Image"
+                  />
+                </div>
+              </div>
+              <div class="field col-12">
+                <label>Ghi chú</label>
+                <Textarea
+                  class="text-left w-full"
+                  v-model="content"
+                  rows="15"
+                  cols="100"
+                  placeholder="Ghi chú..."
+                />
+              </div>
+              <div class="field col-4">
+                <label>Ngày tạo</label>
+                <input
+                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                  type="text"
+                  v-model="dateCreated"
+                  disabled
+                />
+              </div>
+              <div class="field col-4">
+                <label>Ngày cập nhật</label>
+                <input
+                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                  type="text"
+                  v-model="dateUpdated"
+                  disabled
+                />
+              </div>
+              <div class="field col-4">
+                <label>Ngày cấm</label>
+                <input
+                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
+                  type="text"
+                  v-model="dateDeleted"
+                  disabled
+                />
+              </div>
+              <div class="field col-12 justify-content-center flex">
+                <Button class="btn-danger border-10" label="Từ chối"  @click="onDeny()" />
+                <Button class="ml-3 btn-success border-10" label="Đồng ý" @click="onAccept()" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+    
+<script lang="ts" >
+import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import { GENDER_OPTION } from '~/utils'
+const nsStoreUser = namespace('user/store-user')
+
+@Component({
+  middleware: ['authenticate'],
+  layout: 'admin',
+})
+class ViewUser extends Vue {
+    appId:string=''
+  name: string = ''
+  phone: string = ''
+  email: string = ''
+  gender: string = ''
+  dob: string = ''
+  houseNumber: string = ''
+  street: string = ''
+  city: string = ''
+  district: string = ''
+  cccd: string = ''
+  citizenIdUrl: string = ''
+  portraitUrl: string = ''
+  content: string = ''
+  dateCreated: string = ''
+  dateUpdated: string = ''
+  dateDeleted: string = ''
+
+  //option data
+  oGenders = GENDER_OPTION
+
+  @nsStoreUser.Action
+  actGetUser!: (params: any) => Promise<any>
+
+  async mounted() {
+    this.fetchData()
+  }
+  async fetchData() {
+    const appId = Array.isArray(this.$route.query.appId)
+      ? this.$route.query.appId[0]
+      : this.$route.query.appId
+    if (appId) {
+      const params = {
+        appId: appId || '',
+      }
+      const result = await this.actGetUser(params)
+      this.name = result.name
+      this.phone = result.phone
+      this.email = result.email
+      this.cccd = result.citizenId
+      this.dob = result.dob
+      this.gender = result.gender
+      this.houseNumber = result.houseNumber
+      this.street = result.street
+      this.district = result.district
+      this.city = result.city
+      this.citizenIdUrl = result.citizenIdUrl
+      this.portraitUrl = result.portraitUrl
+      this.content = result.content
+      this.dateCreated = this.formatDate(result.created)
+      this.dateUpdated = this.formatDate(result.updated)
+      this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
+    }
+  }
+  formatDate(dateString: string) {
+    const date = new Date(dateString)
+    const day = date.getDate().toString().padStart(2, '0')
+    const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
+    const year = date.getFullYear()
+    return `${day}-${month}-${year}`
+  }
+
+  onAccept() {}
+  onDeny() {}
+}
+export default ViewUser
+</script>
+
+<style lang="sass" scoped>
+.card-control
+    display: block
+    background: $white
+    font-weight: 1
+    font-size: 0.875rem
+    line-height: 1
+    color: #69707a
+    background-clip: padding-box
+    border: 1px solid #c5ccd6
+    appearance: none
+    border-radius: 0.35rem
+.card-header
+    padding: 1.2rem 1.35rem
+    margin-bottom: 0
+    background-color: rgba(33, 40, 50, 0.03)
+    border-bottom: 1px solid rgba(33, 40, 50, 0.125)
+.rounded-circle
+    border-radius: 50% !important
+</style>
+            

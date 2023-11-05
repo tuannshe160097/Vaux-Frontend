@@ -58,7 +58,7 @@
             responsiveLayout="scroll"
             dataKey="id"
             :resizableColumns="true"
-            :rows="20"
+            :rows="10"
             :scrollable="false"
             stripedRows
           >
@@ -136,24 +136,28 @@
                   ></div>
                   <span class="ml-3 text-400 font-size-small"
                     >Showing
-                    {{
-                      Math.min((pPagenum - 1) * pPageSize + 1, totalRecords)
-                    }}
+                    {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
                     - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
                     {{ totalRecords }}</span
                   >
                 </div>
               </div>
-              <Paginator
-                class="p-0"
-                :rows="pPageSize"
-                :totalRecords="totalRecords"
-                template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
-                @page="onPage($event)"
-              >
-              </Paginator>
+              <div v-if="totalRecords > 0">
+                <Paginator
+                  class="p-0"
+                  :rows="pPageSize"
+                  :totalRecords="totalRecords"
+                  template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
+                  @page="onPage($event)"
+                >
+                </Paginator>
+              </div>
             </template>
-            <template #empty> <div class="justify-content-center flex font-italic">Không có dữ liệu </div></template>
+            <template #empty>
+              <div class="justify-content-center flex font-italic">
+                Không có dữ liệu
+              </div></template
+            >
           </DataTable>
         </div>
         <Dialog
