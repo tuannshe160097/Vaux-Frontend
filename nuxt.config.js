@@ -65,7 +65,8 @@ export default {
       'Tag',
       'Textarea',
       'TieredMenu',
-      'Toast',
+      'Toast',,
+      'FileUpload'
     ],
     directives: [
       'Tooltip',

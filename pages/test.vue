@@ -1,0 +1,108 @@
+<template>
+  <body>
+    <section class="ftco-section">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-6 text-center mb-5">
+            <h2 class="heading-section">Login #07</h2>
+          </div>
+        </div>
+        <div class="row justify-content-center">
+          <div class="col-md-12 col-lg-10">
+            <div class="wrap d-md-flex">
+              <div
+                class="text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last"
+              >
+                <div class="text w-100">
+                  <h2>Welcome to login</h2>
+                  <p>Don't have an account?</p>
+                  <a href="#" class="btn btn-white btn-outline-white"
+                    >Sign Up</a
+                  >
+                </div>
+              </div>
+              <div class="login-wrap p-4 p-lg-5">
+                <div class="d-flex">
+                  <div class="w-100">
+                    <h3 class="mb-4">Sign In</h3>
+                  </div>
+                  <div class="w-100">
+                    <p class="social-media d-flex justify-content-end">
+                      <a
+                        href="#"
+                        class="social-icon d-flex align-items-center justify-content-center"
+                        ><span class="fa fa-facebook"></span
+                      ></a>
+                      <a
+                        href="#"
+                        class="social-icon d-flex align-items-center justify-content-center"
+                        ><span class="fa fa-twitter"></span
+                      ></a>
+                    </p>
+                  </div>
+                </div>
+                <form action="#" class="signin-form">
+                  <div class="form-group mb-3">
+                    <label class="label" for="name">Username</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      placeholder="Username"
+                      required=""
+                    />
+                  </div>
+                  <div class="form-group mb-3">
+                    <label class="label" for="password">Password</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      placeholder="Password"
+                      required=""
+                    />
+                  </div>
+                  <div class="form-group">
+                    <button
+                      type="submit"
+                      class="form-control btn btn-primary submit px-3"
+                    >
+                      Sign In
+                    </button>
+                  </div>
+                  <div class="form-group d-md-flex">
+                    <div class="w-50 text-left">
+                      <label class="checkbox-wrap checkbox-primary mb-0"
+                        >Remember Me
+                        <input type="checkbox" checked="" />
+                        <span class="checkmark"></span>
+                      </label>
+                    </div>
+                    <div class="w-50 text-md-right">
+                      <a href="#">Forgot Password</a>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/main.js"></script>
+    <script
+      defer=""
+      src="https://static.cloudflareinsights.com/beacon.min.js/v84a3a4012de94ce1a686ba8c167c359c1696973893317"
+      integrity="sha512-euoFGowhlaLqXsPWQ48qSkBSCFs3DPRyiwVu3FjR96cMPx+Fr+gpWRhIafcHwqwCqWS42RZhIudOvEI+Ckf6MA=="
+      data-cf-beacon='{"rayId":"821e1d0008da0f10","version":"2023.10.0","token":"cd0b4b3a733644fc843ef0b185f98241"}'
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</template>
+<script lang='ts'>
+import { Component, namespace, Vue } from 'nuxt-property-decorator'
+const nsStoreUser = namespace('user-auth/store-user')
+</script>
+<style lang='sass' scoped>
+</style>
