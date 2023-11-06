@@ -1,32 +1,55 @@
 //View all user
 <template>
   <div class="box-page-container flex flex-column container">
-    <div class="header container">
+    <div class="flex justify-content-between header container">
       <div class="col-fixed">
         <h2 class="font-bold m-0 text-uppercase">Danh sách người dùng</h2>
       </div>
+      <div class="col-fixed">
+        <div class="grid align-content-center">
+          <div class="col-fixed">
+            <Button
+              class="w-9rem h-3rem"
+              type="button"
+              label="Thêm Mới"
+              @click="onAddNew()"
+            ></Button>
+          </div>
+        </div>
+      </div>
     </div>
+
     <div class="card-body">
       <div class="row justify-content-between">
         <div class="col-fixed">
-          <div class="grid">
-            <div class="col-fixed">
-              <span class="p-input-icon-left">
-                <div
-                  class="icon icon--left icon-search-input surface-900"
-                ></div>
-                <InputText
-                  class="w-21rem h-3rem"
-                  type="text"
-                  placeholder="Tìm kiếm"
-                ></InputText
-              ></span>
+          <div class="grid formgrid">
+            <div class="col-3 field">
+              <label>Tên, mail, sđt</label>
+              <InputText
+                class="w-100"
+                type="text"
+                placeholder="Tìm kiếm"
+                v-model="search"
+              ></InputText>
             </div>
-            <div class="col-fixed">
-              <Button class="w-9rem h-3rem">
-                <div class="icon--base icon-plus surface-900 bg-white"></div>
-                <span class="text-900 ml-3 text-white">Thêm Mới</span>
-              </Button>
+            <div class="col-3 field">
+              <label>Quyền</label>
+              <Dropdown
+                class="w-100"
+                v-model="role"
+                :options="oRoles"
+                optionLabel="name"
+                optionValue="value"
+              />
+            </div>
+            <div class="col field justify-content-end flex pt-5">
+              <Button class="mr-2" label="Tìm kiếm" style="height: 36px" @click="Search()" />
+              <Button
+                class=""
+                label="Thêm Mới"
+                style="height: 36px"
+                @click="onAddNew()"
+              />
             </div>
           </div>
         </div>
@@ -69,7 +92,7 @@
               className="p-text-right"
             >
               <template #body="{ data }">{{
-                formatDate(data.created)
+                data.created | dateTimeFomat
               }}</template>
             </Column>
             <Column
@@ -79,7 +102,7 @@
               className="p-text-right"
             >
               <template #body="{ data }">{{
-                formatDate(data.updated)
+                data.updated | dateTimeFomat
               }}</template>
             </Column>
             <Column
@@ -116,13 +139,13 @@
                   class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
                   @click="viewDetail(data.id)"
                 >
-                  <div class="icon--small icon-edit"></div>
+                  <div class="icon--small icon-compose"></div>
                 </Button>
                 <Button
                   class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
                   @click="deleteBoxById(data.id)"
                 >
-                  <div class="icon--small icon-delete"></div>
+                  <div class="icon--small icon-bin"></div>
                 </Button>
               </template>
             </Column>
@@ -163,32 +186,53 @@
   </div>
 </template>
   
-  <script lang="ts">
+<script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-import { formatDate } from '~/utils/commons/helper'
 const nsStoreUser = namespace('user/store-user')
 
 @Component({
   middleware: ['authenticate'],
   layout: 'admin',
 })
-
 class UserList extends Vue {
   pageNum: number = 1
   pageSize: number = 10
   boxData = []
   totalItemsCount: number = 150
   selectedBoxes = []
+  search: string = ''
+  role: number = 0
+  oRoles = [
+    { name: 'Tất cả', value: 0 },
+    { name: 'Quản trị viên', value: 1 },
+    { name: 'Kiểm định viên', value: 2 },
+    { name: 'Người bán', value: 3 },
+    { name: 'Người mua', value: 4 },
+    { name: 'Admin', value: 5 },
+  ]
+  
   @nsStoreUser.Action
-  actSearchUser!: (params: {
-    pageNum: number
-    pageSize: number
-  }) => Promise<any>
+  actSearchUser!: (params: any) => Promise<any>
 
   async mounted() {
     const params = {
       pageNum: this.pageNum || 1,
       pageSize: this.pageSize || 10,
+      search: this.search,
+      role: this.role != 0 ? this.role : '',
+    }
+    const response = await this.actSearchUser(params)
+    if (response) {
+      this.boxData = response.records
+      this.totalItemsCount = response.totalRecords
+    }
+  }
+  async Search() {
+    const params = {
+      pageNum: this.pageNum || 1,
+      pageSize: this.pageSize || 10,
+      search: this.search,
+      role: this.role != 0 ? this.role : '',
     }
     const response = await this.actSearchUser(params)
     if (response) {
@@ -205,7 +249,10 @@ class UserList extends Vue {
     return `${day}-${month}-${year}`
   }
   viewDetail(id: any) {
-    this.$router.push('/admin/user/detail?userId=' + id)
+    this.$router.push('/admin/user/view?userId=' + id)
+  }
+  onAddNew() {
+    this.$router.push('/admin/user/detail')
   }
   deleteBoxById(id: any) {}
 }
@@ -213,32 +260,9 @@ class UserList extends Vue {
 export default UserList
 </script>
   
-  <style scoped>
+<style scoped>
 .box-page-container {
   height: calc(100vh - 100px);
-}
-.header {
-  height: 90px;
-  background: #fff;
-  width: auto;
-  align-items: center;
-  display: flex;
-  padding: 2rem;
-  color: #a16b56;
-  text-transform: uppercase;
-}
-.card-body {
-  margin: 1rem;
-  background: #fff;
-  border-radius: 10px;
-  padding: 1rem;
-}
-table .p-datatable-thead {
-  background: #ead9d2;
-}
-
-.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even) {
-  background-color: #fbf8f7 !important;
 }
 </style>
   

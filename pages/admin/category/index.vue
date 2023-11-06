@@ -1,30 +1,40 @@
 <template>
   <div class="box-page-container flex flex-column container">
-    <div class="header container">
+    <div class="flex justify-content-between header container">
       <div class="col-fixed">
         <h2 class="font-bold m-0 font-size-4xlarge line-height-1">
           Danh sách thể loại
         </h2>
       </div>
+      <div class="col-fixed">
+        <div class="grid align-content-center">
+          <div class="col-fixed">
+            <Button
+              class="w-9rem h-3rem"
+              type="button"
+              label="Thêm Mới"
+              @click="openModelCategory(null)"
+            ></Button>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="card-body">
       <div class="row justify-content-between">
         <div class="col-fixed">
-          <div class="grid">
-            <div class="col-fixed">
+          <div class="grid formgrid">
+            <div class="col-3">
               <span class="p-input-icon-left">
                 <div class="icon icon--left icon-research surface-900"></div>
-                <InputText class="w-21rem h-3rem" type="text" placeholder="Tìm kiếm"></InputText>
+                <InputText
+                  class="w-21rem h-3rem"
+                  type="text"
+                  placeholder="Tìm kiếm"
+                  v-model="search"
+                ></InputText>
               </span>
             </div>
-            <div class="col-fixed">
-              <Button
-                class="w-9rem h-3rem"
-                type="button"
-                label="Thêm Mới"
-                @click="openModelCategory(null)"
-              ></Button>
-            </div>
+            
           </div>
         </div>
       </div>
@@ -114,15 +124,20 @@
                     class="icon--large icon-footer-paginator surface-400"
                   ></div>
                   <span class="ml-3 text-400 font-size-small"
-                    >Showing 01 - 100 of 1280</span
+                    >Showing {{ (pPagenum - 1) * pPageSize + 1 }} -
+                    {{ pPagenum * pPageSize }} of {{ totalRecords }}</span
                   >
                 </div>
               </div>
               <Paginator
                 class="p-0"
-                :rows="20"
-                :totalRecords="totalItemsCount"
-              ></Paginator>
+                :rows="pPageSize"
+                :totalRecords="totalRecords"
+                template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
+                 @page="onPage($event)"
+              >
+                
+              </Paginator>
             </template>
           </DataTable>
         </div>
@@ -183,9 +198,13 @@ class CategoryList extends Vue {
   sDescription: string = ''
   categorySelected: any = null
   displayBasic = false
+  search: string = ''
+  pPagenum: number = 1
+  pPageSize: number = 5
+  totalRecords: number = 0
 
   @nsStoreCategory.Action
-  actGetCategory!: () => Promise<any>
+  actGetCategory!: (params: any) => Promise<any>
   //actGetCategory!: (params: any) => Promise<any>
 
   @nsStoreCategory.Action
@@ -216,10 +235,16 @@ class CategoryList extends Vue {
   async mounted() {
     this.getCategory()
   }
-  async getCategory() {
-    const response = await this.actGetCategory()
+  async getCategory(pageNum:number = this.pPagenum) {
+    const params = {
+      pageNum: pageNum,
+      pageSize: this.pPageSize,
+      search: this.search,
+    }
+    const response = await this.actGetCategory(params)
     if (response) {
       this.categories = response.records
+      this.totalRecords = response.totalRecords
     }
   }
 
@@ -260,9 +285,10 @@ class CategoryList extends Vue {
     this.displayBasic = true
   }
 
-  onDeleteCategory(row?: any) {
+  async onDeleteCategory(row?: any) {
     const _this: any = this
     confirmDelete(_this, () => {
+      this.deleteCategory(row.id)
       this.$toast.add({
         severity: 'info',
         summary: 'Xác nhận',
@@ -273,7 +299,12 @@ class CategoryList extends Vue {
       //
     })
   }
-
+  async deleteCategory(id: string) {
+    const response = await this.actDeleteCategory({
+      id: id,
+    })
+    this.getCategory()
+  }
   closeModel() {
     this.displayBasic = false
     this.categorySelected = null
@@ -283,6 +314,9 @@ class CategoryList extends Vue {
     this.sName = row?.name || ''
     this.sDescription = row?.description || ''
   }
+  onPage(event:any){
+    this.getCategory(event.page+1)
+  }
 }
 export default CategoryList
 </script>
@@ -290,28 +324,6 @@ export default CategoryList
 <style lang="sass" scoped>
 .box-page-container
   height: calc(100vh - 100px)
-
-.header
-  height: 90px
-  background: #fff
-  width: auto
-  align-items: center
-  display: flex
-  padding: 2rem
-  color: #a16b56
-  text-transform: uppercase
-
-.card-body
-  margin: 1rem
-  background: #fff
-  border-radius: 10px
-  padding: 1rem
-
-table .p-datatable-thead
-  background: #ead9d2
-
-.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even)
-  background-color: #fbf8f7 !important
 
 .element
   @include overflow-ellipsis(400px)

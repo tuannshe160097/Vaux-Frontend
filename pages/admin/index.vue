@@ -69,7 +69,6 @@
       
 <script lang="ts">
     import { Component, namespace, Vue } from 'nuxt-property-decorator'
-    import { Box } from '~/models/Box'
     const nsStoreBox = namespace('box/store-box')
     
     @Component
@@ -84,9 +83,6 @@
       totalItemsCount = 50
       masterData = []
     
-      @nsStoreBox.State
-      boxData!: Box.Model[]
-    
       @nsStoreBox.Action
       actGetBoxData!: () => Promise<void>
     
@@ -95,14 +91,6 @@
     
       async mounted() {
         await this.actGetBoxData()
-      }
-    
-      async deleteBoxById(id: any) {
-        const ids = id ? [id] : this.selectedBoxes.map((box: Box.Model) => box.id)
-        const result = await this.actDeleteBoxById({ ids })
-        if (result) {
-          await this.actGetBoxData()
-        }
       }
     }
     export default BoxList

@@ -26,7 +26,7 @@ export default {
   },
 
   plugins: [
-    '~/plugins/vuelidate.ts'
+    '~/plugins/vuelidate.ts', '~/plugins/filters.ts'
   ],
 
   components: true,
@@ -49,24 +49,23 @@ export default {
     theme:      'bootstrap4-light-blue',
     ripple:     true,
     components: [
-      'InputText',
       'Button',
+      'Calendar',
       'Checkbox',
+      'Column',
+      'ConfirmDialog',
       'DataTable',
       'Dialog',
       'Dropdown',
-      'InputText',
-      'TieredMenu',
-      'DataTable',
-      'Column',
-      'Tag',
-      'Paginator',
-      'Calendar',
-      'ScrollPanel',
       'InputMask',
-      'Toast',
+      'InputText',
+      'ImagePreview',
+      'Paginator',
+      'ScrollPanel',
+      'Tag',
       'Textarea',
-      'ConfirmDialog',
+      'TieredMenu',
+      'Toast',,
       'FileUpload'
     ],
     directives: [
