@@ -100,6 +100,69 @@
         </div>
       </div>
     </div>
+    <div class="grid card-body">
+      <div class="row justify-content-between w-full">
+        <h4 class="font-bold">Đặc điểm</h4>
+        <h6 class="card-body p-0">Thêm thông tin cho sản phẩm</h6>
+      </div>
+      <div class="col-6">
+        <div class="card-control">
+          <div class="field">
+            <input
+              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"
+              type="text"
+              v-model="name"
+              placeholder=" Nhập đặc điểm"
+            />
+          </div>
+          <div class="field">
+            <input
+              class="card-body text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"
+              type="text"
+              v-model="name"
+              placeholder="Nhập mô tả đặc điểm"
+            />
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card-control">
+          <div class="field">
+            <input
+              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"
+              type="text"
+              v-model="name"
+              placeholder=" Nhập đặc điểm"
+            />
+          </div>
+          <div class="field">
+            <input
+              class="card-body text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"
+              type="text"
+              v-model="name"
+              placeholder="Nhập mô tả đặc điểm"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="row justify-content-between">
+        <div class="field">
+          <h4 class="font-bold">
+            Giá khởi điểm sau khi thẩm định và trao đổi?
+          </h4>
+          <input
+            class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"
+            type="text"
+            v-model="name"
+            placeholder="Nhập giá trị"
+          />
+          VND
+        </div>
+      </div>
+    </div>
+
     <div class="field">
       <Button class="" label="Trao đổi với người bán hàng" />
       <Button class="" label="Hủy bỏ" />
