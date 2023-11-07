@@ -107,7 +107,7 @@ class Register extends Vue {
     let result = await this.actVerify(params)
     if (result !== undefined && result !== null) {
       this.$store.commit('commons/store-error/setError', 'Xác nhận thành công. Vui lòng đăng nhập lại để tiếp tục')
-      this.$router.push('/authen/login')
+      this.$router.push('/login')
     }
   }
 }

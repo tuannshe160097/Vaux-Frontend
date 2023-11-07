@@ -120,7 +120,7 @@ export default Login
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap')
 
 .signup-content
-  padding: 150px 0
+  padding: 100px 0
 
 .signup-form
   margin-left: 75px
