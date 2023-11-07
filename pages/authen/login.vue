@@ -1,5 +1,5 @@
 <template>
-  <section class="surface-0 flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden p-2">
+  <section class="surface-0 flex align-items-center justify-content-center  min-w-screen overflow-hidden p-2">
     <div class="grid justify-content-center col-12 md:col-6 lg:col-4">
       <div class="w-full">
         <div class="form-group">
