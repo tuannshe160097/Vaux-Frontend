@@ -16,7 +16,7 @@ export default class StoreCategory extends VuexModule {
         GET_SELLER: '/Seller/Application/Get/:userId',
         APPROVE_SELLER: '/Seller/Application/Approve/:applicationId',
         DENY_SELLER: '/Seller/Application/Deny/:applicationId',
-        
+
         BASE_URL_PROV: 'https://provinces.open-api.vn',
         GET_PROVINCE: '/p/',
     }
@@ -42,17 +42,16 @@ export default class StoreCategory extends VuexModule {
     }
 
     @Action({ rawError: true })
-    async actCreateSeller(params: any): Promise<string | undefined> {
+    async actCreateSeller(formData: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.CREATE_SELLER)
             //formData
-            const response: any = await $api.post(url, params.formData,
+            const response: any = await $api.post(url, formData,
                 {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 })
-
             return response
         } catch (error) { }
     }

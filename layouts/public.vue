@@ -40,11 +40,13 @@ class Dashboard extends Vue {
 export default Dashboard
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .main-container
   margin-top:70px
   height: auto
-
+section
+  max-width:1200px
+  margin : auto
 .w-100
   width: 100%
 </style>

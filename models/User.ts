@@ -4,11 +4,20 @@ export namespace User {
     id:         number,
     email:      string,
     role:       {
-      title: string
+      title: string,
+      id: number
     },
     status:     number,
     userDetail: User.Detail,
     avatarUrl: string,
+    gender: string,
+    dob: string,
+    phone: string,
+    citizenId: string,
+    city: string,
+    district: string,
+    street: string,
+    houseNumber: string,
     name: string,
   }
 

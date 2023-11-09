@@ -1,6 +1,6 @@
 <template>
-	<nav class="absolute top-0 left-0 w-full">
-		<div class="wrapper flex align-items-center justify-content-between m-auto">
+	<nav id="navbar" class="left-0 w-full">
+		<div class="wrapper flex align-items-center justify-content-between m-auto px-2">
 			<div class="logo"><a href="#">Logo</a></div>
 			<ul class="nav-links inline-flex  mx-6">
 				<!-- <li>
@@ -68,7 +68,8 @@
 				</div>
 			</div>
 			<div class="action flex align-items-center" v-if="user == null">
-				<button class="p-button btn-primary border-10" style="padding: 9px 2rem;" @click="Login()">Đăng nhập</button>
+				<button class="p-button btn-primary border-10" style="padding: 9px 2rem;" @click="Login()">Đăng
+					nhập</button>
 			</div>
 		</div>
 	</nav>
@@ -77,7 +78,6 @@
 <script lang='ts'>
 import { Component, namespace, ProvideReactive, Vue, Watch } from 'nuxt-property-decorator'
 import { User } from '~/models/User'
-import { MENU_ACTION, PAGE_MENU, SETTING_MENU } from '~/utils'
 const nsUser = namespace('user-auth/store-user')
 
 
@@ -94,9 +94,6 @@ class MenuNavbar extends Vue {
 
 	@ProvideReactive()
 	parentItems: any = []
-
-	pageMenu = PAGE_MENU
-	settingMenu = SETTING_MENU
 	// -- [ Getters ] -------------------------------------------------------------
 
 	get userDisplayName() {
@@ -109,6 +106,22 @@ class MenuNavbar extends Vue {
 	}
 	Login() {
 		this.$router.push('/authen/login')
+	}
+	mounted() {
+		// Thêm đoạn script vào đây khi component được mounted
+		var prevScrollpos = window.pageYOffset;
+		window.onscroll = function () {
+			var currentScrollPos = window.pageYOffset;
+			const nav = document.getElementById("navbar");
+			if (nav != null) {
+				if (prevScrollpos > currentScrollPos) {
+					nav.style.top = "0";
+				} else {
+					nav.style.top = "-70px";
+				}
+			}
+			prevScrollpos = currentScrollPos;
+		};
 	}
 	//   get userDisplayRole() {
 	//     return this.user?.role?.title || 'Role Ex'
@@ -148,8 +161,11 @@ $color_2: #d9d9d9
 	margin: 0
 	padding: 0
 nav 
+	top:0
+	position: fixed
 	z-index: 99
 	background: #371C15
+	transition: top 0.2s
 	.wrapper 
 		max-width: 1200px
 		height: 70px
