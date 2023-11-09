@@ -155,7 +155,7 @@
 <script lang="ts" >
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { GENDER_OPTION } from '~/utils'
-const nsStoreUser = namespace('user/store-user')
+const nsStoreSeller = namespace('seller/store-seller')
 
 @Component({
   middleware: ['authenticate'],
@@ -183,21 +183,22 @@ class ViewUser extends Vue {
   //option data
   oGenders = GENDER_OPTION
 
-  @nsStoreUser.Action
-  actGetUser!: (params: any) => Promise<any>
+  @nsStoreSeller.Action
+  actGetSeller!: (params: any) => Promise<any>
 
   async mounted() {
     this.fetchData()
   }
   async fetchData() {
-    const appId = Array.isArray(this.$route.query.appId)
-      ? this.$route.query.appId[0]
-      : this.$route.query.appId
+    const appId = Array.isArray(this.$route.query.appliId)
+      ? this.$route.query.appliId[0]
+      : this.$route.query.appliId
     if (appId) {
       const params = {
         appId: appId || '',
       }
-      const result = await this.actGetUser(params)
+      const result = await this.actGetSeller(params)
+      console.log(result)
       this.name = result.name
       this.phone = result.phone
       this.email = result.email

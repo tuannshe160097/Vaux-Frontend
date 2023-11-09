@@ -30,8 +30,8 @@
               <label>Tình trạng</label>
               <Dropdown
                 class="w-100"
-                v-model="role"
-                :options="oRoles"
+                v-model="status"
+                :options="oStatus"
                 optionLabel="name"
                 optionValue="value"
               />
@@ -67,13 +67,13 @@
               >
             </Column>
             <Column
-              field="phone"
+              field="user.phone"
               header="SỐ ĐIỆN THOẠI"
               sortable="sortable"
               bodyClass="font-semibold"
             ></Column>
             <Column
-              field="name"
+              field="user.name"
               header="TÊN"
               sortable="sortable"
               className="w-3 font-semibold"
@@ -97,8 +97,8 @@
               <template #body="{ data }">
                 <div>
                   <Tag
-                    class="px-2 bg-green-100"
-                    v-if="data.deleted != null"
+                    class="px-2 bg-danger-100"
+                    v-if="data.status == 3"
                     severity="danger"
                     ><span class="font-bold text-400 font-size-small"
                       >Từ chối</span
@@ -106,13 +106,13 @@
                   >
                   <Tag
                     class="px-2 surface-200"
-                    v-else-if="data.deleted == 1"
+                    v-else-if="data.status == 1"
                     severity="danger"
-                    ><span class="font-bold text-green-400 font-size-small"
+                    ><span class="font-bold text-400 font-size-small"
                       >Chờ duyệt</span
                     ></Tag
                   >
-                  <Tag class="px-2 surface-200" v-else severity="danger"
+                  <Tag class="px-2 surface-200  bg-green-100" v-else severity="danger"
                     ><span class="font-bold text-green-400 font-size-small"
                       >Đồng ý</span
                     ></Tag
@@ -131,12 +131,6 @@
                   @click="viewDetail(data.id)"
                 >
                   <div class="icon--small icon-eye"></div>
-                </Button>
-                <Button
-                  class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
-                  @click="deleteBoxById(data.id)"
-                >
-                  <div class="icon--small icon-bin"></div>
                 </Button>
               </template>
             </Column>
@@ -182,7 +176,7 @@
   
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-const nsStoreUser = namespace('user/store-user')
+const nsStoreSeller = namespace('seller/store-seller')
 
 @Component({
   middleware: ['authenticate'],
@@ -192,31 +186,31 @@ class UserList extends Vue {
   boxData = []
   selectedBoxes = []
   search: string = ''
-  role: number = 0
-  oRoles = [
-    { name: 'Tất cả', value: 0 },
-    { name: 'Quản trị viên', value: 1 },
-    { name: 'Kiểm định viên', value: 2 },
-    { name: 'Người bán', value: 3 },
-    { name: 'Người mua', value: 4 },
-    { name: 'Admin', value: 5 },
+  status: number = 0
+  oStatus = [
+    { name: 'Tất cả', value: null },
+    { name: 'Đã duyệt', value: 0 },
+    { name: 'Chưa duyệt', value: 1 },
+    { name: 'Đã từ chối', value: 2 }
   ]
-
+  //-----Pagination---------------------------------
   pPagenum: number = 1
   pPageSize: number = 10
   totalRecords: number = 0
 
-  @nsStoreUser.Action
-  actSearchUser!: (params: any) => Promise<any>
+  @nsStoreSeller.Action
+  actGetAllSeller!: (params: any) => Promise<any>
 
   async mounted() {
     const params = {
       pageNum: this.pPagenum || 1,
       pageSize: this.pPageSize || 10,
       search: this.search,
+      status: this.status,
     }
-    const response = await this.actSearchUser(params)
+    const response = await this.actGetAllSeller(params)
     if (response) {
+      console.log(response.records)
       this.boxData = response.records
       this.totalRecords = response.totalRecords
     }
@@ -226,16 +220,16 @@ class UserList extends Vue {
       pageNum: pageNum || 1,
       pageSize: this.pPageSize || 10,
       search: this.search,
-      role: this.role != 0 ? this.role : '',
+      status: this.status,
     }
-    const response = await this.actSearchUser(params)
+    const response = await this.actGetAllSeller(params)
     if (response) {
       this.boxData = response.records
       this.totalRecords = response.totalRecords
     }
   }
   viewDetail(id: any) {
-    this.$router.push('/admin/sellerApplication/view?userId=' + id)
+    this.$router.push('/admin/sellerApplication/view?appliId=' + id)
   }
   onPage(event: any) {
     this.Search(event.page + 1)

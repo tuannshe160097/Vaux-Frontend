@@ -13,7 +13,8 @@ interface CustomAxiosRequestConfig extends AxiosRequestConfig {
 export default class StoreCategory extends VuexModule {
     private static readonly STATE_URL = {
         CREATE_SELLER: '/Seller/Application/Create',
-        GET_SELLER: '/Seller/Application/Get/:userId',
+        GET_SELLER: '/Seller/Application/Get?id=:appId',
+        SEARCH_SELLERS: '/Seller/Application/GetAll',
         APPROVE_SELLER: '/Seller/Application/Approve/:applicationId',
         DENY_SELLER: '/Seller/Application/Deny/:applicationId',
 
@@ -24,7 +25,14 @@ export default class StoreCategory extends VuexModule {
     @Action({ rawError: true })
     async actGetSeller(params: any): Promise<string | undefined> {
         try {
-            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.GET_SELLER, { userId: params?.userId })
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.GET_SELLER, { appId: params?.appId })
+            return await $api.get(url)
+        } catch (error) { }
+    }
+    @Action({ rawError: true })
+    async actGetAllSeller(params: any): Promise<string | undefined> {
+        try {
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.SEARCH_SELLERS)
             return await $api.get(url)
         } catch (error) { }
     }
