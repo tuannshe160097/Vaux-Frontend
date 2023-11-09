@@ -14,9 +14,10 @@ export default class StoreCategory extends VuexModule {
     private static readonly STATE_URL = {
         CREATE_SELLER: '/Seller/Application/Create',
         GET_SELLER: '/Seller/Application/Get?id=:appId',
+        GET_IMAGE_SELLER: '/Seller/Application/Get/Image?id=:imageId',
         SEARCH_SELLERS: '/Seller/Application/GetAll',
-        APPROVE_SELLER: '/Seller/Application/Approve/:applicationId',
-        DENY_SELLER: '/Seller/Application/Deny/:applicationId',
+        APPROVE_SELLER: '/Seller/Application/Approve?applicationId=:applicationId',
+        DENY_SELLER: '/Seller/Application/Deny?applicationId=:applicationId',
 
         BASE_URL_PROV: 'https://provinces.open-api.vn',
         GET_PROVINCE: '/p/',
@@ -26,6 +27,13 @@ export default class StoreCategory extends VuexModule {
     async actGetSeller(params: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.GET_SELLER, { appId: params?.appId })
+            return await $api.get(url)
+        } catch (error) { }
+    }
+    @Action({ rawError: true })
+    async actGetImageSeller(imageId: any): Promise<string | undefined> {
+        try {
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.GET_IMAGE_SELLER, { imageId: imageId })
             return await $api.get(url)
         } catch (error) { }
     }

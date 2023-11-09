@@ -19,10 +19,8 @@
         <div class="col-2"></div>
         <div class="md:col-8 sm:col-12">
           <div class="card-control card">
-            <div
-              class="card-header justify-content-between flex align-items-center"
-              style="padding: 0.8rem 1.5rem !important"
-            >
+            <div class="card-header justify-content-between flex align-items-center"
+              style="padding: 0.8rem 1.5rem !important">
               <div class="title text-xl flex">
                 <span>Thông tin tài khoản</span>
               </div>
@@ -31,7 +29,7 @@
             <div class="p-4 grid formgrid">
               <div class="field col-12">
                 <label>Họ và tên</label>
-                <InputText class="w-100" type="text" v-model="name" disabled/>
+                <InputText class="w-100" type="text" v-model="name" disabled />
               </div>
               <div class="field col-12">
                 <label>Số điện thoại</label>
@@ -43,13 +41,7 @@
               </div>
               <div class="field col-4">
                 <label>Giới tính</label>
-                <Dropdown
-                  class="w-100"
-                  v-model="gender"
-                  :options="oGenders"
-                  optionLabel="name"
-                  optionValue="value"
-                />
+                <Dropdown class="w-100" v-model="gender" :options="oGenders" optionLabel="name" optionValue="value" />
               </div>
               <div class="field col-4">
                 <label>Ngày sinh</label>
@@ -77,71 +69,42 @@
               </div>
               <div class="field col-6">
                 <label>Ảnh chân dung</label>
-                <div
-                  class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full"
-                >
-                  <ImagePreview
-                    :src="portraitUrl || require('~/assets/images/default.jpg')"
-                    alt="Image"
-                    imageClass="w-max-100"
-                    imageStyle="height:200px;object-fit: contain"
-                  />
+                <div class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
+                  <ImagePreview :src="portraitUrl || require('~/assets/images/default.jpg')" alt="Image"
+                    imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
                 </div>
               </div>
               <div class="field col-6">
                 <label>Ảnh cccd/cmnd</label>
-                <div
-                  class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full"
-                >
-                  <ImagePreview
-                    :src="
-                      citizenIdUrl || require('~/assets/images/default.jpg')
-                    "
-                    imageClass="w-max-100"
-                    imageStyle="height:200px;"
-                    alt="Image"
-                  />
+                <div class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
+                  <ImagePreview :src="citizenIdUrl || require('~/assets/images/default.jpg')
+                    " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
                 </div>
               </div>
               <div class="field col-12">
-                <label>Ghi chú</label>
-                <Textarea
-                  class="text-left w-full"
-                  v-model="content"
-                  rows="15"
-                  cols="100"
-                  placeholder="Ghi chú..."
-                />
+                <label>Nội dung muốn bán</label>
+                <Textarea class="text-left w-full" v-model="content" rows="15" cols="100" placeholder="Ghi chú..." />
               </div>
-              <div class="field col-4">
+              <!-- <div class="field col-4">
                 <label>Ngày tạo</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="dateCreated"
-                  disabled
-                />
+                  type="text" v-model="dateCreated" disabled />
               </div>
               <div class="field col-4">
                 <label>Ngày cập nhật</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="dateUpdated"
-                  disabled
-                />
+                  type="text" v-model="dateUpdated" disabled />
               </div>
               <div class="field col-4">
                 <label>Ngày cấm</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="dateDeleted"
-                  disabled
-                />
-              </div>
-              <div class="field col-12 justify-content-center flex">
-                <Button class="btn-danger border-10" label="Từ chối"  @click="onDeny()" />
+                  type="text" v-model="dateDeleted" disabled />
+              </div> -->
+              <div v-if="appId != null" class="field col-12 justify-content-center flex">
+                <Button class="btn-danger border-10" label="Từ chối" @click="onDeny()" />
                 <Button class="ml-3 btn-success border-10" label="Đồng ý" @click="onAccept()" />
               </div>
             </div>
@@ -162,7 +125,7 @@ const nsStoreSeller = namespace('seller/store-seller')
   layout: 'admin',
 })
 class ViewUser extends Vue {
-    appId:string=''
+  appId: string | null = ''
   name: string = ''
   phone: string = ''
   email: string = ''
@@ -180,30 +143,38 @@ class ViewUser extends Vue {
   dateUpdated: string = ''
   dateDeleted: string = ''
 
+  imagePortrait: any | null
+  imageCccd: any | null
   //option data
   oGenders = GENDER_OPTION
 
   @nsStoreSeller.Action
   actGetSeller!: (params: any) => Promise<any>
+  @nsStoreSeller.Action
+  actGetImageSeller!: (imageId: any) => Promise<any>
+  @nsStoreSeller.Action
+  actApproveSeller!: (params: any) => Promise<any>
+  @nsStoreSeller.Action
+  actDenySeller!: (params: any) => Promise<any>
 
   async mounted() {
     this.fetchData()
   }
   async fetchData() {
-    const appId = Array.isArray(this.$route.query.appliId)
+    this.appId = Array.isArray(this.$route.query.appliId)
       ? this.$route.query.appliId[0]
       : this.$route.query.appliId
-    if (appId) {
+    if (this.appId) {
       const params = {
-        appId: appId || '',
+        appId: this.appId || '',
       }
       const result = await this.actGetSeller(params)
       console.log(result)
-      this.name = result.name
-      this.phone = result.phone
+      this.name = result.user.name
+      this.phone = result.user.phone
       this.email = result.email
       this.cccd = result.citizenId
-      this.dob = result.dob
+      this.dob = this.formatDate(result.doB)
       this.gender = result.gender
       this.houseNumber = result.houseNumber
       this.street = result.street
@@ -212,10 +183,33 @@ class ViewUser extends Vue {
       this.citizenIdUrl = result.citizenIdUrl
       this.portraitUrl = result.portraitUrl
       this.content = result.content
-      this.dateCreated = this.formatDate(result.created)
-      this.dateUpdated = this.formatDate(result.updated)
-      this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
+
+      this.imageCccd = await this.actGetImageSeller(result.citizenIdImageId);
+      const blobCccd = new Blob([this.imageCccd], { type: 'image/*' }); // Chắc chắn kiểu của tệp là hình ảnh
+      this.citizenIdUrl = `data:image/*;base64,${await this.blobToBase64(blobCccd)}`;
+      // this.citizenIdUrl = URL.createObjectURL(blobCccd);
+
+      this.imagePortrait = await this.actGetImageSeller(result.portraitId);
+      const blobPortrait = new Blob([this.imagePortrait], { type: 'image/*' }); // Chắc chắn kiểu của tệp là hình ảnh
+      this.portraitUrl = URL.createObjectURL(blobPortrait);
+
+      console.log(this.citizenIdUrl);
+      console.log(this.portraitUrl);
+      // this.dateCreated = this.formatDate(result.created)
+      // this.dateUpdated = this.formatDate(result.updated)
+      // this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
     }
+    else {
+      this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin application Id")
+    }
+  }
+  blobToBase64(blob:any) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
   }
   formatDate(dateString: string) {
     const date = new Date(dateString)
@@ -225,8 +219,22 @@ class ViewUser extends Vue {
     return `${day}-${month}-${year}`
   }
 
-  onAccept() {}
-  onDeny() {}
+  async onAccept() {
+    const params = {
+      applicationId: this.appId || '',
+    }
+    const result = await this.actApproveSeller(params)
+    this.$toast.add({severity: 'info', summary: 'Success', detail: 'Đã đồng ý đơn duyệt', life: 10000})
+    console.log(result)
+  }
+  async onDeny() {
+    const params = {
+      applicationId: this.appId || '',
+    }
+    const result = await this.actDenySeller(params)
+    this.$toast.add({severity: 'info', summary: 'Success', detail: 'Đã từ chối đơn duyệt', life: 10000})
+    console.log(result)
+  }
 }
 export default ViewUser
 </script>
