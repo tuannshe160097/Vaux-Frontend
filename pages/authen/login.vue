@@ -1,5 +1,5 @@
 <template>
-  <section class="surface-0 flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden p-2">
+  <section class="surface-0 flex align-items-center justify-content-center  min-w-screen overflow-hidden p-2">
     <div class="grid justify-content-center col-12 md:col-6 lg:col-4">
       <div class="w-full">
         <div class="form-group">
@@ -37,7 +37,6 @@ class Login extends Vue {
 
   sPhoneNumber: string = ''
   sOTP: string | null = null
-  isCheckedSavePw = false
 
   @nsStoreUser.Action
   actSendOTPCode!: (phone: string) => Promise<string>
@@ -67,7 +66,7 @@ class Login extends Vue {
         this.$cookies.set('auth._token', response?.data.jwt, { path: '/', maxAge: 3600 })
         this.$cookies.set('auth.role', response?.data.role.id, { path: '/', maxAge: 3600 })
         await this.$auth.setUserToken(response.data.jwt)
-        this.$router.push('/dashboard')
+        this.$router.push('/')
       }
     } catch (error) {
       this.$store.commit('commons/store-error/setError', error.response.data)

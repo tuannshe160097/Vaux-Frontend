@@ -9,12 +9,12 @@
       <div class="col-fixed">
         <div class="grid align-content-center">
           <div class="col-fixed">
-            <Button
+            <!-- <Button
               class="w-9rem h-3rem"
               type="button"
               label="Thêm Mới"
               @click="openModelCategory(null)"
-            ></Button>
+            ></Button> -->
           </div>
         </div>
       </div>
@@ -24,17 +24,28 @@
         <div class="col-fixed">
           <div class="grid formgrid">
             <div class="col-3">
-              <span class="p-input-icon-left">
-                <div class="icon icon--left icon-research surface-900"></div>
-                <InputText
-                  class="w-21rem h-3rem"
-                  type="text"
-                  placeholder="Tìm kiếm"
-                  v-model="search"
-                ></InputText>
-              </span>
+              <label>Tên thể loại</label>
+              <InputText
+                class="w-21rem h-3rem"
+                type="text"
+                placeholder="Tìm kiếm"
+                v-model="search"
+              ></InputText>
             </div>
-            
+            <div class="col field justify-content-end flex pt-5">
+              <Button
+                class="mr-2"
+                label="Tìm kiếm"
+                style="height: 36px"
+                @click="getCategory()"
+              />
+              <Button
+                class=""
+                label="Thêm Mới"
+                style="height: 36px"
+                @click="openModelCategory(null)"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -47,7 +58,7 @@
             responsiveLayout="scroll"
             dataKey="id"
             :resizableColumns="true"
-            :rows="20"
+            :rows="10"
             :scrollable="false"
             stripedRows
           >
@@ -124,21 +135,29 @@
                     class="icon--large icon-footer-paginator surface-400"
                   ></div>
                   <span class="ml-3 text-400 font-size-small"
-                    >Showing {{ (pPagenum - 1) * pPageSize + 1 }} -
-                    {{ pPagenum * pPageSize }} of {{ totalRecords }}</span
+                    >Showing
+                    {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
+                    - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
+                    {{ totalRecords }}</span
                   >
                 </div>
               </div>
-              <Paginator
-                class="p-0"
-                :rows="pPageSize"
-                :totalRecords="totalRecords"
-                template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
-                 @page="onPage($event)"
-              >
-                
-              </Paginator>
+              <div v-if="totalRecords > 0">
+                <Paginator
+                  class="p-0"
+                  :rows="pPageSize"
+                  :totalRecords="totalRecords"
+                  template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
+                  @page="onPage($event)"
+                >
+                </Paginator>
+              </div>
             </template>
+            <template #empty>
+              <div class="justify-content-center flex font-italic">
+                Không có dữ liệu
+              </div></template
+            >
           </DataTable>
         </div>
         <Dialog
@@ -235,7 +254,7 @@ class CategoryList extends Vue {
   async mounted() {
     this.getCategory()
   }
-  async getCategory(pageNum:number = this.pPagenum) {
+  async getCategory(pageNum: number = this.pPagenum) {
     const params = {
       pageNum: pageNum,
       pageSize: this.pPageSize,
@@ -314,8 +333,8 @@ class CategoryList extends Vue {
     this.sName = row?.name || ''
     this.sDescription = row?.description || ''
   }
-  onPage(event:any){
-    this.getCategory(event.page+1)
+  onPage(event: any) {
+    this.getCategory(event.page + 1)
   }
 }
 export default CategoryList

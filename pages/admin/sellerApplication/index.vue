@@ -3,17 +3,11 @@
   <div class="box-page-container flex flex-column container">
     <div class="flex justify-content-between header container">
       <div class="col-fixed">
-        <h2 class="font-bold m-0 text-uppercase">Danh sách người dùng</h2>
+        <h2 class="font-bold m-0 text-uppercase">Danh sách người bán</h2>
       </div>
       <div class="col-fixed">
         <div class="grid align-content-center">
           <div class="col-fixed">
-            <!-- <Button
-              class="w-9rem h-3rem"
-              type="button"
-              label="Thêm Mới"
-              @click="onAddNew()"
-            ></Button> -->
           </div>
         </div>
       </div>
@@ -33,22 +27,21 @@
               ></InputText>
             </div>
             <div class="col-3 field">
-              <label>Quyền</label>
+              <label>Tình trạng</label>
               <Dropdown
                 class="w-100"
-                v-model="role"
-                :options="oRoles"
+                v-model="status"
+                :options="oStatus"
                 optionLabel="name"
                 optionValue="value"
               />
             </div>
             <div class="col field justify-content-end flex pt-5">
-              <Button class="mr-2" label="Tìm kiếm" style="height: 36px" @click="Search()" />
               <Button
-                class=""
-                label="Thêm Mới"
+                class="mr-2 border-10"
+                label="Tìm kiếm"
                 style="height: 36px"
-                @click="onAddNew()"
+                @click="Search()"
               />
             </div>
           </div>
@@ -74,13 +67,13 @@
               >
             </Column>
             <Column
-              field="phone"
+              field="user.phone"
               header="SỐ ĐIỆN THOẠI"
               sortable="sortable"
               bodyClass="font-semibold"
             ></Column>
             <Column
-              field="name"
+              field="user.name"
               header="TÊN"
               sortable="sortable"
               className="w-3 font-semibold"
@@ -96,16 +89,6 @@
               }}</template>
             </Column>
             <Column
-              field="updated"
-              header="NGÀY CẬP NHẬT"
-              sortable="sortable"
-              className="p-text-right"
-            >
-              <template #body="{ data }">{{
-                data.updated | dateTimeFomat
-              }}</template>
-            </Column>
-            <Column
               field="status"
               header="TRẠNG THÁI"
               sortable="sortable"
@@ -114,16 +97,24 @@
               <template #body="{ data }">
                 <div>
                   <Tag
-                    class="px-2 bg-green-100"
-                    v-if="data.deleted != null"
+                    class="px-2 bg-danger-100"
+                    v-if="data.status == 3"
                     severity="danger"
                     ><span class="font-bold text-400 font-size-small"
-                      >Bị chặn</span
+                      >Từ chối</span
                     ></Tag
                   >
-                  <Tag class="px-2 surface-200" v-else severity="danger"
+                  <Tag
+                    class="px-2 surface-200"
+                    v-else-if="data.status == 1"
+                    severity="danger"
+                    ><span class="font-bold text-400 font-size-small"
+                      >Chờ duyệt</span
+                    ></Tag
+                  >
+                  <Tag class="px-2 surface-200  bg-green-100" v-else severity="danger"
                     ><span class="font-bold text-green-400 font-size-small"
-                      >Hoạt động</span
+                      >Đồng ý</span
                     ></Tag
                   >
                 </div>
@@ -139,13 +130,7 @@
                   class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
                   @click="viewDetail(data.id)"
                 >
-                  <div class="icon--small icon-compose"></div>
-                </Button>
-                <Button
-                  class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
-                  @click="deleteBoxById(data.id)"
-                >
-                  <div class="icon--small icon-bin"></div>
+                  <div class="icon--small icon-eye"></div>
                 </Button>
               </template>
             </Column>
@@ -159,26 +144,29 @@
                     class="icon--large icon-footer-paginator surface-400"
                   ></div>
                   <span class="ml-3 text-400 font-size-small"
-                    >Showing 01 - 100 of 1280</span
+                    >Showing
+                    {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
+                    - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
+                    {{ totalRecords }}</span
                   >
                 </div>
-                <Button
-                  class="p-button-danger opacity-70"
-                  @click="deleteBoxById(null)"
-                  v-if="selectedBoxes.length &gt; 0"
-                >
-                  <div class="icon--small icon-delete bg-white"></div>
-                  <span class="ml-3"
-                    >Delete {{ selectedBoxes.length }} items selected</span
-                  >
-                </Button>
               </div>
-              <Paginator
-                class="p-0"
-                :rows="20"
-                :totalRecords="totalItemsCount"
-              ></Paginator>
+              <div v-if="totalRecords > 0">
+                <Paginator
+                  class="p-0"
+                  :rows="pPageSize"
+                  :totalRecords="totalRecords"
+                  template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
+                  @page="onPage($event)"
+                >
+                </Paginator>
+              </div>
             </template>
+            <template #empty>
+              <div class="justify-content-center flex font-italic">
+                Không có dữ liệu
+              </div></template
+            >
           </DataTable>
         </div>
       </div>
@@ -188,71 +176,63 @@
   
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-const nsStoreUser = namespace('user/store-user')
+const nsStoreSeller = namespace('seller/store-seller')
 
 @Component({
   middleware: ['authenticate'],
   layout: 'admin',
 })
 class UserList extends Vue {
-  pageNum: number = 1
-  pageSize: number = 10
   boxData = []
-  totalItemsCount: number = 150
   selectedBoxes = []
   search: string = ''
-  role: number = 0
-  oRoles = [
-    { name: 'Tất cả', value: 0 },
-    { name: 'Quản trị viên', value: 1 },
-    { name: 'Kiểm định viên', value: 2 },
-    { name: 'Người bán', value: 3 },
-    { name: 'Người mua', value: 4 },
-    { name: 'Admin', value: 5 },
+  status: number = 0
+  oStatus = [
+    { name: 'Tất cả', value: null },
+    { name: 'Đã duyệt', value: 0 },
+    { name: 'Chưa duyệt', value: 1 },
+    { name: 'Đã từ chối', value: 2 }
   ]
-  
-  @nsStoreUser.Action
-  actSearchUser!: (params: any) => Promise<any>
+  //-----Pagination---------------------------------
+  pPagenum: number = 1
+  pPageSize: number = 10
+  totalRecords: number = 0
+
+  @nsStoreSeller.Action
+  actGetAllSeller!: (params: any) => Promise<any>
 
   async mounted() {
     const params = {
-      pageNum: this.pageNum || 1,
-      pageSize: this.pageSize || 10,
+      pageNum: this.pPagenum || 1,
+      pageSize: this.pPageSize || 10,
       search: this.search,
-      role: this.role != 0 ? this.role : '',
+      status: this.status,
     }
-    const response = await this.actSearchUser(params)
+    const response = await this.actGetAllSeller(params)
     if (response) {
+      console.log(response.records)
       this.boxData = response.records
-      this.totalItemsCount = response.totalRecords
+      this.totalRecords = response.totalRecords
     }
   }
-  async Search() {
+  async Search(pageNum: number = this.pPagenum) {
     const params = {
-      pageNum: this.pageNum || 1,
-      pageSize: this.pageSize || 10,
+      pageNum: pageNum || 1,
+      pageSize: this.pPageSize || 10,
       search: this.search,
-      role: this.role != 0 ? this.role : '',
+      status: this.status,
     }
-    const response = await this.actSearchUser(params)
+    const response = await this.actGetAllSeller(params)
     if (response) {
       this.boxData = response.records
-      this.totalItemsCount = response.totalRecords
+      this.totalRecords = response.totalRecords
     }
-  }
-
-  formatDate(dateString: string) {
-    const date = new Date(dateString)
-    const day = date.getDate().toString().padStart(2, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
-    const year = date.getFullYear()
-    return `${day}-${month}-${year}`
   }
   viewDetail(id: any) {
-    this.$router.push('/admin/user/view?userId=' + id)
+    this.$router.push('/admin/sellerApplication/view?appliId=' + id)
   }
-  onAddNew() {
-    this.$router.push('/admin/user/detail')
+  onPage(event: any) {
+    this.Search(event.page + 1)
   }
   deleteBoxById(id: any) {}
 }

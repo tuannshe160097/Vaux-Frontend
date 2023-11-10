@@ -34,11 +34,9 @@
     </div>
   </section>
 </template>
-
 <script lang='ts'>
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 const nsStoreUser = namespace('user-auth/store-user')
-
 @Component({
   layout: 'public',
   middleware: ['interception'],
@@ -48,13 +46,10 @@ class Register extends Vue {
   otp: string = ''
   name: string = ''
   checked: boolean = true
-
   @nsStoreUser.Action
   actRegister !: (params: { phone: string, name: string }) => Promise<any>
-
   @nsStoreUser.Action
   actVerify !: (params: any) => Promise<string>
-
   async sendOtp() {
     if (this.sdt && this.name) {
       const params = {
@@ -69,7 +64,6 @@ class Register extends Vue {
       this.$store.commit('commons/store-error/setError', 'Vui lòng nhập Số điện thoại và Tên để đăng ký')
     }
   }
-
   async callRegister() {
       const params = {
         otp: this.otp,
