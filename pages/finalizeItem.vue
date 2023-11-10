@@ -12,8 +12,8 @@
         <div class="field">
           <h4 class="font-bold">Thêm mô tả chi tiết cho sản phẩm của bạn</h4>
         </div>
-        <div class="field">
-          <h6 class="card-body p-0">
+        <div class="field p-2 mb-0">
+          <h6 class="m-0">
             Hãy cho chúng tôi biết mọi thứ về sản phẩm của bạn bằng cách điền
             thông tin chi tiết bên dưới. Nếu bạn không chắc chắn về điều gì đó,
             đừng lo lắng! Một chuyên gia sẽ xem xét bài đăng của bạn.
@@ -46,7 +46,7 @@
     <div class="grid card-body">
       <div class="row justify-content-between">
         <h4 class="font-bold">Hình ảnh</h4>
-        <h6 class="card-body p-0">
+        <h6 class="field p-2 ">
           Tải lên những bức ảnh thể hiện rất nhiều điều của bạn theo cách tốt
           nhất. Hãy nhớ đưa vào những nội dung khác nhau và đặt bức ảnh đẹp nhất
           của bạn lên hàng đầu.
@@ -93,7 +93,7 @@
           <Textarea
             class="text-left w-full"
             v-model="sDescription"
-            rows="15"
+            rows="10"
             cols="100"
             placeholder="Sử dụng phần này để thêm bất kỳ thông tin bổ sung."
           />
@@ -103,21 +103,21 @@
     <div class="grid card-body">
       <div class="row justify-content-between w-full">
         <h4 class="font-bold">Đặc điểm</h4>
-        <h6 class="card-body p-0">Thêm thông tin cho sản phẩm</h6>
+        <h6 class="field p-2">Thêm thông tin cho sản phẩm</h6>
       </div>
       <div class="col-6">
         <div class="card-control">
-          <div class="field">
+          <div class="field  ml-5">
             <input
-              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"
+              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary m-2"
               type="text"
               v-model="name"
               placeholder=" Nhập đặc điểm"
             />
           </div>
-          <div class="field">
+          <div class="field  ml-8">
             <input
-              class="card-body text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"
+              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"
               type="text"
               v-model="name"
               placeholder="Nhập mô tả đặc điểm"
@@ -127,17 +127,17 @@
       </div>
       <div class="col-6">
         <div class="card-control">
-          <div class="field">
+          <div class="field  ml-5">
             <input
-              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"
+              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary m-2"
               type="text"
               v-model="name"
               placeholder=" Nhập đặc điểm"
             />
           </div>
-          <div class="field">
+          <div class="field  ml-8">
             <input
-              class="card-body text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"
+              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none focus:border-primary"
               type="text"
               v-model="name"
               placeholder="Nhập mô tả đặc điểm"
@@ -162,11 +162,14 @@
         </div>
       </div>
     </div>
-
-    <div class="field">
-      <Button class="" label="Trao đổi với người bán hàng" />
-      <Button class="" label="Hủy bỏ" />
-      <Button class="" label="Chấp Nhận" />
+    <div class="px-3 pb-4 flex justify-content-between">
+      <div>
+        <Button class="" label="Trao đổi với người bán hàng" />
+      </div>
+      <div>
+        <Button class="mr-1" label="Hủy bỏ" />
+        <Button class="" label="Chấp Nhận" />
+      </div>
     </div>
   </div>
 </template>
