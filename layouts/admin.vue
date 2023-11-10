@@ -1,7 +1,7 @@
 <template>
   <div class="layout-wrapper.layout-static">
     <MenuSidebar />
-    <div class="main-container" :style="{ marginLeft: sidebarWidth }">
+    <div class="main-container admin-layout" :style="{ marginLeft: sidebarWidth }">
       <Nuxt />
       <Toast />
     </div>
