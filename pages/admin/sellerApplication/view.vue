@@ -180,18 +180,14 @@ class ViewUser extends Vue {
       this.street = result.street
       this.district = result.district
       this.city = result.city
-      this.citizenIdUrl = result.citizenIdUrl
-      this.portraitUrl = result.portraitUrl
+      this.citizenIdUrl = 'https://localhost:6565'+'/api/Seller/Application/Get/Image/'+result.citizenIdImageId
+      this.portraitUrl = 'https://localhost:6565'+'/api/Seller/Application/Get/Image/'+result.portraitId
       this.content = result.content
 
-      this.imageCccd = await this.actGetImageSeller(result.citizenIdImageId);
-      const blobCccd = new Blob([this.imageCccd], { type: 'image/*' }); // Chắc chắn kiểu của tệp là hình ảnh
-      this.citizenIdUrl = `data:image/*;base64,${await this.blobToBase64(blobCccd)}`;
+      // this.citizenIdUrl = `data:image/*;base64,${await this.blobToBase64(blobCccd)}`;
       // this.citizenIdUrl = URL.createObjectURL(blobCccd);
 
-      this.imagePortrait = await this.actGetImageSeller(result.portraitId);
-      const blobPortrait = new Blob([this.imagePortrait], { type: 'image/*' }); // Chắc chắn kiểu của tệp là hình ảnh
-      this.portraitUrl = URL.createObjectURL(blobPortrait);
+      // this.portraitUrl = URL.createObjectURL(blobPortrait);
 
       console.log(this.citizenIdUrl);
       console.log(this.portraitUrl);
@@ -202,14 +198,6 @@ class ViewUser extends Vue {
     else {
       this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin application Id")
     }
-  }
-  blobToBase64(blob:any) {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = reject;
-      reader.readAsDataURL(blob);
-    });
   }
   formatDate(dateString: string) {
     const date = new Date(dateString)
