@@ -12,7 +12,8 @@ const authenticate: Middleware = async ({ store, redirect, route }) => {
     redirect('/authen/login');
   } else if (!store.state['user-auth']['store-user'].user) {
     const user = await store.dispatch('user-auth/store-user/actGetUserDetail')
-  } else if (requiredRole != null && !requiredRole.includes(store.state['user-auth']['store-user'].user.roleId)) {
+  } else if (requiredRole != null && !(requiredRole.includes(store.state['user-auth']['store-user'].user.roleId))) {
+    debugger
     redirect('/authen/login');
   }
 }

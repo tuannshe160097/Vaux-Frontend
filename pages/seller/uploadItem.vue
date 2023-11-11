@@ -100,6 +100,9 @@ const nsStoreCategory = namespace('category/store-category')
 @Component({
   middleware: ['authenticate'],
   layout: 'public',
+  meta: {
+    role: [3]
+  }
 })
 class CategoryList extends Vue {
   // methods: {
