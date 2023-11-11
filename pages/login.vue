@@ -147,6 +147,8 @@ export default Login
   background-image: url('assets/images/signup-image.png')
   max-width: 100%
   height: 550px
+  background-repeat: no-repeat
+  background-size: 100% 100%
 
 .row
   width: 900px

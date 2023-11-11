@@ -50,6 +50,7 @@ export default {
     ripple:     true,
     components: [
       'Button',
+      'Breadcrumb',
       'Calendar',
       'Checkbox',
       'Column',
@@ -57,7 +58,9 @@ export default {
       'DataTable',
       'Dialog',
       'Dropdown',
+      'FileUpload',
       'InputMask',
+      'InputNumber',
       'InputText',
       'ImagePreview',
       'Paginator',
@@ -66,9 +69,6 @@ export default {
       'Textarea',
       'TieredMenu',
       'Toast',
-      'FileUpload',
-      'DataView',
-      'Rating'
     ],
     directives: [
       'Tooltip',
