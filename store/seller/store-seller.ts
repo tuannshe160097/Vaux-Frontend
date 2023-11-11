@@ -14,7 +14,7 @@ export default class StoreCategory extends VuexModule {
     private static readonly STATE_URL = {
         CREATE_SELLER: '/Seller/Application/Create',
         GET_SELLER: '/Seller/Application/Get?id=:appId',
-        GET_IMAGE_SELLER: '/Seller/Application/Get/Image?id=:imageId',
+        GET_IMAGE_SELLER: '/Seller/Application/Get/Image/:imageId',
         SEARCH_SELLERS: '/Seller/Application/GetAll',
         APPROVE_SELLER: '/Seller/Application/Approve?applicationId=:applicationId',
         DENY_SELLER: '/Seller/Application/Deny?applicationId=:applicationId',
@@ -34,7 +34,7 @@ export default class StoreCategory extends VuexModule {
     async actGetImageSeller(imageId: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.GET_IMAGE_SELLER, { imageId: imageId })
-            return await $api.get(url)
+            return await $api.get(url,{responseType: 'blob'})
         } catch (error) { }
     }
     @Action({ rawError: true })

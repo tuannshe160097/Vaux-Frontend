@@ -136,8 +136,8 @@ class ViewUser extends Vue {
   city: string = ''
   district: string = ''
   cccd: string = ''
-  citizenIdUrl: string = ''
-  portraitUrl: string = ''
+  citizenIdUrl: string | ArrayBuffer | null = ''
+  portraitUrl: any = ''
   content: string = ''
   dateCreated: string = ''
   dateUpdated: string = ''
@@ -180,23 +180,28 @@ class ViewUser extends Vue {
       this.street = result.street
       this.district = result.district
       this.city = result.city
-      this.citizenIdUrl = 'https://localhost:6565'+'/api/Seller/Application/Get/Image/'+result.citizenIdImageId
-      this.portraitUrl = 'https://localhost:6565'+'/api/Seller/Application/Get/Image/'+result.portraitId
+      this.portraitUrl = await this.getImageUrl(result.portraitId)
+      this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId)
       this.content = result.content
-
-      // this.citizenIdUrl = `data:image/*;base64,${await this.blobToBase64(blobCccd)}`;
-      // this.citizenIdUrl = URL.createObjectURL(blobCccd);
-
-      // this.portraitUrl = URL.createObjectURL(blobPortrait);
-
-      console.log(this.citizenIdUrl);
-      console.log(this.portraitUrl);
-      // this.dateCreated = this.formatDate(result.created)
-      // this.dateUpdated = this.formatDate(result.updated)
-      // this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
     }
     else {
       this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin application Id")
+    }
+  }
+  async getImageUrl(imgId: any): Promise<string | ArrayBuffer | null> {
+    try {
+      const response = await this.actGetImageSeller(imgId);
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(response);
+        reader.onloadend = () => {
+          const base64Image = reader.result;
+          resolve(base64Image);
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching or converting image:", error);
+      return null;
     }
   }
   formatDate(dateString: string) {
@@ -212,7 +217,7 @@ class ViewUser extends Vue {
       applicationId: this.appId || '',
     }
     const result = await this.actApproveSeller(params)
-    this.$toast.add({severity: 'info', summary: 'Success', detail: 'Đã đồng ý đơn duyệt', life: 10000})
+    this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã đồng ý đơn duyệt', life: 10000 })
     console.log(result)
   }
   async onDeny() {
@@ -220,7 +225,7 @@ class ViewUser extends Vue {
       applicationId: this.appId || '',
     }
     const result = await this.actDenySeller(params)
-    this.$toast.add({severity: 'info', summary: 'Success', detail: 'Đã từ chối đơn duyệt', life: 10000})
+    this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối đơn duyệt', life: 10000 })
     console.log(result)
   }
 }
