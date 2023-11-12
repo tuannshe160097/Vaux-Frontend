@@ -69,6 +69,7 @@ export default {
       'Textarea',
       'TieredMenu',
       'Toast',
+      'DataView'
     ],
     directives: [
       'Tooltip',
