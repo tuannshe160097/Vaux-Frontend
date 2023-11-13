@@ -8,6 +8,7 @@ import { $api, PathBind } from '~/utils'
 export default class StoreCategory extends VuexModule {
   private static readonly STATE_URL = {
     GET_CATEGORY: '/Category?pageNum=:pageNum&pageSize=:pageSize&search=:search',
+    GET_ALL_CATEGORY: '/Category?',
     ADD_CATEGORY: '/Mod/Category',
     UPDATE_CATEGORY: '/Mod/Category/:id',
     DELETE_CATEGORY: '/Mod/Category/:id',
@@ -18,7 +19,15 @@ export default class StoreCategory extends VuexModule {
   async actGetCategory(params: any): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreCategory.STATE_URL.GET_CATEGORY,{ pageNum: params?.pageNum, pageSize: params?.pageSize, search: params?.search})
-     return await $api.get(url, params) 
+     return await $api.get(url) 
+    } catch (error) {}
+  }
+  
+  @Action({ rawError: true })
+  async actGetAllCategory(): Promise<string | undefined> {
+    try {
+      const url = PathBind.transform(this.context, StoreCategory.STATE_URL.GET_ALL_CATEGORY)
+     return await $api.get(url) 
     } catch (error) {}
   }
 

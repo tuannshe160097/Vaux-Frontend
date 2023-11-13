@@ -26,8 +26,8 @@
           </div>
           <div class="field md:col-4 col-12">
             <label>Thể loại</label>
-            <Dropdown class="w-100" v-model="selectedCity1" :options="cities" optionLabel="name"
-              placeholder="Chọn thể loại" />
+            <Dropdown class="w-100" v-model="categoryId" :options="oCategories" optionLabel="name" optionValue="id"
+              placeholder="Chọn thể loại" :filter="true" filterPlaceholder="Tìm kiếm" />
           </div>
         </div>
         <div class="grid formgrid">
@@ -38,14 +38,14 @@
             của bạn lên hàng đầu.
           </span>
           <div class="field col-8  text-center">
-              <FileUpload name="demo[]" :customUpload="true" @uploader="myUploader" :multiple="true" accept="image/*"
-                :maxFileSize="5242880" :fileLimit="20" showUploadButton="false" showCancelButton="false" 
-                invalidFileSizeMessage="File ảnh được chấp nhận không quá 5mb"
-                invalidFileTypeMessage="Chỉ chấp nhận ảnh có đuôi là jpg hoặc png">
-                <template #empty>
-                  <p>Danh sách ảnh đã tải lên</p>
-                </template>
-              </FileUpload>
+            <FileUpload name="demo[]" :customUpload="true" @uploader="onUploadFile" @clear="onUploadFile" :multiple="true" accept="image/*"
+              :maxFileSize="5242880" :fileLimit="20" showUploadButton="false" showCancelButton="false" :auto="true"
+              invalidFileSizeMessage="File ảnh được chấp nhận không quá 5mb"
+              invalidFileTypeMessage="Chỉ chấp nhận ảnh có đuôi là jpg hoặc png">
+              <template #empty>
+                <p>Danh sách ảnh đã tải lên</p>
+              </template>
+            </FileUpload>
           </div>
           <div class="field col-4">
             <div class="card-header font-medium text-xl">Lưu ý</div>
@@ -74,7 +74,7 @@
           <span class="col-12">
           </span>
           <div class="field col-12 md:col-4">
-            <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reversePrice"/>
+            <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reversePrice" />
           </div>
         </div>
         <div class="grid formgrid">
@@ -84,9 +84,7 @@
         </div>
         <div class="grid formgrid">
           <div class="field col-12 flex justify-content-center">
-            <Button class="mx-2" label="Trao đổi với người bán hàng" />
-            <Button class="mx-2 btn-danger" label="Hủy bỏ" />
-            <Button class="mx-2 btn-success" label="Chấp Nhận" />
+            <Button class="mx-2 btn-success" label="Hoàn thành" @click="onSubmit()" />
           </div>
         </div>
       </div>
@@ -96,29 +94,60 @@
 
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-import { confirmDelete } from '~/utils/commons/helper'
-const nsStoreCategory = namespace('category/store-category')
+const nsStoreItem = namespace('seller/store-itemApplication')
+const nsCategory = namespace('category/store-category')
 
 @Component({
   middleware: ['authenticate'],
   layout: 'public',
-  meta: {
-    role: [3]
-  }
+  // meta: {
+  //   role: [3, 2]
+  // }
 })
-class CategoryList extends Vue {
+class CreateItem extends Vue {
+  name: string = ''
+  categoryId: number = 0
+  files: FileList | null = null
+  description: string = ''
+  reversePrice: string = ''
+  //---------------------------------------
   home = { icon: 'pi pi-home', to: '/homepage' }
   items = [
     { label: 'Kênh bán', to: '/Seller' },
     { label: 'Tạo sản phẩm' }
   ]
-  // methods: {
-  // 	onUpload() {
-  // 		this.$toast.add({severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000})
-  // 	}
-  // }
+  //----------------------------------------
+  oCategories: Array<any> | null = null
+
+  @nsCategory.Action
+  actGetAllCategory!: () => Promise<any>
+  @nsStoreItem.Action
+  actAddItemApplication!: (params: any) => Promise<any>
+  @nsStoreItem.Action
+  actGetCategory2!: (params: any) => Promise<any>
+
+  async mounted() {
+    const response = await this.actGetAllCategory()
+    this.oCategories = response.records
+  }
+  onUploadFile(event: any) {
+    // const inputElement = event.target as HTMLInputElement
+    // this.files = event.files
+
+    console.log(event)
+  }
+  async onSubmit(){
+    const params = {
+      name: this.name ,
+      categoryId: this.categoryId ,
+      reversePrice: this.reversePrice ,
+      description: this.description ,
+    }
+    const response = await this.actAddItemApplication(params)
+    console.log(response)
+  }
 }
-export default CategoryList
+export default CreateItem
 </script>
 
 <style lang="sass" scoped>
