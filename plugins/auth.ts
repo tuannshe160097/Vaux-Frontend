@@ -39,8 +39,11 @@ const auth: Plugin = ({ app, $auth, store }) => {
     return response
   }, (error) => {
 
-    if (error.response && [401, 403].includes(error.response.status)) {
+    if (error.response && error.response.status === 401) {
       $auth.logout()
+    }
+    else if (error.response && error.response.status === 403) {
+      store.commit('commons/store-error/setError', "Không có quyền thực hiện hành động này!")
     }
     const errorResponse: ErrorResponse = error.response.data
 
