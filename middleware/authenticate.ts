@@ -6,8 +6,14 @@ const authenticate: Middleware = async ({ store, redirect, route }) => {
   if (route.meta != undefined) {
     requiredRole = route.meta[0]?.role
   }
-  //console.log('Lta: ', requiredRole)
 
+  console.log('Lta: ', store.state['user-auth']['store-user'].user)
+  
+  // Đảm bảo requiredRole luôn là mảng
+  if (requiredRole != null && !Array.isArray(requiredRole)) {
+    debugger
+    requiredRole = [requiredRole];
+  }
   if (!store.$auth.loggedIn) {
     redirect('/authen/login');
   } else if (!store.state['user-auth']['store-user'].user) {
