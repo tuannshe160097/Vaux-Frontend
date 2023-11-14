@@ -31,16 +31,16 @@
                 <div class="grid formgrid">
                     <h4 class="col-12 font-bold text-brown">2. Hình ảnh</h4>
                     <div class="field col-8  text-center">
-                        <FileUpload name="demo[]" :customUpload="true" @uploader="" :multiple="true"
-                            accept="image/*" :maxFileSize="5242880" :fileLimit="20" showUploadButton="false"
-                            showCancelButton="false" :auto="true"
-                            invalidFileSizeMessage="File ảnh được chấp nhận không quá 5mb"
-                            invalidFileTypeMessage="Chỉ chấp nhận ảnh có đuôi là jpg hoặc png">
-                            <template #empty>
-                                <p>Danh sách ảnh đã tải lên</p>
-                            </template>
-                        </FileUpload>
-
+                        <div class="grid formgrid">
+                            <div v-for="(image, index) in images" :key="index" class="image-item col-3 mb-3">
+                                <div id="image-container" class="flex flex-column w-full">
+                                    <div class="image-container w-full bg-center bg-cover"
+                                        :style="{ backgroundImage: 'url(' + image.objectURL + ')' }"
+                                        style="padding-bottom: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="field col-4">
                         <div class="card-header font-medium text-xl">Lưu ý</div>
@@ -65,7 +65,7 @@
                     <span class="col-12">
                     </span>
                     <div class="field col-12 md:col-4">
-                        <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reversePrice" disabled />
+                        <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reservePrice" disabled />
                     </div>
                 </div>
                 <div class="grid formgrid">
@@ -94,7 +94,8 @@ class ViewUser extends Vue {
     categoryId: number = 0
     files: FileList | null = null
     description: string = ''
-    reversePrice: string = ''
+    reservePrice: string = ''
+    images: any[] = []
 
     dateCreated: string = ''
     dateUpdated: string = ''
@@ -108,23 +109,13 @@ class ViewUser extends Vue {
     @nsExpItem.Action
     actGetItemApplication!: (params: any) => Promise<any>
     @nsExpItem.Action
-    UPDATE_ITEMAPPLICATION!: (imageId: any) => Promise<any>
+    actGetItemApplicationImage!: (params: any) => Promise<any>
     @nsExpItem.Action
     GET_ITEMAPPLICATION_IMAGE!: (params: any) => Promise<any>
     @nsExpItem.Action
     ACCEPT_ITEMAPPLICATION!: (params: any) => Promise<any>
     @nsExpItem.Action
     REJECT_ITEMAPPLICATION!: (params: any) => Promise<any>
-
-
-
-    images: any = null
-    activeIndex: number = 0
-    displayCustom: boolean = false
-
-
-
-
 
     async mounted() {
         const response = await this.actGetAllCategory()
@@ -144,11 +135,36 @@ class ViewUser extends Vue {
             this.name = result.name
             this.categoryId = result.categoryId
             this.description = result.description
-            this.reversePrice = result.reversePrice
-            // this.name = result.name
+            this.reservePrice = result.reservePrice
+            for (const imgId of result.images) {
+                const result2 = await this.getImageUrl(this.itemId,imgId)
+                const imageInfo = { objectURL: result2, name: "result2.name" };
+                this.images.push(imageInfo);
+            }
         }
         else {
-            this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin application Id")
+            this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin Item Id")
+        }
+    }
+    async getImageUrl(itemId: any, imgId: any) {
+        try {
+            const params = {
+                itemId: itemId,
+                imgId: imgId,
+            }
+            const response = await this.actGetItemApplicationImage(params)
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(response);
+                reader.onloadend = () => {
+                    const base64Image = reader.result;
+                    resolve(base64Image);
+                };
+            });
+        } catch (error) {
+            this.$store.commit('commons/store-error/setError', "Error fetching or converting image")
+            console.error("Error fetching or converting image:", error);
+            return null;
         }
     }
     formatDate(dateString: string) {
@@ -159,10 +175,6 @@ class ViewUser extends Vue {
         return `${day}-${month}-${year}`
     }
 
-    imageClick(index:number) {
-        this.activeIndex = index;
-        this.displayCustom = true;
-    }
     async onAssign() {
     }
     async onAccept() {
