@@ -31,7 +31,7 @@ $table-bg-color: #FFFFFF
         top: 0
         z-index: 1
       .p-datatable-tbody
-        tr:nth-child(even)
+        tr:nth-child(even):not(.p-highlight)
           background-color : #FBF8F7
   .p-datatable-footer
     background-color: $table-bg-color
@@ -55,5 +55,5 @@ $table-bg-color: #FFFFFF
 table .p-datatable-thead
   background: #ead9d2
 
-.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even)
+.p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even):not(.p-highlight)
   background-color: #fbf8f7 !important

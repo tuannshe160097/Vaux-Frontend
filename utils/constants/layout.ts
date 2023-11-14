@@ -12,6 +12,10 @@ export const PAGE_MENU = [
   { id: 7, icon: 'category', label: 'Sản phẩm', hideToggled: true },
   { id: 8, to: '/expert/items', icon: 'user', label: 'Danh sách Sản phẩm', parentId: 7 },
   { id: 9, to: '/expert/items', icon: 'user', label: 'Danh sách Sản phẩm', parentId: 7 },
+  { id: 9,  icon: 'dashboard', label: 'Phiên đấu giá' },
+  { id: 10, to: '/admin/auction', icon: 'user', label: 'Danh sách', parentId: 9 },
+  { id: 11, to: '/admin/auction/create', icon: 'user', label: 'Tạo mới', parentId: 9 },
+
 ]
 
 export const PAGE_MENU_ADMIN = [
