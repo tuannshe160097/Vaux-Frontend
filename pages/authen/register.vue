@@ -1,42 +1,73 @@
-//register
 <template>
-  <section class="surface-0 flex align-items-center justify-content-center min-h-screen min-w-screen overflow-hidden p-2">
-    <div class="grid justify-content-center col-12 md:col-6 lg:col-4">
-      <div class="logo-block w-full mb-5">
-        <img class="pr-1" :src="require('~/assets/images/tag-user.png')" /><img class="pt-2"
-          :src="require('~/assets/images/logo-text-airtag.png')" />
-      </div>
-      <div class="w-full">
-        <label class="block font-bold mb-2" for="inputName"> Họ và tên </label>
-        <span class="p-input-icon-left mb-3 w-full">
-          <div class="icon icon--left icon-user bg-primary"></div>
-
-          <InputText class="w-full" id="inputName" type="text" v-model="name" />
-        </span>
-        <label class="block font-bold mb-2" for="inputSdt">
-          Số điện thoại
-        </label>
-        <span class="p-input-icon-left mb-3 w-full">
-          <div class="icon icon--left icon-sms bg-primary"></div>
-          <InputMask mask="9999999999" class="w-full" id="inputSdt" v-model="sdt" slotChar=" " />
-        </span>
-        <label class="block font-bold mb-2" for="inputPassword"> OTP </label>
-        <span class="p-input-icon-left mb-6 w-full">
-          <div class="icon icon--left icon-lock-open bg-primary"></div>
-          <InputText id="inputPassword" type="text" v-model="otp"></InputText>
-          <Button label="Send Otp" @click="sendOtp"></Button>
-        </span>
-        <Button class="bg-primary w-full p-3 mb-3" type="button" label="Đăng ký" @click="callRegister"></Button>
-        <div class="flex align-items-center justify-content-center mb-5">
-          <a href="/authen/login" class="ml-5 text-sm text-center text-primary cursor-pointer">Đã có tài khoản?</a>
+  <div class="wrapper">
+    <div class="container main">
+      <div class="grid row">
+        <div class="md:col-6 side-image">
+          <div class="signup-image"></div>
+        </div>
+        <div class="md:col-6 right">
+          <div class="signup-content">
+            <div class="signup-form">
+              <h2 class="form-title">Đăng ký</h2>
+              <form class="signin-form">
+                <div class="form-group mb-3">
+                  <label class="block label" for="inputName" >Họ và tên</label>
+                  <InputText class="form-control w-full" id="inputName" type="text" v-model="name" placeholder="Họ và tên" />
+                </div>
+                <div class="form-group mb-3">
+                  <label class="block label" for="inputSdt">Số điện thoại</label>
+                  <InputMask
+                    mask="9999999999"
+                    class="w-full form-control"
+                    id="inputSdt" v-model="sdt" slotChar=" "
+                    placeholder="Số điện thoại"
+                  />
+                </div>
+                <div class="form-group" for="inputPassword">
+                  <Button
+                    class="p-button-outlined form-control btn btn-primary1 px-3"
+                    @click="sendOtp"
+                  >
+                    Gửi mã OTP
+                  </Button>
+                </div>
+                <div class="form-group mb-3">
+                  <label class="block label">Nhập mã OTP</label>
+                  <InputText
+                    id="inputPassword"
+                    v-model="otp"
+                    type="text"
+                    class="w-full form-control"
+                    placeholder="Mã OTP"
+                  />
+                </div>
+                <div class="form-group">
+                  <Button
+                    type="button"
+                    class="form-control btn btn-primary submit px-3"
+                    @click="callRegister"
+                  >
+                  Đăng ký
+                  </Button>
+                </div>
+                <div class="form-group d-md-flex">
+                  <div class="w-50 text-md-right">
+                    <a href="/authen/login">Bạn đã có tài khoản?</a>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
 </template>
+
 <script lang='ts'>
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 const nsStoreUser = namespace('user-auth/store-user')
+
 @Component({
   layout: 'public',
   middleware: ['interception'],
@@ -46,10 +77,13 @@ class Register extends Vue {
   otp: string = ''
   name: string = ''
   checked: boolean = true
+
   @nsStoreUser.Action
   actRegister !: (params: { phone: string, name: string }) => Promise<any>
+
   @nsStoreUser.Action
   actVerify !: (params: any) => Promise<string>
+
   async sendOtp() {
     if (this.sdt && this.name) {
       const params = {
@@ -58,31 +92,143 @@ class Register extends Vue {
       }
       const result = await this.actRegister(params)
       if (result !== undefined && result !== null) {
-        //this.$store.commit('commons/store-error/setError', 'Đăng ký thành công. Vui lòng xác nhận OTP để tiếp tục')
-        this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đăng ký thành công. Vui lòng xác nhận OTP để tiếp tục', life: 10000 })
+        this.$store.commit('commons/store-error/setError', 'Đăng ký thành công. Vui lòng xác nhận OTP để tiếp tục')
       }
     } else {
       this.$store.commit('commons/store-error/setError', 'Vui lòng nhập Số điện thoại và Tên để đăng ký')
     }
   }
+
   async callRegister() {
-    const params = {
-      otp: this.otp,
-      phone: this.sdt
-    }
+      const params = {
+        otp: this.otp,
+        phone: this.sdt
+      }
     let result = await this.actVerify(params)
     if (result !== undefined && result !== null) {
-      //this.$store.commit('commons/store-error/setError', 'Xác nhận thành công. Vui lòng đăng nhập lại để tiếp tục')
-      this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Xác nhận thành công. Vui lòng đăng nhập lại để tiếp tục', life: 10000 })
+      this.$store.commit('commons/store-error/setError', 'Xác nhận thành công. Vui lòng đăng nhập lại để tiếp tục')
       this.$router.push('/authen/login')
     }
   }
 }
 export default Register
 </script>
-<style lang='sass'>
-.logo-block
-  height: 54px
-  img
-    height: 100%
+
+<style lang='sass' scoped>
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap')
+
+.signup-content
+  padding: 80px 0
+
+.signup-form
+  margin-left: 75px
+  margin-right: 75px
+  padding-left: 34px
+
+.signup-image
+  margin-top: 30px
+
+*
+  font-family: 'Poppins', sans-serif
+
+.wrapper
+  background: #ececec
+  padding: 0 20px 0 20px
+
+.main
+  display: flex
+  justify-content: center
+  align-items: center
+  min-height: 100vh
+
+.side-image
+  background-image: url('assets/images/IMG_3322.png')
+  max-width: 100%
+  height: 550px
+  background-repeat: no-repeat
+  background-size: 100% 100%
+
+.row
+  width: 900px
+  height: 550px
+  border-radius: 10px
+  background: #fff
+  padding: 0px
+  box-shadow: 5px 5px 10px 1px rgba(0, 0, 0, 0.2)
+
+.text
+  position: absolute
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
+
+.right
+  display: flex
+  justify-content: center
+  align-items: center
+  position: relative
+
+.signin
+  text-align: center
+  font-size: small
+  margin-top: 25px
+
+.form-group
+  margin-bottom: 1rem
+
+*, *::before, *::after
+  -webkit-box-sizing: border-box
+  box-sizing: border-box
+
+div
+  display: block
+
+.form-group .label
+  font-size: 12px
+  text-transform: uppercase
+  letter-spacing: 1px
+  color: #000
+  font-weight: 700
+
+
+label
+  display: inline-block
+  margin-bottom: 0.5rem
+  cursor: default
+.d-md-flex
+  display: -webkit-box !important
+  display: -ms-flexbox !important
+  display: flex !important
+
+.form-control
+  height: 48px
+  background: rgba(0, 0, 0, 0.05)
+  color: #000
+  font-size: 16px
+  border-radius: 50px
+  -webkit-box-shadow: none
+  box-shadow: none
+  border: 1px solid transparent
+  padding-left: 20px
+  padding-right: 20px
+  -webkit-transition: all 0.2s ease-in-out
+  -o-transition: all 0.2s ease-in-out
+  transition: all 0.2s ease-in-out
+
+  display: block
+  width: 270px
+  height: calc(1.5em + 0.75rem + 5px)
+  padding: 0.375rem 0.75rem
+  font-size: 1rem
+  font-weight: 400
+  line-height: 1.5
+
+.btn.btn-primary
+  border: 1px solid #f35588
+  color: #fff
+  background: var(--primary-color) !important
+.btn.btn-primary1
+  border: 1px solid #B0926A
+  color: black
+  background: white !important
 </style>
