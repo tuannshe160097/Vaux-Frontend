@@ -17,7 +17,7 @@ export default {
     async redirect() {
       const role = this.$cookies.get('auth.role')
       if (role == 1 || role == 2 || role == 5) {
-        this.$router.push('/dashboard')
+        this.$router.push('/admin/dashboard')
       } else if (role == 3 || role == 4) {
         this.$router.push('/homepage')
       } else {
