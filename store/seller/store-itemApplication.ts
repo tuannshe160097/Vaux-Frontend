@@ -61,15 +61,15 @@ export default class StoreItemApplication extends VuexModule {
   async actGetItemApplicationImage(params: any): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.GET_ITEMAPPLICATION_IMAGE, { itemId: params?.itemId, imgId: params?.imgId })
-      return await $api.get(url,{responseType: 'blob'})
+      return await $api.get(url, { responseType: 'blob' })
     } catch (error) { }
   }
 
   @Action({ rawError: true })
   async actAddItemApplicationImage(params: any): Promise<string | undefined> {
     try {
-      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.ADD_ITEMAPPLICATION_IMAGE, { itemId: params?.itemId })
-      return await $api.post(url, params, {
+      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.ADD_ITEMAPPLICATION_IMAGE, { itemId: params.itemId })
+      return await $api.post(url, params.formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
     } catch (error) { }

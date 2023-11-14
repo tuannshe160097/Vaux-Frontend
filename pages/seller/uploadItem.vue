@@ -82,7 +82,7 @@
           <span class="col-12">
           </span>
           <div class="field col-12 md:col-4">
-            <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reversePrice" />
+            <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reservePrice" />
           </div>
         </div>
         <div class="grid formgrid">
@@ -116,7 +116,7 @@ class CreateItem extends Vue {
   name: string = ''
   categoryId: number = 0
   description: string = ''
-  reversePrice: string = ''
+  reservePrice: string = ''
 
   files: File[] = []
   images: any[] = []
@@ -135,7 +135,7 @@ class CreateItem extends Vue {
   @nsStoreItem.Action
   actAddItemApplication!: (params: any) => Promise<any>
   @nsStoreItem.Action
-  actGetCategory2!: (params: any) => Promise<any>
+  actAddItemApplicationImage!: (params: any) => Promise<any>
 
   async mounted() {
     const response = await this.actGetAllCategory()
@@ -144,7 +144,7 @@ class CreateItem extends Vue {
   onUploadFile(event: any) {
     const files: FileList = event.target.files;
     const fileList = Array.from(files);
-    
+
     if (files != null) {
       for (const file of fileList) {
         const objectURL = URL.createObjectURL(file);
@@ -157,28 +157,32 @@ class CreateItem extends Vue {
     console.log(this.files)
   }
   removeImage(index: number) {
-    console.log("removeImage: ", index)
     this.$delete(this.images, index);
     this.$delete(this.files, index);
   }
-  onSelectedFiles(event: any) {
-    this.files = event.files
-    console.log("onSelectedFiles: ", event)
-  }
-
-  onRemoveTemplatingFile(file: any, removeFileCallback: any, index: any) {
-    console.log("onRemoveTemplatingFile: ", file)
-    removeFileCallback(index)
-  };
   async onSubmit() {
     const params = {
       name: this.name,
       categoryId: this.categoryId,
-      reversePrice: this.reversePrice,
+      reservePrice: this.reservePrice,
       description: this.description,
     }
     const response = await this.actAddItemApplication(params)
-    console.log(response)
+    if (response) {
+      const itemId = response.id
+      const formData = new FormData();
+      for (const file of this.files) {
+        formData.append('images', file, file.name)
+      }
+      const param2s = {
+        formData: formData,
+        itemId: itemId,
+      }
+      const result = await this.actAddItemApplicationImage(param2s)
+      if (result) {
+        this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã thêm sản phẩm mới', life: 10000 })
+      }
+    }
   }
 }
 export default CreateItem
