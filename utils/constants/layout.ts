@@ -40,7 +40,6 @@ export const PAGE_MENU_MOD = [
 
 export const PAGE_MENU_EXPERT = [
   { id: 1, to: '/dashboard', icon: 'dashboard', label: 'Thống kê', hideToggled: true },
-  { id: 6, to: '/admin/category', icon: 'category', label: 'Thể loại', hideToggled: true },
   { id: 7, icon: 'category', label: 'Sản phẩm', hideToggled: true },
   { id: 8, to: '/expert/items', icon: 'user', label: 'Danh sách Sản phẩm', parentId: 7 },
   // { id: 9, to: '/expert/items', icon: 'user', label: 'Danh sách Sản phẩm', parentId: 7 },

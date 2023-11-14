@@ -70,7 +70,18 @@
                 </div>
                 <div class="grid formgrid">
                     <div class="field col-12 flex justify-content-center">
-                        <Button class="mx-2 btn-success" label="Assign" @click="onAssign()" />
+                        <div v-if="showAssign">
+                            <Button class="mx-2 btn-success border-10 p-3" label="Assign" @click="onAssign()" />
+                        </div>
+                        <div v-if="showUnassign">
+                            <Button class="mx-2 btn-warning border-10 p-3" label="Unassign" @click="onUnassign()" />
+                        </div>
+                        <div v-if="showDeny">
+                            <Button class="mx-2 btn-danger border-10 p-3" label="Deny" @click="onDeny()" />
+                        </div>
+                        <div v-if="showAccept">
+                            <Button class="mx-2 btn-success border-10 p-3" label="Accept" @click="onAccept()" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -81,8 +92,10 @@
 <script lang="ts" >
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { GENDER_OPTION } from '~/utils'
+import { User } from '~/models/User'
 const nsExpItem = namespace('expert/store-itemApplication')
 const nsCategory = namespace('category/store-category')
+const nsUser = namespace('user-auth/store-user')
 
 @Component({
     middleware: ['authenticate'],
@@ -96,13 +109,23 @@ class ViewUser extends Vue {
     description: string = ''
     reservePrice: string = ''
     images: any[] = []
+    expertId: number | null = null
+    status: number | null = null
 
     dateCreated: string = ''
     dateUpdated: string = ''
     dateDeleted: string = ''
 
+    showAssign: boolean = false
+    showUnassign: boolean = false
+    showDeny: boolean = false
+    showAccept: boolean = false
+
     //option data
     oCategories: Array<any> | null = null
+
+    @nsUser.State('user')
+    user!: User.Model | undefined
 
     @nsCategory.Action
     actGetAllCategory!: () => Promise<any>
@@ -111,11 +134,13 @@ class ViewUser extends Vue {
     @nsExpItem.Action
     actGetItemApplicationImage!: (params: any) => Promise<any>
     @nsExpItem.Action
-    GET_ITEMAPPLICATION_IMAGE!: (params: any) => Promise<any>
+    actAssignItemApplication!: (params: any) => Promise<any>
     @nsExpItem.Action
-    ACCEPT_ITEMAPPLICATION!: (params: any) => Promise<any>
+    actUnassignItemApplication!: (params: any) => Promise<any>
     @nsExpItem.Action
-    REJECT_ITEMAPPLICATION!: (params: any) => Promise<any>
+    actAcceptItemApplication!: (params: any) => Promise<any>
+    @nsExpItem.Action
+    actRejectItemApplication!: (params: any) => Promise<any>
 
     async mounted() {
         const response = await this.actGetAllCategory()
@@ -136,8 +161,11 @@ class ViewUser extends Vue {
             this.categoryId = result.categoryId
             this.description = result.description
             this.reservePrice = result.reservePrice
+            this.expertId = result.expertId
+            this.status = result.status
+            this.displayAction()
             for (const imgId of result.images) {
-                const result2 = await this.getImageUrl(this.itemId,imgId)
+                const result2 = await this.getImageUrl(this.itemId, imgId)
                 const imageInfo = { objectURL: result2, name: "result2.name" };
                 this.images.push(imageInfo);
             }
@@ -176,10 +204,61 @@ class ViewUser extends Vue {
     }
 
     async onAssign() {
+        const params = {
+            itemId: this.itemId || '',
+        }
+        const result2 = await this.actAssignItemApplication(params)
+        if (result2) {
+            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã tiếp nhận xử lý sản phẩm', life: 10000 })
+            this.displayAction()
+        }
+    }
+    async onUnassign() {
+        const params = {
+            itemId: this.itemId || '',
+        }
+        const result2 = await this.actUnassignItemApplication(params)
+        if (result2) {
+            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã tiếp hủy nhận xử lý sản phẩm', life: 10000 })
+            this.displayAction()
+        }
     }
     async onAccept() {
+        const params = {
+            itemId: this.itemId || '',
+        }
+        const result2 = await this.actAcceptItemApplication(params)
+        if (result2) {
+            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã đồng ý sản phẩm', life: 10000 })
+            this.displayAction()
+        }
     }
     async onDeny() {
+        const params = {
+            itemId: this.itemId || '',
+        }
+        const result2 = await this.actRejectItemApplication(params)
+        if (result2) {
+            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối sản phẩm', life: 10000 })
+            this.displayAction()
+        }
+    }
+    displayAction() {
+        this.showAssign = false
+        this.showUnassign = false
+        this.showAccept = false
+        this.showDeny = false
+        if (this.status != 1) {
+            console.log('here: ')
+        }
+        else if (this.expertId == null) {
+            this.showAssign = true
+        }
+        else if (this.expertId == this.user?.id) {
+            this.showUnassign = true
+            this.showAccept = true
+            this.showDeny = true
+        }
     }
 }
 export default ViewUser

@@ -210,7 +210,7 @@ class ItemList extends Vue {
     }
     const response = await this.actSearchItemApplication(params)
     if (response) {
-      console.log(response.records)
+      console.log(response)
       this.boxData = response.records
       this.totalRecords = response.totalRecords
     }

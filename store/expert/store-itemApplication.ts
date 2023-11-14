@@ -69,7 +69,7 @@ export default class StoreItemApplication extends VuexModule {
   async actAcceptItemApplication(params: any): Promise<string | undefined> {
       try {
           const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.ACCEPT_ITEMAPPLICATION, { itemId: params?.itemId })
-          return await $api.patch(url, params.content)
+          return await $api.patch(url)
       } catch (error) { }
   }
 
@@ -77,8 +77,7 @@ export default class StoreItemApplication extends VuexModule {
   async actRejectItemApplication(params: any): Promise<string | undefined> {
       try {
           const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.REJECT_ITEMAPPLICATION, { itemId: params?.itemId })
-          return await $api.patch(url, params.content)
+          return await $api.patch(url )
       } catch (error) { }
   }
-
 }
