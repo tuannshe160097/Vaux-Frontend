@@ -88,6 +88,7 @@
               <div class="field col-12">
                 <label>{{ fieldLabels.content }}</label>
                 <Textarea class="text-left w-full" v-model="content" rows="15" cols="100"
+                  :class="{ 'input-invalid': errors.content }"
                   placeholder="Ví dụ: Tôi sẽ bán các sản phẩm đồ gia dụng cổ" />
               </div>
               <div class="field col-12">

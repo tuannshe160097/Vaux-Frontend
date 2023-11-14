@@ -222,7 +222,7 @@ class ItemList extends Vue {
       search: this.search,
       status: this.status,
     }
-    const response = await this.actGetAllSeller(params)
+    const response = await this.actSearchItemApplication(params)
     console.log(response)
     if (response) {
       this.boxData = response.records

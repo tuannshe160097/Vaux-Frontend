@@ -1,4 +1,3 @@
-// View User Detail
 <template>
     <div class="box-page-container flex flex-column">
         <div class="header flex justify-content-between container">
@@ -41,25 +40,6 @@
                                 <p>Danh sách ảnh đã tải lên</p>
                             </template>
                         </FileUpload>
-                        <Galleria :value="images" :activeIndex.sync="activeIndex" :numVisible="7"
-                            containerStyle="max-width: 850px" :circular="true" :fullScreen="true" :showItemNavigators="displayCustom"
-                            :showThumbnails="false" :visible.sync="false">
-                            <template #item="slotProps">
-                                <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt"
-                                    style="width: 100%; display: block;" />
-                            </template>
-                            <template #thumbnail="slotProps">
-                                <img :src="slotProps.item.thumbnailImageSrc" :alt="slotProps.item.alt"
-                                    style="display: block;" />
-                            </template>
-                        </Galleria>
-
-                        <div v-if="images" class="grid" style="max-width: 400px;">
-                            <div v-for="(image, index) of images" class="col-3" :key="index">
-                                <img :src="image.thumbnailImageSrc" :alt="image.alt" style="cursor: pointer"
-                                    @click="imageClick(index)" />
-                            </div>
-                        </div>
 
                     </div>
                     <div class="field col-4">
