@@ -38,14 +38,22 @@
             của bạn lên hàng đầu.
           </span>
           <div class="field col-8  text-center">
-            <FileUpload name="demo[]" :customUpload="true" @uploader="onUploadFile" @clear="onUploadFile" :multiple="true" accept="image/*"
-              :maxFileSize="5242880" :fileLimit="20" showUploadButton="false" showCancelButton="false" :auto="true"
-              invalidFileSizeMessage="File ảnh được chấp nhận không quá 5mb"
-              invalidFileTypeMessage="Chỉ chấp nhận ảnh có đuôi là jpg hoặc png">
-              <template #empty>
-                <p>Danh sách ảnh đã tải lên</p>
-              </template>
-            </FileUpload>
+            <input type="file" @change="onUploadFile($event)" accept="image/*" multiple />
+            <div class="grid formgrid">
+              <div v-for="(image, index) in images" :key="index" class="image-item col-3">
+                <div id="image-container" class="flex flex-column w-full">
+                  <div class="image-container w-full bg-center bg-cover"
+                    :style="{ backgroundImage: 'url(' + image.objectURL + ')' }" style="padding-bottom: 100%;">
+                  </div>
+                  <div class="image-info text-left white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                    <span class=" text-overflow-ellipsis">Name: {{ image.name }}</span>
+                  </div>
+                  <div class="product-list-action p-2 w-100 text-right">
+                    <Button class="btn" @click="removeImage(index)" label="Xóa" />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="field col-4">
             <div class="card-header font-medium text-xl">Lưu ý</div>
@@ -107,9 +115,12 @@ const nsCategory = namespace('category/store-category')
 class CreateItem extends Vue {
   name: string = ''
   categoryId: number = 0
-  files: FileList | null = null
   description: string = ''
   reversePrice: string = ''
+
+  files: File[] = []
+  images: any[] = []
+
   //---------------------------------------
   home = { icon: 'pi pi-home', to: '/homepage' }
   items = [
@@ -131,17 +142,40 @@ class CreateItem extends Vue {
     this.oCategories = response.records
   }
   onUploadFile(event: any) {
-    // const inputElement = event.target as HTMLInputElement
-    // this.files = event.files
+    const files: FileList = event.target.files;
+    const fileList = Array.from(files);
+    
+    if (files != null) {
+      for (const file of fileList) {
+        const objectURL = URL.createObjectURL(file);
+        const imageInfo = { objectURL, name: file.name, size: file.size };
+        this.images.push(imageInfo);
+        this.files.push(file);
+      }
+    }
 
-    console.log(event)
+    console.log(this.files)
   }
-  async onSubmit(){
+  removeImage(index: number) {
+    console.log("removeImage: ", index)
+    this.$delete(this.images, index);
+    this.$delete(this.files, index);
+  }
+  onSelectedFiles(event: any) {
+    this.files = event.files
+    console.log("onSelectedFiles: ", event)
+  }
+
+  onRemoveTemplatingFile(file: any, removeFileCallback: any, index: any) {
+    console.log("onRemoveTemplatingFile: ", file)
+    removeFileCallback(index)
+  };
+  async onSubmit() {
     const params = {
-      name: this.name ,
-      categoryId: this.categoryId ,
-      reversePrice: this.reversePrice ,
-      description: this.description ,
+      name: this.name,
+      categoryId: this.categoryId,
+      reversePrice: this.reversePrice,
+      description: this.description,
     }
     const response = await this.actAddItemApplication(params)
     console.log(response)
@@ -171,4 +205,6 @@ export default CreateItem
 
 .element
   @include overflow-ellipsis(400px)
+.p-orderlist .p-orderlist-controls 
+  display: none
 </style>
