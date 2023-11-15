@@ -66,6 +66,30 @@
                 data.endDate | dateTimeFomat
               }}</template>
             </Column>
+                        <Column
+              field="status"
+              header="TRẠNG THÁI"
+              sortable="sortable"
+              className="p-text-right"
+            >
+              <template #body="{ data }">
+                <div>
+                  <Tag
+                    class="px-2 bg-green-100"
+                    v-if="!data.deleted"
+                    severity="success"
+                    ><span class="font-bold text-green-400 font-size-small"
+                      >Đang hoạt động</span
+                    ></Tag
+                  >
+                  <Tag class="px-2 surface-200" v-else severity="success"
+                    ><span class="font-bold text-400 font-size-small"
+                      >Dừng hoạt động</span
+                    ></Tag
+                  >
+                </div>
+              </template>
+        </Column>
             <Column
               :exportable="false"
               header="Hoạt động"

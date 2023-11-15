@@ -67,7 +67,6 @@
 <script lang='ts'>
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 const nsStoreUser = namespace('user-auth/store-user')
-
 @Component({
   layout: 'public',
   middleware: ['interception'],
@@ -77,13 +76,10 @@ class Register extends Vue {
   otp: string = ''
   name: string = ''
   checked: boolean = true
-
   @nsStoreUser.Action
   actRegister !: (params: { phone: string, name: string }) => Promise<any>
-
   @nsStoreUser.Action
   actVerify !: (params: any) => Promise<string>
-
   async sendOtp() {
     if (this.sdt && this.name) {
       const params = {
@@ -92,21 +88,22 @@ class Register extends Vue {
       }
       const result = await this.actRegister(params)
       if (result !== undefined && result !== null) {
-        this.$store.commit('commons/store-error/setError', 'Đăng ký thành công. Vui lòng xác nhận OTP để tiếp tục')
+        //this.$store.commit('commons/store-error/setError', 'Đăng ký thành công. Vui lòng xác nhận OTP để tiếp tục')
+        this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đăng ký thành công. Vui lòng xác nhận OTP để tiếp tục', life: 10000 })
       }
     } else {
-      this.$store.commit('commons/store-error/setError', 'Vui lòng nhập Số điện thoại và Tên để đăng ký')
+      this.$store.commit('commons/store-error/setError', 'Vui lòng nhập Họ và tên và Số điện thoại')
     }
   }
-
   async callRegister() {
-      const params = {
-        otp: this.otp,
-        phone: this.sdt
-      }
+    const params = {
+      otp: this.otp,
+      phone: this.sdt
+    }
     let result = await this.actVerify(params)
     if (result !== undefined && result !== null) {
-      this.$store.commit('commons/store-error/setError', 'Xác nhận thành công. Vui lòng đăng nhập lại để tiếp tục')
+      //this.$store.commit('commons/store-error/setError', 'Xác nhận thành công. Vui lòng đăng nhập lại để tiếp tục')
+      this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Xác nhận thành công. Vui lòng đăng nhập lại để tiếp tục', life: 10000 })
       this.$router.push('/authen/login')
     }
   }

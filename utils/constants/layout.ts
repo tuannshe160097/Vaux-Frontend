@@ -5,17 +5,15 @@ export enum MENU_ACTION {
 export const PAGE_MENU = [
   { id: 1, to: '/admin/dashboard', icon: 'dashboard', label: 'Thống kê', hideToggled: true },
   { id: 2, icon: 'account', label: 'Quản lý tài khoản' },
-  { id: 3, to: '/admin/sellerApplication', icon: 'admin', label: 'Người bán', parentId: 2 },
-  { id: 4, to: '/admin/user/detail', icon: 'expert', label: 'Tạo tài khoản', parentId: 2 },
+  { id: 3, to: '/admin/sellerApplication', icon: 'seller', label: 'Người bán', parentId: 2 },
+  { id: 4, to: '/admin/user/detail', icon: 'new-page', label: 'Tạo tài khoản', parentId: 2 },
   { id: 5, to: '/admin/user', icon: 'user', label: 'Danh sách người dùng', parentId: 2 },
   { id: 6, to: '/admin/category', icon: 'category', label: 'Thể loại', hideToggled: true },
-  { id: 7, icon: 'category', label: 'Sản phẩm', hideToggled: true },
-  { id: 8, to: '/expert/items', icon: 'user', label: 'Danh sách Sản phẩm', parentId: 7 },
-  { id: 9, to: '/expert/items', icon: 'user', label: 'Danh sách Sản phẩm', parentId: 7 },
-  { id: 9,  icon: 'dashboard', label: 'Phiên đấu giá' },
-  { id: 10, to: '/admin/auction', icon: 'user', label: 'Danh sách', parentId: 9 },
-  { id: 11, to: '/admin/auction/create', icon: 'user', label: 'Tạo mới', parentId: 9 },
-
+  { id: 7, icon: 'product', label: 'Sản phẩm', hideToggled: true },
+  { id: 8, to: '/expert/items', icon: 'list-product', label: 'Danh sách Sản phẩm', parentId: 7 },
+  { id: 9,  icon: 'auction', label: 'Phiên đấu giá' },
+  { id: 10, to: '/admin/auction', icon: 'regulatory', label: 'Danh sách', parentId: 9 },
+  { id: 11, to: '/admin/auction/create', icon: 'new-page', label: 'Tạo mới', parentId: 9 },
 ]
 
 export const PAGE_MENU_ADMIN = [

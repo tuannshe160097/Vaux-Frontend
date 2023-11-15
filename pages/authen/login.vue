@@ -73,7 +73,6 @@ class Login extends Vue {
 
   sPhoneNumber: string = ''
   sOTP: string | null = null
-  isCheckedSavePw = false
 
   @nsStoreUser.Action
   actSendOTPCode!: (phone: string) => Promise<string>
@@ -82,6 +81,7 @@ class Login extends Vue {
     if (this.sPhoneNumber) {
       this.sOTP = await this.actSendOTPCode(this.sPhoneNumber)
       if (this.sOTP !== undefined && this.sOTP !== null) {
+        this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Mã OTP đã được gửi tới số điện thoại của bạn', life: 10000 })
         //alert(`Mã OTP đã được gửi tới số điện thoại của bạn, ${this.sPhoneNumber}`);
       }
     } else {
@@ -106,7 +106,7 @@ class Login extends Vue {
         this.$router.push('/')
       }
     } catch (error) {
-      this.$store.commit('commons/store-error/setError', error.response.data)
+      this.$store.commit('commons/store-error/setError', 'Vui lòng hoàn thành các bước để đăng nhập')
     }
 
   }
