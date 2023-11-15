@@ -121,6 +121,7 @@
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import CreateAuction from '~/components/dialog/CreateAuction.vue'
+import { getDateFormat } from '~/utils/commons/helper'
 const nsStoreAuction = namespace('auction/store-auction')
 const dayjs = require('dayjs')
 
@@ -132,8 +133,8 @@ const dayjs = require('dayjs')
   }
 })
 class EditAuctionList extends Vue {
-  startDate = null
-  endDate = null
+  startDate: any = null
+  endDate: any = null
   displayAddItem: boolean = false
   selectedItemsApproved: any = []
 
@@ -150,8 +151,8 @@ class EditAuctionList extends Vue {
     } else {
       const response = await this.actGetAuctionById({ id: auctionId })
       if (response) {
-        this.startDate = response?.startDate ? dayjs(new Date(response?.startDate)).format('DD-MM-YYYY') : null
-        this.endDate = response?.endDate ? dayjs(new Date(response?.endDate)).format('DD-MM-YYYY') : null
+        this.startDate = response?.startDate ? dayjs(response?.startDate).format('DD-MM-YYYY') : null
+        this.endDate = response?.endDate ? dayjs(response?.endDate).format('DD-MM-YYYY') : null
         this.selectedItemsApproved = response?.items?.map((item: any) => {
           return {
             id: item?.id,
@@ -184,17 +185,7 @@ class EditAuctionList extends Vue {
   validateThrowMessage() {
     if (!this.startDate || !this.endDate) {
       return 'Vui lòng nhập đầy đủ thông tin thời gian'
-    } else {
-      const start = dayjs(this.startDate);
-      const end = dayjs(this.endDate);
-      console.log(this.startDate);
-      console.log(this.endDate);
-      console.log('start.isAfter(end)', start.isAfter(end));
-      
-      if (start.isAfter(end)) {
-        return 'Thời gian kết thúc phải sau thời gian bắt đầu'
-      }
-    }
+    } 
     if (!this.selectedItemsApproved || !this.selectedItemsApproved.length) {
       return 'Vui lòng thêm sản phẩm'
     }
@@ -214,8 +205,8 @@ class EditAuctionList extends Vue {
 
     const response = await this.actUpdateAuction({
       id: this.$route?.params?.id,
-      startDate: this.startDate,
-      endDate: this.endDate,
+      startDate: getDateFormat(this.startDate),
+      endDate: getDateFormat(this.endDate),
       itemIds: this.selectedItemsApproved.map((item: any) => item.id)
     })
 

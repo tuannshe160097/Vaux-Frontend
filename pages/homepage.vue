@@ -9,6 +9,7 @@ import { Component, namespace, Vue } from 'nuxt-property-decorator'
 
 @Component({
     layout: 'public',
+    meta: { isPublic: true }
 })
 class homepage extends Vue {
 }
