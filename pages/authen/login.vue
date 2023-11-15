@@ -66,7 +66,6 @@ import { Component, namespace, Vue } from 'nuxt-property-decorator'
 const nsStoreUser = namespace('user-auth/store-user')
 
 @Component({
-  layout: 'public',
   middleware: ['interception'],
 })
 class Login extends Vue {
