@@ -12,7 +12,7 @@ export function confirmDelete(_this: any, accept: any) {
   });
 }
 
-export function getDateFormat(date: string | Date) {
+export function getDateFormat(date: string | Date | null) {
   if (!date) {
     return null
   }
