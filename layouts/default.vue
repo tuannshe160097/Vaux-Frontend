@@ -1,6 +1,5 @@
 <template>
   <div class="layout-wrapper.layout-static">
-    <MenuNavbar />
     <div class="main-container">
       <Nuxt />
       <Toast />
@@ -15,7 +14,6 @@ const nsSidebar = namespace('layout/store-sidebar')
 const nsStoreError = namespace('commons/store-error')
 
 @Component({
-  middleware: 'authenticate',
   components: { MenuNavbar }
 })
 class Dashboard extends Vue {
@@ -42,10 +40,9 @@ export default Dashboard
 
 <style lang="sass" scoped>
 .main-container
-  margin-top:70px
   height: auto
 section
-  max-width:1200px
+  max-width: 1200px
   margin : auto
 .w-100
   width: 100%
