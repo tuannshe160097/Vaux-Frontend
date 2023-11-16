@@ -49,6 +49,7 @@ export default {
     theme:      'bootstrap4-light-blue',
     ripple:     true,
     components: [
+      'BlockUI',
       'Button',
       'Breadcrumb',
       'Calendar',
