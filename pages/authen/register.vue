@@ -114,7 +114,6 @@ export default Register
 </script>
 
 <style lang='sass' scoped>
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap')
 
 .signup-content
   padding: 80px 0
@@ -126,9 +125,6 @@ export default Register
 
 .signup-image
   margin-top: 30px
-
-*
-  font-family: 'Poppins', sans-serif
 
 .wrapper
   background: #ececec

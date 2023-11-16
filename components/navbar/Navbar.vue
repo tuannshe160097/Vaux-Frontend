@@ -60,7 +60,7 @@
 				<a href="#" class="desktop-item"><span>{{ userDisplayName }}</span></a>
 				<div class="relative">
 					<ul class="drop-menu2 absolute ">
-						<li><a href="#">Profile</a></li>
+						<li><a href="/account/profile">Profile</a></li>
 						<li><a @click="logout()">Logout</a></li>
 					</ul>
 				</div>

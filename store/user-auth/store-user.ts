@@ -56,5 +56,14 @@ export default class StoreUser extends VuexModule {
 
     }
   }
+  @Action({ rawError: true })
+  async actUpdateProfile(params: any): Promise<string | undefined> {
+    try {
+      const url = PathBind.transform(this.context, StoreUser.STATE_URL.USER_GET)
+      return await $api.put(url, params)
+    } catch (error) {
+
+    }
+  }
 
 }
