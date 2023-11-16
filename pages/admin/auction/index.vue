@@ -14,17 +14,26 @@
       </div>
     </div>
     <div class="card-body">
-      <div class="row justify-content-between">
-        <div class="col-fixed">
-          <div class="grid formgrid">
-            <div class="col field justify-content-end flex pt-5">
-              <Button
-                class=""
-                label="Thêm Mới"
-                style="height: 36px"
-                @click="onCreateAuction"
-              />
+      <div>
+        <div class="grid">
+          <div class="col grid flex justify-content-between">
+            <div class="col-5">
+              <Calendar class="w-full" v-model="startDate" dateFormat="dd-mm-yy" placeholder="Thời gian bắt đầu"/>
             </div>
+            <div class="col-5">
+              <Calendar class="w-full" v-model="endDate" dateFormat="dd-mm-yy" placeholder="Thời gian kết thúc"/>
+            </div>
+            <div class="col-2">
+              <Button label="Tìm kiếm" style="height: 36px" @click="getAuction" class="w-full max-w-6rem"/>
+            </div>
+          </div>
+          <div class="col justify-content-end flex">
+            <Button
+              class=""
+              label="Thêm Mới"
+              style="height: 36px"
+              @click="onCreateAuction"
+            />
           </div>
         </div>
       </div>
@@ -116,6 +125,31 @@
                 Không có dữ liệu
               </div></template
             >
+            <template #footer="">
+              <div>
+                <div class="flex align-items-center">
+                  <div
+                    class="icon--large icon-footer-paginator surface-400"
+                  ></div>
+                  <span class="ml-3 text-400 font-size-small"
+                    >Showing
+                    {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
+                    - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
+                    {{ totalRecords }}</span
+                  >
+                </div>
+              </div>
+              <div v-if="totalRecords > 0">
+                <Paginator
+                  class="p-0"
+                  :rows="pPageSize"
+                  :totalRecords="totalRecords"
+                  template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
+                  @page="onPage($event)"
+                >
+                </Paginator>
+              </div>
+            </template>
           </DataTable>
         </div>
         <ConfirmDialog></ConfirmDialog>
@@ -128,6 +162,7 @@
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { confirmDelete } from '~/utils/commons/helper'
 const nsStoreAuction = namespace('auction/store-auction')
+const dayjs = require('dayjs')
 
 @Component({
   middleware: ['authenticate'],
@@ -135,9 +170,14 @@ const nsStoreAuction = namespace('auction/store-auction')
 })
 class AuctionList extends Vue {
   auctions = []
+  startDate: any = null
+  endDate: any = null
+  pPagenum: number = 1
+  pPageSize: number = 10
+  totalRecords: number = 0
 
   @nsStoreAuction.Action
-  actGetAuction!: () => Promise<any>
+  actGetAuction!: (param: any) => Promise<any>
 
   @nsStoreAuction.Action
   actDeleteAuction!: (params: { id: number }) => Promise<any>
@@ -145,10 +185,17 @@ class AuctionList extends Vue {
   async mounted() {
     this.getAuction()
   }
+  
   async getAuction() {
-    const response = await this.actGetAuction()
+    const response = await this.actGetAuction({
+      pageSize: this.pPageSize,
+      pageNum: this.pPagenum,
+      from: this.startDate ? dayjs(new Date(this.startDate)).format('YYYY-MM-DD') : '',
+      to: this.endDate ? dayjs(new Date(this.endDate)).format('YYYY-MM-DD') : '',
+    })
     if (response) {
       this.auctions = response.records
+      this.totalRecords = response.totalRecords
     }
   }
 
@@ -174,6 +221,11 @@ class AuctionList extends Vue {
         await this.getAuction()
       }
     })
+  }
+
+  onPage(event: any) {
+    this.pPagenum = event.page + 1
+    this.getAuction()
   }
 }
 export default AuctionList

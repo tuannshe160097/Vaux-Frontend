@@ -1,5 +1,3 @@
-import dayjs from "dayjs";
-
 export function confirmDelete(_this: any, accept: any) {
   _this.$confirm.require({
     message: 'Bạn có chắc chắn muốn xóa không?',
@@ -20,6 +18,6 @@ export function getDateFormat(date: string | Date) {
   if (date instanceof Date) {
     return date
   } else {
-    return dayjs(date, 'DD-MM-YYYY').format('YYYY-MM-DD')
+    return date.split("-").reverse().join("-")
   }
 }

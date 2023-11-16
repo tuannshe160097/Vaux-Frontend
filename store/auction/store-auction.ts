@@ -7,7 +7,7 @@ import { $api, PathBind } from '~/utils'
 
 export default class StoreAuction extends VuexModule {
   private static readonly STATE_URL = {
-    GET_AUCTION: '/Mod/Auction',
+    GET_AUCTION: '/Mod/Auction?pageNum=:pageNum&pageSize=:pageSize&from=:from&to=:to',
     CREATE_AUCTION: '/Mod/Auction',
     DELETE_AUCTION: '/Mod/Auction/:id',
     GET_DETAIL_AUCTION: '/Mod/Auction/:id',
@@ -18,7 +18,7 @@ export default class StoreAuction extends VuexModule {
   @Action({ rawError: true })
   async actGetAuction(params?: any): Promise<string | undefined> {
     try {
-      const url = PathBind.transform(this.context, StoreAuction.STATE_URL.GET_AUCTION)
+      const url = PathBind.transform(this.context, StoreAuction.STATE_URL.GET_AUCTION, params)
      return await $api.get(url) 
     } catch (error) {}
   }
