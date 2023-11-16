@@ -1,0 +1,304 @@
+<template>
+    <section class="surface-0 flex align-items-center justify-content-center p-2">
+        <div class="box-page-container flex flex-column container w-full">
+            <Breadcrumb :home="home" :model="items" />
+            <div class="card-body my-3">
+                <div class="grid">
+                    <div class="col-12 field">
+                        <Button @click="createNewItem()" label="+ Tạo mới" />
+                    </div>
+                </div>
+                <TabView class="tabview-custom">
+                    <TabPanel>
+                        <template #header>
+                            <i class="pi pi-calendar"></i>
+                            <span>Chờ duyệt ({{ totalWaiting }})</span>
+                        </template>
+                        <div class="grid formgrid">
+                            <div class="field col-12">
+                                <h2 class="font-bold text-brown mb-0">Danh sách sản phẩm chờ duyệt</h2>
+                            </div>
+                            <div class="field col-12">
+                                <BlockUI :blocked="blockedTable">
+                                    <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="boxData"
+                                        :value="boxData" responsiveLayout="scroll" dataKey="id" :resizableColumns="true"
+                                        :rows="20" :scrollable="false" stripedRows>
+                                        <Column field="id" header="STT">
+                                            <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
+                                        </Column>
+                                        <Column field="imgUrl" header="Ảnh bìa" sortable="sortable"
+                                            bodyClass="font-semibold">
+                                            <template #body="{ data }">
+                                                <img :src="data.imgUrl" class="product-image" style="height:100px" />
+                                            </template>
+                                        </Column>
+                                        <Column field="name" header="Tên sản phẩm" sortable="sortable"
+                                            bodyClass="font-semibold"></Column>
+                                        <Column field="category.name" header="thể loại" sortable="sortable"
+                                            className="w-3 font-semibold"></Column>
+                                        <Column field="created" header="NGÀY TẠO" sortable="sortable"
+                                            className="p-text-right">
+                                            <template #body="{ data }">{{
+                                                data.created | dateTimeFomat
+                                            }}</template>
+                                        </Column>
+                                        <Column field="status" header="TRẠNG THÁI" sortable="sortable"
+                                            className="p-text-right">
+                                            <template #body="{ data }">
+                                                <div v-if="data.expertId == null">
+                                                    <Tag class="px-2 surface-200 bg-100" severity="info"><span
+                                                            class="font-bold text-400 font-size-small">Chưa tiếp nhận</span>
+                                                    </Tag>
+                                                </div>
+                                                <div v-else>
+                                                    <Tag class="px-2 bg-danger-100" v-if="data.status == 3"
+                                                        severity="danger">
+                                                        <span class="font-bold text-danger-400 font-size-small">Bị từ
+                                                            chối</span>
+                                                    </Tag>
+                                                    <Tag class="px-2 bg-success-100 surface-200"
+                                                        v-else-if="data.status == 2" severity="Success"><span
+                                                            class="font-bold text-success-400 font-size-small">Đã
+                                                            Duyệt</span>
+                                                    </Tag>
+                                                    <Tag class="px-2 surface-200  bg-yellow-100" v-else severity="warning">
+                                                        <span class="font-bold text-yellow-400 font-size-small">Đang xử
+                                                            lý</span>
+                                                    </Tag>
+                                                </div>
+                                            </template>
+                                        </Column>
+                                        <Column :exportable="false" header="Hoạt động" className="p-text-right">
+                                            <template #body="{ data }">
+                                                <Button
+                                                    class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
+                                                    @click="viewDetail(data.id)">
+                                                    <div class="icon--small icon-eye"></div>
+                                                </Button>
+                                            </template>
+                                        </Column>
+                                        <template #footer="">
+                                            <div>
+                                                <div class="flex align-items-center">
+                                                    <span class="ml-3 text-400 font-size-small">Showing
+                                                        {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
+                                                        - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
+                                                        {{ totalRecords }}</span>
+                                                </div>
+                                            </div>
+                                            <div v-if="totalRecords > 0">
+                                                <Paginator class="p-0" :rows="pPageSize" :totalRecords="totalRecords"
+                                                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
+                                                    @page="onPage($event)">
+                                                </Paginator>
+                                            </div>
+                                        </template>
+                                        <template #empty>
+                                            <div class="justify-content-center flex font-italic">
+                                                Không có dữ liệu
+                                            </div>
+                                        </template>
+                                    </DataTable>
+                                </BlockUI>
+                            </div>
+                        </div>
+                    </TabPanel>
+                    <TabPanel>
+                        <template #header>
+                            <i class="pi pi-user"></i>
+                            <span>Địa chỉ</span>
+                        </template>
+                        <div class="grid formgrid">
+                            <div class="field col-12">
+                                <h2 class="font-bold text-brown mb-0">Địa chỉ của tôi</h2>
+                            </div>
+                            <div class="field md:col-6 md:col-offset-3 col-12">
+                                <div class="grid">
+                                    <div class="align-self-center col-4 field">
+                                        <label class="md:m-0">Thành phố</label>
+                                    </div>
+                                    <div class="col-8 field">
+                                        <!-- <InputText class="w-full" type="text" v-model="city" /> -->
+                                        <Dropdown class="w-100 line-height-1" v-model="selectedCity" :options="oCitys"
+                                            :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                                            placeholder="-Chọn Thành phố-" @change="getDistrict()" />
+                                    </div>
+                                    <div class="align-self-center col-4 field">
+                                        <label class="md:m-0">Quận/ Huyện</label>
+                                    </div>
+                                    <div class="col-8 field">
+                                        <!-- <InputText class="w-full" type="text" v-model="district" /> -->
+                                        <Dropdown class="w-100 line-height-1" v-model="selectedDistrict"
+                                            :options="oDistricts" :filter="true" filterPlaceholder="Tìm kiếm"
+                                            optionLabel="name" placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
+                                    </div>
+                                    <div class="align-self-center col-4 field">
+                                        <label class="md:m-0">Phố/ Phường</label>
+                                    </div>
+                                    <div class="col-8 field">
+                                        <!-- <InputText class="w-full" type="text" v-model="street" /> -->
+                                        <Dropdown class="w-100 line-height-1" v-model="street" :options="oStreets"
+                                            :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                                            placeholder="-Chọn Phố/Phường-" optionValue="value" />
+                                    </div>
+                                    <div class="align-self-center col-4 field">
+                                        <label class="md:m-0">Địa chỉ cụ thể</label>
+                                    </div>
+                                    <div class="col-8 field">
+                                        <InputText class="w-full" type="text" v-model="houseNumber" />
+                                    </div>
+                                    <div class="col-8 col-offset-4">
+                                        <Button class="btn-primary border-10" label="Cập nhật" @click="onUpdate()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </TabPanel>
+                    <TabPanel>
+                        <template #header>
+                            <i class="pi pi-user"></i>
+                            <span>Yêu cầu lên người bán</span>
+                        </template>
+
+                    </TabPanel>
+                </TabView>
+            </div>
+        </div>
+    </section>
+</template>
+  
+<script lang="ts">
+import { Component, namespace, Vue } from 'nuxt-property-decorator'
+const nsStoreItem = namespace('seller/store-itemApplication')
+const nsCategory = namespace('category/store-category')
+
+@Component({
+    middleware: ['authenticate'],
+    layout: 'public',
+    // meta: {
+    //   role: [3, 2]
+    // }
+})
+class CreateItem extends Vue {
+    boxData: any[] = []
+
+    totalWaiting: number = 0
+
+    //-----Pagination---------------------------------
+    pPagenum: number = 1
+    pPageSize: number = 10
+    totalRecords: number = 0
+    blockedTable: boolean = false
+
+    //---------------------------------------
+    home = { icon: 'pi pi-home', to: '/homepage' }
+    items = [
+        { label: 'Kênh bán' },
+    ]
+    //----------------------------------------
+    oCategories: Array<any> | null = null
+
+    @nsCategory.Action
+    actGetAllCategory!: () => Promise<any>
+    @nsStoreItem.Action
+    actSearchItemApplication!: (params: any) => Promise<any>
+    @nsStoreItem.Action
+    actGetItemApplicationImage!: (params: any) => Promise<any>
+
+    async mounted() {
+        const response1 = await this.actGetAllCategory()
+        this.oCategories = response1.records
+        const params = {
+            pageNum: this.pPagenum || 1,
+            pageSize: this.pPageSize || 10,
+            // search: this.search,
+            // status: this.status,
+        }
+        this.blockedTable = true
+        let response = await this.actSearchItemApplication(params)
+        if (response) {
+            console.log(response)
+            for (let i = 0; i < response.records.length; i++) {
+                if (response.records[i].images[0] == undefined || response.records[i].images[0] == null) {
+                    response.records[i].imgUrl = ''
+                    continue
+                }
+                response.records[i].imgUrl = await this.getImageUrl(response.records[i].id, response.records[i].images[0])
+            }
+            console.log(this.boxData)
+            this.totalRecords = response.totalRecords
+            this.totalWaiting = response.totalRecords
+        }
+        this.boxData = response.records
+        this.blockedTable = false
+    }
+    async Search(pageNum: number = this.pPagenum) {
+        const params = {
+            pageNum: pageNum || 1,
+            pageSize: this.pPageSize || 10,
+            // search: this.search,
+            // status: this.status,
+        }
+        const response = await this.actSearchItemApplication(params)
+        console.log(response)
+        if (response) {
+            this.boxData = response.records
+            this.totalRecords = response.totalRecords
+        }
+    }
+    async getImageUrl(itemId: any, imgId: any) {
+        try {
+            const params = {
+                itemId: itemId,
+                imgId: imgId,
+            }
+            const response = await this.actGetItemApplicationImage(params)
+            return new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(response);
+                reader.onloadend = () => {
+                    const base64Image = reader.result;
+                    resolve(base64Image);
+                };
+            });
+        } catch (error) {
+            this.$store.commit('commons/store-error/setError', "Error fetching or converting image")
+            console.error("Error fetching or converting image:", error);
+            return null;
+        }
+    }
+    onPage(event: any) {
+        this.Search(event.page + 1)
+    }
+    createNewItem() {
+        this.$router.push('/seller/uploadItem')
+    }
+}
+export default CreateItem
+</script>
+  
+<style lang="sass" scoped>
+  .card-control
+    display: block
+    background: $white
+    font-weight: 1
+    font-size: 0.875rem
+    line-height: 1
+    color: #69707a
+    background-clip: padding-box
+    border: 1px solid #c5ccd6
+    appearance: none
+    border-radius: 0.35rem
+  
+  .card-header
+    padding: 1.2rem 1.35rem
+    margin-bottom: 0
+    background-color: rgba(33, 40, 50, 0.03)
+    border-bottom: 1px solid rgba(33, 40, 50, 0.125)
+  
+  .element
+    @include overflow-ellipsis(400px)
+  .p-orderlist .p-orderlist-controls 
+    display: none
+  </style>
+  
