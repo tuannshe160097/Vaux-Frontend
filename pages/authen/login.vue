@@ -31,12 +31,15 @@
                 </div>
                 <div class="form-group mb-3">
                   <label class="block label">Nhập mã OTP</label>
-                  <InputText
-                    v-model="sOTP"
-                    type="text"
-                    class="w-full form-control"
-                    placeholder="Mã OTP"
-                  />
+                  <div class="input-wrap">
+                    <InputText
+                      v-model="sOTP"
+                      type="text"
+                      class="w-full form-control"
+                      placeholder="Mã OTP"
+                    />
+                    <small v-if="isCountingDown" class="form-text otp-count ng-binding">{{ countdown | fancyTimeFormat }}</small>
+                  </div>
                 </div>
                 <div class="form-group">
                   <Button
@@ -63,6 +66,7 @@
 
 <script lang='ts'>
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import { OTP_CONFIG } from '~/utils/constants/common'
 const nsStoreUser = namespace('user-auth/store-user')
 
 @Component({
@@ -72,14 +76,23 @@ class Login extends Vue {
 
   sPhoneNumber: string = ''
   sOTP: string | null = null
+  isCountingDown: boolean = false
+  countdown: any = OTP_CONFIG.COUNT_DOWN
 
   @nsStoreUser.Action
   actSendOTPCode!: (phone: string) => Promise<string>
 
   async sendOtp() {
     if (this.sPhoneNumber) {
+      if (this.countdown && this.isCountingDown) {
+        this.$store.commit('commons/store-error/setError', 'OTP có thể được cấp lại sau ít phút')
+        return
+      }
       this.sOTP = await this.actSendOTPCode(this.sPhoneNumber)
       if (this.sOTP !== undefined && this.sOTP !== null) {
+        setTimeout(() => {
+          this.startCountdown();
+        }, 500);
         this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Mã OTP đã được gửi tới số điện thoại của bạn', life: 10000 })
         //alert(`Mã OTP đã được gửi tới số điện thoại của bạn, ${this.sPhoneNumber}`);
       }
@@ -108,6 +121,18 @@ class Login extends Vue {
       this.$store.commit('commons/store-error/setError', 'Vui lòng hoàn thành các bước để đăng nhập')
     }
 
+  }
+
+  startCountdown() {
+    this.isCountingDown = true;
+    let interval = setInterval(() => {
+      this.countdown--;
+      if (this.countdown === 0) {
+        clearInterval(interval);
+        this.isCountingDown = false;
+        this.countdown = OTP_CONFIG.COUNT_DOWN;
+      }
+    }, 1000);
   }
 
 }
@@ -232,4 +257,15 @@ label
   border: 1px solid #B0926A
   color: black
   background: white !important
+
+.input-wrap
+  position: relative
+
+  .form-text
+    position: absolute
+    right: 10px
+    top: 50%
+    margin-top: -9px
+    font-size: 13px
+    color: #000
 </style>
