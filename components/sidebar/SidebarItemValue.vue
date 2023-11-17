@@ -91,7 +91,7 @@ export default SidebarItemValue
       background-color: $second-yellow
       color:$primary
 .child-item
-  margin-left: 40px
+  margin-left: 25px
   .item-collapsed
     display: none !important
   &::before
