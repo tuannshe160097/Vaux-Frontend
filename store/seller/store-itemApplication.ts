@@ -14,6 +14,7 @@ export default class StoreItemApplication extends VuexModule {
     ADD_ITEMAPPLICATION: '/Seller/ItemApplication',
     GET_ITEMAPPLICATION_IMAGE: '/Seller/ItemApplication/:itemId/Images/:imgId',
     ADD_ITEMAPPLICATION_IMAGE: '/Seller/ItemApplication/:itemId/Images',
+    ADD_ITEMAPPLICATION_THUMBNAIL: '/Seller/ItemApplication/:itemId/Thumbnail',
     DELETE_ITEMAPPLICATION_IMAGE: '/Seller/ItemApplication/:itemId/Images',
   }
 
@@ -74,12 +75,25 @@ export default class StoreItemApplication extends VuexModule {
       })
     } catch (error) { }
   }
+  @Action({ rawError: true })
+  async actAddItemApplicationThumbnail(params: any): Promise<string | undefined> {
+    try {
+      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.ADD_ITEMAPPLICATION_THUMBNAIL, { itemId: params.itemId })
+      return await $api.patch(url, params.formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      })
+    } catch (error) { }
+  }
 
   @Action({ rawError: true })
   async actDeleteItemApplicationImage(params: any): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.DELETE_ITEMAPPLICATION_IMAGE, { itemId: params?.itemId })
-      return await $api.delete(url, params?.imgId)
+      debugger
+      return await $api.delete(url, {
+        data: params?.images,
+        headers: { 'Content-Type': 'application/json' }
+      })
     } catch (error) { }
   }
 

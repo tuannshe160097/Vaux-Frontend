@@ -54,7 +54,7 @@
 				<li class="flex-grow-1">
 					<InputText type="text" class="w-full px-2" placeholder="Tìm sản phẩm" />
 				</li>
-				<li><a href="/seller/uploadItem" class=" ml-6">Tạo sản phẩm</a></li>
+				<li><a href="/seller" class=" ml-6">Tạo sản phẩm</a></li>
 			</ul>
 			<div class="user-info" v-if="user != null">
 				<a href="#" class="desktop-item"><span>{{ userDisplayName }}</span></a>

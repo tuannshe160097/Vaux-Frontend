@@ -68,7 +68,7 @@
                   <ImagePreview :src="portraitUrl || require('~/assets/images/default.jpg')" alt="Image"
                     imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
                   <div class="small font-italic text-muted mb-2">
-                    JPG or PNG no larger than 5 MB
+                    JPG or PNG no larger than 3 MB
                   </div>
                   <input type="file" @change="onUploadFile($event, 'Portrait')" accept="image/*" />
                 </div>
@@ -80,7 +80,7 @@
                   <ImagePreview :src="citizenIdUrl || require('~/assets/images/default.jpg')
                     " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
                   <div class="small font-italic text-muted mb-2">
-                    JPG or PNG no larger than 5 MB
+                    JPG or PNG no larger than 3 MB
                   </div>
                   <input type="file" @change="onUploadFile($event, 'CitizenId')" accept="image/*" />
                 </div>

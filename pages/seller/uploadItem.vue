@@ -56,12 +56,17 @@
             </div>
           </div>
           <div class="field col-4">
-            <div class="card-header font-medium text-xl">Lưu ý</div>
+            <div class="card-header font-medium text-xl">Ảnh bìa</div>
             <div class="card-body p-5">
               <div class="field">
-                <label>*Tối thiểu 5 ảnh</label>
-                <label>*Người bán thành công tải lên ít nhất 8 ảnh </label>
-                <label>*Sử dụng ánh sáng hợp lý</label>
+                <div class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
+                  <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
+                    imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
+                  <div class="small font-italic text-muted mb-2">
+                    JPG or PNG no larger than 1 MB
+                  </div>
+                  <input type="file" @change="onUploadThumbnail($event)" accept="image/*" />
+                </div>
               </div>
             </div>
           </div>
@@ -92,7 +97,9 @@
         </div>
         <div class="grid formgrid">
           <div class="field col-12 flex justify-content-center">
-            <Button class="mx-2 btn-success" label="Hoàn thành" @click="onSubmit()" />
+            <BlockUI :blocked="blockedAddButton">
+              <Button class="mx-2 btn-success" label="Hoàn thành" @click="onSubmit()" />
+            </BlockUI>
           </div>
         </div>
       </div>
@@ -118,9 +125,13 @@ class CreateItem extends Vue {
   description: string = ''
   reservePrice: string = ''
 
+  fileThumbnail: any = null
+  thumbnailUrl: string = ''
+
   files: File[] = []
   images: any[] = []
 
+  blockedAddButton : boolean = false
   //---------------------------------------
   home = { icon: 'pi pi-home', to: '/homepage' }
   items = [
@@ -136,6 +147,8 @@ class CreateItem extends Vue {
   actAddItemApplication!: (params: any) => Promise<any>
   @nsStoreItem.Action
   actAddItemApplicationImage!: (params: any) => Promise<any>
+  @nsStoreItem.Action
+  actAddItemApplicationThumbnail!: (params: any) => Promise<any>
 
   async mounted() {
     const response = await this.actGetAllCategory()
@@ -144,7 +157,6 @@ class CreateItem extends Vue {
   onUploadFile(event: any) {
     const files: FileList = event.target.files;
     const fileList = Array.from(files);
-
     if (files != null) {
       for (const file of fileList) {
         const objectURL = URL.createObjectURL(file);
@@ -153,14 +165,30 @@ class CreateItem extends Vue {
         this.files.push(file);
       }
     }
-
     console.log(this.files)
+  }
+  onUploadThumbnail(event: Event) {
+    const inputElement = event.target as HTMLInputElement
+    const files = inputElement.files
+    if (files && files.length > 0) {
+      if (files[0].size / 1024 / 1024 > 1) {
+        this.$store.commit(
+          'commons/store-error/setError',
+          'File tải lên quá lớn'
+        )
+        return
+      }
+      this.fileThumbnail = files[0]
+      this.thumbnailUrl = URL.createObjectURL(this.fileThumbnail)
+    }
   }
   removeImage(index: number) {
     this.$delete(this.images, index);
     this.$delete(this.files, index);
   }
   async onSubmit() {
+    this.blockedAddButton = true
+        this.$toast.add({ severity: 'warn', summary: 'Success', detail: 'Đang tạo sản phẩm, Vui lòng đợi trong giây lát', life: 3000 })
     const params = {
       name: this.name,
       categoryId: this.categoryId,
@@ -169,20 +197,33 @@ class CreateItem extends Vue {
     }
     const response = await this.actAddItemApplication(params)
     if (response) {
-      const itemId = response.id
-      const formData = new FormData();
-      for (const file of this.files) {
-        formData.append('images', file, file.name)
-      }
-      const param2s = {
-        formData: formData,
-        itemId: itemId,
-      }
-      const result = await this.actAddItemApplicationImage(param2s)
-      if (result) {
-        this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã thêm sản phẩm mới', life: 10000 })
+      const result = await this.AddMultiImage(response.id, this.files)
+      const result2 = await this.AddImage(response.id, this.fileThumbnail)
+      if (result2 && result) {
+        this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã thêm sản phẩm mới', life: 10000 })
       }
     }
+    this.blockedAddButton = false
+  }
+  async AddMultiImage(itemId: any, fileList: any) {
+    const formData = new FormData();
+    for (const file of fileList) {
+      formData.append('images', file, file.name)
+    }
+    const param = {
+      formData: formData,
+      itemId: itemId,
+    }
+    return this.actAddItemApplicationImage(param)
+  }
+  async AddImage(itemId: any, file: any) {
+    const formData = new FormData();
+    formData.append('image', file, file.name)
+    const param = {
+      formData: formData,
+      itemId: itemId,
+    }
+    return this.actAddItemApplicationThumbnail(param)
   }
 }
 export default CreateItem

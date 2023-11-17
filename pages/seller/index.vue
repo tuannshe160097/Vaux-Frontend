@@ -35,7 +35,7 @@
                                         <Column field="name" header="Tên sản phẩm" sortable="sortable"
                                             bodyClass="font-semibold"></Column>
                                         <Column field="category.name" header="thể loại" sortable="sortable"
-                                            className="w-3 font-semibold"></Column>
+                                            className="font-semibold"></Column>
                                         <Column field="created" header="NGÀY TẠO" sortable="sortable"
                                             className="p-text-right">
                                             <template #body="{ data }">{{
@@ -219,11 +219,11 @@ class CreateItem extends Vue {
         if (response) {
             console.log(response)
             for (let i = 0; i < response.records.length; i++) {
-                if (response.records[i].images[0] == undefined || response.records[i].images[0] == null) {
+                if (response.records[i].thumbnailId == undefined || response.records[i].thumbnailId == null) {
                     response.records[i].imgUrl = ''
                     continue
                 }
-                response.records[i].imgUrl = await this.getImageUrl(response.records[i].id, response.records[i].images[0])
+                response.records[i].imgUrl = await this.getImageUrl(response.records[i].id, response.records[i].thumbnailId)
             }
             console.log(this.boxData)
             this.totalRecords = response.totalRecords
@@ -266,6 +266,9 @@ class CreateItem extends Vue {
             console.error("Error fetching or converting image:", error);
             return null;
         }
+    }
+    viewDetail(id:any){
+        this.$router.push('/seller/detail?itemId='+id)
     }
     onPage(event: any) {
         this.Search(event.page + 1)
