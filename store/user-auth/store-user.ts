@@ -12,6 +12,7 @@ export default class StoreUser extends VuexModule {
     USER_GET: '/Profile',
     REGISTER: '/Register',
     VERIFY: '/VerifyOtp?phone=:phone&otp=:otp',
+    SELLERAPP: '/Seller/Application/GetByUserId/:userId',
   }
 
   public user: User.Model | undefined
@@ -50,7 +51,7 @@ export default class StoreUser extends VuexModule {
   @Action({ rawError: true })
   async actVerify(params: any): Promise<string | undefined> {
     try {
-      const url = PathBind.transform(this.context, StoreUser.STATE_URL.VERIFY,{ phone: params?.phone, otp: params?.otp })
+      const url = PathBind.transform(this.context, StoreUser.STATE_URL.VERIFY, { phone: params?.phone, otp: params?.otp })
       return await $api.post(url)
     } catch (error) {
 
@@ -62,8 +63,15 @@ export default class StoreUser extends VuexModule {
       const url = PathBind.transform(this.context, StoreUser.STATE_URL.USER_GET)
       return await $api.put(url, params)
     } catch (error) {
-
     }
+  }
+  @Action({ rawError: true })
+  async actGetSellerApplication(params: any): Promise<string | undefined> {
+    try {
+      const url = PathBind.transform(this.context, StoreUser.STATE_URL.SELLERAPP, { userId: params?.userId })
+      const response: any = await $api.get(url)
+      return response
+    } catch (error) { }
   }
 
 }

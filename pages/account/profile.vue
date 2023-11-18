@@ -113,7 +113,22 @@
                             <i class="pi pi-user"></i>
                             <span>Yêu cầu lên người bán</span>
                         </template>
-                        
+
+                        <div class="check">
+                            <div class="check__border"></div>
+                            <div class="check__check">
+                                <div class="check__check-bottom"></div>
+                                <div class="check__check-top"></div>
+                            </div>
+                        </div>
+
+                        <div class="check">
+                            <div class="x__border"></div>
+                            <div class="x__check">
+                                <div class="x__check-bottom"></div>
+                                <div class="x__check-top"></div>
+                            </div>
+                        </div>
                     </TabPanel>
                 </TabView>
             </div>
@@ -170,6 +185,8 @@ class Profile extends Vue {
     actGetUserDetail!: () => Promise<string>
     @nsStoreUser.Action
     actUpdateProfile!: (params: any) => Promise<string>
+    @nsStoreUser.Action
+    actGetSellerApplication!: (params: any) => Promise<string>
     @nsStoreAddress.Action
     actGetCity!: () => Promise<string>
     @nsStoreAddress.Action
@@ -179,6 +196,13 @@ class Profile extends Vue {
 
     async mounted() {
         this.user = await this.actGetUserDetail()
+        if (this.user == null) {
+            this.$store.commit(
+                'commons/store-error/setError',
+                'Không tìm thấy thông tin tài khoản'
+            )
+            return
+        }
         this.name = this.user?.name
         this.phone = this.user?.phone
         this.mail = this.user?.email
@@ -191,6 +215,8 @@ class Profile extends Vue {
         await this.GetCity();
         await this.getDistrict();
         await this.getStreet();
+        const result = await this.actGetSellerApplication({ userId: this.user?.id });
+        console.log(result)
     }
     async onUpdate() {
         const params = {
@@ -283,5 +309,154 @@ export default Profile
   .tabview-custom span
     vertical-align: middle
     margin: 0.5rem
+
+  @keyframes check__border--entrance
+    100%
+      transform: rotateZ(315deg)
+  
+  @keyframes check__check--entrance
+    0%
+      opacity: 0
+  
+  @keyframes check__check-top--entrance
+    0%
+      height: 0px
+      
+  @keyframes x__check-top--entrance
+    0%
+      top: 0
+      height: 0px
+  
+    100%
+      top: 0
+  
+  @keyframes check__check-bottom--entrance
+    0%
+      width: 0px
+  
+  .check
+    position: relative
+    height: 256px
+    width: 256px
+    border-radius: 50%
+    box-shadow: 0 10px 5px rgba(0, 0, 0, 0.02)
+  
+  .check__border, .check__check
+    position: absolute
+  
+  .check__border
+    border: 24px solid $primary-success
+    border-right-color: transparent
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    border-radius: 50%
+    transform: rotateZ(-45deg)
+    animation: check__border--entrance 0.5s ease
+  
+    &::before, &::after
+      content: ""
+      width: 24px
+      height: 24px
+      background: $primary-success
+      position: absolute
+  
+    &::before
+      top: 9px
+      right: 11px
+      border-radius: 0 50% 50% 50%
+  
+    &::after
+      bottom: 9px
+      right: 11px
+      border-radius: 50% 50% 50% 0%
+  
+  .check__check
+    transform: rotateZ(45deg)
+    top: -15%
+    right: 20%
+    bottom: 30%
+    left: 45%
+    animation: check__check--entrance 0.4s ease
+  
+  .check__check-top, .check__check-bottom
+    position: absolute
+    background: $primary-success
+    border-radius: 12px
+  
+  .check__check-top
+    width: 24px
+    right: 0
+    height: 100%
+    bottom: 0
+    animation: check__check-top--entrance 0.3s ease 0.3s backwards
+  
+  .check__check-bottom
+    height: 24px
+    left: 0
+    width: 100%
+    bottom: 0
+    animation: check__check-bottom--entrance 0.3s ease backwards
+    
+  .x__border, .x__check
+    position: absolute
+  
+  .x__border
+    border: 24px solid $primary-danger
+    border-right-color: transparent
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    border-radius: 50%
+    transform: rotateZ(-45deg)
+    animation: check__border--entrance 0.9s ease backwards
+  
+    &::before, &::after
+      content: ""
+      width: 24px
+      height: 24px
+      background: $primary-danger
+      position: absolute
+  
+    &::before
+      top: 9px
+      right: 11px
+      border-radius: 50% 50% 50% 50%
+  
+    &::after
+      bottom: 9px
+      right: 11px
+      border-radius: 50% 50% 50% 50%
+  
+  .x__check
+    transform: rotateZ(45deg)
+    top: 15%
+    right: 15%
+    bottom: 15%
+    left: 15%
+    animation: check__check--entrance 0.4s ease
+  
+  .x__check-top, .x__check-bottom
+    position: absolute
+    background: $primary-danger
+    border-radius: 12px
+  
+  .x__check-top
+    width: 24px
+    right: calc(50% - 12px)
+    height: 100%
+    bottom: 0
+    animation: x__check-top--entrance 0.3s ease 0.3s backwards
+  
+  .x__check-bottom
+    height: 24px
+    left: 0
+    width: 100%
+    bottom: calc(50% - 12px)
+    animation: check__check-bottom--entrance 0.3s ease backwards
+    
+  
   </style>
   
