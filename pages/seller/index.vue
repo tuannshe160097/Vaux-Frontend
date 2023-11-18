@@ -47,23 +47,17 @@
                                             <template #body="{ data }">
                                                 <div v-if="data.expertId == null">
                                                     <Tag class="px-2 surface-200 bg-100" severity="info"><span
-                                                            class="font-bold text-400 font-size-small">Chưa tiếp nhận</span>
+                                                            class="font-bold text-800 font-size-small">Chưa tiếp nhận</span>
                                                     </Tag>
                                                 </div>
                                                 <div v-else>
-                                                    <Tag class="px-2 bg-danger-100" v-if="data.status == 3"
-                                                        severity="danger">
-                                                        <span class="font-bold text-danger-400 font-size-small">Bị từ
-                                                            chối</span>
+                                                    <Tag class="px-2 " v-if="data.status == 2" severity="danger"
+                                                        value="Bị từ chối">
                                                     </Tag>
-                                                    <Tag class="px-2 bg-success-100 surface-200"
-                                                        v-else-if="data.status == 2" severity="Success"><span
-                                                            class="font-bold text-success-400 font-size-small">Đã
-                                                            Duyệt</span>
+                                                    <Tag class="px-2" v-else-if="data.status == 3" value="Đã Duyệt"
+                                                        severity="Success">
                                                     </Tag>
-                                                    <Tag class="px-2 surface-200  bg-yellow-100" v-else severity="warning">
-                                                        <span class="font-bold text-yellow-400 font-size-small">Đang xử
-                                                            lý</span>
+                                                    <Tag class="px-2" v-else value="Đang xử lý" severity="warning">
                                                     </Tag>
                                                 </div>
                                             </template>
@@ -267,8 +261,8 @@ class CreateItem extends Vue {
             return null;
         }
     }
-    viewDetail(id:any){
-        this.$router.push('/seller/detail?itemId='+id)
+    viewDetail(id: any) {
+        this.$router.push('/seller/detail?itemId=' + id)
     }
     onPage(event: any) {
         this.Search(event.page + 1)

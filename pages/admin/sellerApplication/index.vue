@@ -23,7 +23,8 @@
             </div>
             <div class="col-3 field">
               <label>Tình trạng</label>
-              <Dropdown class="w-100" v-model="status" :options="oStatus" optionLabel="name" optionValue="value" />
+              <Dropdown class="w-100 line-height-1" v-model="status" :options="oStatus" optionLabel="name"
+                optionValue="value" />
             </div>
             <div class="col field justify-content-end flex pt-5">
               <Button class="mr-2 border-10" label="Tìm kiếm" style="height: 36px" @click="Search()" />
@@ -49,12 +50,11 @@
             <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
                 <div>
-                  <Tag class="px-2 bg-danger-100" v-if="data.status == 3" severity="danger"><span
-                      class="font-bold text-400 font-size-small">Từ chối</span></Tag>
-                  <Tag class="px-2 surface-200 bg-green-100" v-else-if="data.status == 2" severity="danger"><span
-                      class="font-bold text-green-400 font-size-small">Đồng ý</span></Tag>
+                  <Tag class="px-2" v-if="data.status == 3" severity="danger" value="Đã từ chối"></Tag>
+                  <Tag class="px-2" v-else-if="data.status == 2" severity="success" value="Đã Đồng ý">
+                  </Tag>
                   <Tag class="px-2 surface-200" v-else severity="danger"><span
-                      class="font-bold text-400 font-size-small">Chờ duyệt</span></Tag>
+                      class="font-bold text-400 font-size-small">Chờ xử lý</span></Tag>
                 </div>
               </template>
             </Column>
@@ -109,10 +109,10 @@ class UserList extends Vue {
   search: string = ''
   status: number = 0
   oStatus = [
-    { name: 'Tất cả', value: null },
-    { name: 'Đã duyệt', value: 0 },
+    { name: 'Tất cả', value: 0 },
+    { name: 'Đã duyệt', value: 2 },
     { name: 'Chưa duyệt', value: 1 },
-    { name: 'Đã từ chối', value: 2 }
+    { name: 'Đã từ chối', value: 3 }
   ]
   //-----Pagination---------------------------------
   pPagenum: number = 1
@@ -123,28 +123,18 @@ class UserList extends Vue {
   actGetAllSeller!: (params: any) => Promise<any>
 
   async mounted() {
-    const params = {
-      pageNum: this.pPagenum || 1,
-      pageSize: this.pPageSize || 10,
-      search: this.search,
-      status: this.status,
-    }
-    const response = await this.actGetAllSeller(params)
-    if (response) {
-      console.log(response.records)
-      this.boxData = response.records
-      this.totalRecords = response.totalRecords
-    }
+    this.Search()
   }
   async Search(pageNum: number = this.pPagenum) {
     const params = {
       pageNum: pageNum || 1,
       pageSize: this.pPageSize || 10,
       search: this.search,
-      status: this.status,
+      status: this.status == 0 ? '' : this.status,
     }
     const response = await this.actGetAllSeller(params)
     if (response) {
+      console.log(response.records)
       this.boxData = response.records
       this.totalRecords = response.totalRecords
     }

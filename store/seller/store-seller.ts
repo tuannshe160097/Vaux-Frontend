@@ -13,9 +13,9 @@ interface CustomAxiosRequestConfig extends AxiosRequestConfig {
 export default class StoreCategory extends VuexModule {
     private static readonly STATE_URL = {
         CREATE_SELLER: '/Seller/Application/Create',
-        GET_SELLER: '/Seller/Application/Get?id=:appId',
+        GET_SELLER: '/Seller/Application/Get/:appId',
         GET_IMAGE_SELLER: '/Seller/Application/Get/Image/:imageId',
-        SEARCH_SELLERS: '/Seller/Application/GetAll',
+        SEARCH_SELLERS: '/Seller/Application/GetAll?pageNum=:pageNum&pageSize=:pageSize&search=:search&status=:status',
         APPROVE_SELLER: '/Seller/Application/Approve?applicationId=:applicationId',
         DENY_SELLER: '/Seller/Application/Deny?applicationId=:applicationId',
 
@@ -34,14 +34,15 @@ export default class StoreCategory extends VuexModule {
     async actGetImageSeller(imageId: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.GET_IMAGE_SELLER, { imageId: imageId })
-            return await $api.get(url,{responseType: 'blob'})
+            return await $api.get(url, { responseType: 'blob' })
         } catch (error) { }
     }
     @Action({ rawError: true })
     async actGetAllSeller(params: any): Promise<string | undefined> {
         try {
-            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.SEARCH_SELLERS)
-            return await $api.get(url)
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.SEARCH_SELLERS,
+                { pageNum: params?.pageNum, pageSize: params?.pageSize, search: params?.search, status: params?.status })
+            return await $api.get(url, params)
         } catch (error) { }
     }
     @Action({ rawError: true })
@@ -75,14 +76,18 @@ export default class StoreCategory extends VuexModule {
     async actApproveSeller(params: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.APPROVE_SELLER, { applicationId: params?.applicationId })
-            return await $api.patch(url, params)
+            return await $api.patch(url, params.reason, {
+                headers: { 'Content-Type': 'application/json' }
+            })
         } catch (error) { }
     }
     @Action({ rawError: true })
     async actDenySeller(params: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.DENY_SELLER, { applicationId: params?.applicationId })
-            return await $api.patch(url, params)
+            return await $api.patch(url, params.reason, {
+                headers: { 'Content-Type': 'application/json' }
+            })
         } catch (error) { }
     }
 }

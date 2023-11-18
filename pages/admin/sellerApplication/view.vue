@@ -33,39 +33,39 @@
               </div>
               <div class="field col-12">
                 <label>Số điện thoại</label>
-                <InputText class="w-100" type="text" v-model="phone" />
+                <InputText class="w-100" type="text" v-model="phone"  disabled/>
               </div>
               <div class="field col-4">
                 <label>Email</label>
-                <InputText class="w-100" type="text" v-model="email" />
+                <InputText class="w-100" type="text" v-model="email" disabled />
               </div>
               <div class="field col-4">
                 <label>Giới tính</label>
-                <Dropdown class="w-100" v-model="gender" :options="oGenders" optionLabel="name" optionValue="value" />
+                <Dropdown class="w-100" v-model="gender" :options="oGenders" optionLabel="name" optionValue="value"  disabled/>
               </div>
               <div class="field col-4">
                 <label>Ngày sinh</label>
-                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" />
+                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy"  disabled/>
               </div>
               <div class="field col-12">
                 <label>Địa chỉ</label>
-                <InputText class="w-100" type="text" v-model="houseNumber" />
+                <InputText class="w-100" type="text" v-model="houseNumber"  disabled/>
               </div>
               <div class="field col-4">
                 <label>Phường, xã</label>
-                <InputText class="w-100" type="text" v-model="street" />
+                <InputText class="w-100" type="text" v-model="street"  disabled/>
               </div>
               <div class="field col-4">
                 <label>Quận, huyện</label>
-                <InputText class="w-100" type="text" v-model="district" />
+                <InputText class="w-100" type="text" v-model="district" disabled />
               </div>
               <div class="field col-4">
                 <label>Thành phố</label>
-                <InputText class="w-100" type="text" v-model="city" />
+                <InputText class="w-100" type="text" v-model="city"  disabled/>
               </div>
               <div class="field col-12">
                 <label>Số CCCD</label>
-                <InputText class="w-100" type="text" v-model="cccd" />
+                <InputText class="w-100" type="text" v-model="cccd"  disabled/>
               </div>
               <div class="field col-6">
                 <label>Ảnh chân dung</label>
@@ -83,7 +83,11 @@
               </div>
               <div class="field col-12">
                 <label>Nội dung muốn bán</label>
-                <Textarea class="text-left w-full" v-model="content" rows="15" cols="100" placeholder="Ghi chú..." />
+                <Textarea class="text-left w-full" v-model="content" rows="15" cols="100" placeholder="Ghi chú..."  disabled/>
+              </div>
+              <div class="field col-12">
+                <label>Phản hồi từ người bán</label>
+                <Textarea class="text-left w-full" v-model="reason" rows="15" cols="100" placeholder="Lý do..."/>
               </div>
               <!-- <div class="field col-4">
                 <label>Ngày tạo</label>
@@ -139,6 +143,7 @@ class ViewUser extends Vue {
   citizenIdUrl: string | ArrayBuffer | null = ''
   portraitUrl: any = ''
   content: string = ''
+  reason: string = ''
   dateCreated: string = ''
   dateUpdated: string = ''
   dateDeleted: string = ''
@@ -183,6 +188,7 @@ class ViewUser extends Vue {
       this.portraitUrl = await this.getImageUrl(result.portraitId)
       this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId)
       this.content = result.content
+      this.reason = result.reason
     }
     else {
       this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin application Id")
@@ -215,6 +221,7 @@ class ViewUser extends Vue {
   async onAccept() {
     const params = {
       applicationId: this.appId || '',
+      reason: this.reason || '',
     }
     const result = await this.actApproveSeller(params)
     this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã đồng ý đơn duyệt', life: 10000 })
@@ -223,6 +230,7 @@ class ViewUser extends Vue {
   async onDeny() {
     const params = {
       applicationId: this.appId || '',
+      reason: this.reason || '',
     }
     const result = await this.actDenySeller(params)
     this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối đơn duyệt', life: 10000 })
