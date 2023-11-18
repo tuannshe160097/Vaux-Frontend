@@ -159,9 +159,9 @@ class ItemList extends Vue {
           response.records[i].imgUrl = ''
           continue
         }
-        response.records[i].imgUrl = await this.getImageUrl(response.records[i].id, response.records[i].images[0])
+        response.records[i].imgUrl = await this.getImageUrl(response.records[i].id, response.records[i].thumbnailId)
       }
-      console.log(this.boxData)
+      console.log(this.boxData) 
       this.totalRecords = response.totalRecords
     }
     this.boxData = response.records
@@ -183,6 +183,7 @@ class ItemList extends Vue {
   }
   async getImageUrl(itemId: any, imgId: any) {
     try {
+      if(itemId==null||imgId==null) return ''
       const params = {
         itemId: itemId,
         imgId: imgId,

@@ -30,6 +30,16 @@
                 </div>
                 <div class="grid formgrid">
                     <h4 class="col-12 font-bold text-brown">2. Hình ảnh</h4>
+                    <div class="field col-4">
+                        <div class="card-header font-medium text-xl">Ảnh bìa</div>
+                        <div class="field">
+                            <div class="text-center border-1 border-solid surface-border w-full"
+                                >
+                                <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
+                                    imageClass="w-max-100" imageStyle="object-fit: contain" />
+                            </div>
+                        </div>
+                    </div>
                     <div class="field col-8  text-center">
                         <div class="grid formgrid">
                             <div v-for="(image, index) in images" :key="index" class="image-item col-3 mb-3">
@@ -39,16 +49,6 @@
                                         style="padding-bottom: 100%;">
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="field col-4">
-                        <div class="card-header font-medium text-xl">Lưu ý</div>
-                        <div class="card-body p-5">
-                            <div class="field">
-                                <label>*Tối thiểu 5 ảnh</label>
-                                <label>*Người bán thành công tải lên ít nhất 8 ảnh </label>
-                                <label>*Sử dụng ánh sáng hợp lý</label>
                             </div>
                         </div>
                     </div>
@@ -66,6 +66,15 @@
                     </span>
                     <div class="field col-12 md:col-4">
                         <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reservePrice" disabled />
+                    </div>
+                </div>
+                <div class="grid formgrid">
+                    <h4 class="col-12 font-bold text-brown">6. Phản hồi từ người kiểm duyệt</h4>
+                    <span class="col-12">
+                    </span>
+                    <div class="field col-12">
+                        <Textarea class="text-left w-full" :autoResize="true" v-model="reason" rows="5"
+                            placeholder="Sử dụng phần này để thêm thông tin lý do." style="height: 3rem;"  />
                     </div>
                 </div>
                 <div class="grid formgrid">
@@ -108,6 +117,8 @@ class ViewUser extends Vue {
     files: FileList | null = null
     description: string = ''
     reservePrice: string = ''
+    reason: string = ''
+    thumbnailUrl: any = ''
     images: any[] = []
     expertId: number | null = null
     status: number | null = null
@@ -164,6 +175,7 @@ class ViewUser extends Vue {
             this.expertId = result.expertId
             this.status = result.status
             this.displayAction()
+            this.thumbnailUrl = await this.getImageUrl(result.id, result.thumbnailId)
             for (const imgId of result.images) {
                 const result2 = await this.getImageUrl(this.itemId, imgId)
                 const imageInfo = { objectURL: result2, name: "result2.name" };
@@ -219,26 +231,28 @@ class ViewUser extends Vue {
         }
         const result2 = await this.actUnassignItemApplication(params)
         if (result2) {
-            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã tiếp hủy nhận xử lý sản phẩm', life: 10000 })
+            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã hủy nhận xử lý sản phẩm', life: 10000 })
             this.displayAction()
         }
     }
     async onAccept() {
         const params = {
-            itemId: this.itemId || '',
+            itemId: this.itemId,
+            reason: this.reason || '',
         }
-        const result2 = await this.actAcceptItemApplication(params)
-        if (result2) {
+        const result = await this.actAcceptItemApplication(params)
+        if (result) {
             this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã đồng ý sản phẩm', life: 10000 })
             this.displayAction()
         }
     }
     async onDeny() {
         const params = {
-            itemId: this.itemId || '',
+            itemId: this.itemId,
+            reason: this.reason || '',
         }
-        const result2 = await this.actRejectItemApplication(params)
-        if (result2) {
+        const result = await this.actRejectItemApplication(params)
+        if (result) {
             this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối sản phẩm', life: 10000 })
             this.displayAction()
         }

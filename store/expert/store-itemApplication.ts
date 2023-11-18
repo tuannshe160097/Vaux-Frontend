@@ -45,7 +45,7 @@ export default class StoreItemApplication extends VuexModule {
   async actGetItemApplicationImage(params: any): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.GET_ITEMAPPLICATION_IMAGE, { itemId: params?.itemId, imgId: params?.imgId })
-      return await $api.get(url,{responseType: 'blob'})
+      return await $api.get(url, { responseType: 'blob' })
     } catch (error) { }
   }
 
@@ -67,17 +67,21 @@ export default class StoreItemApplication extends VuexModule {
 
   @Action({ rawError: true })
   async actAcceptItemApplication(params: any): Promise<string | undefined> {
-      try {
-          const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.ACCEPT_ITEMAPPLICATION, { itemId: params?.itemId })
-          return await $api.patch(url)
-      } catch (error) { }
+    try {
+      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.ACCEPT_ITEMAPPLICATION, { itemId: params?.itemId })
+      return await $api.patch(url, params.reason, {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    } catch (error) { }
   }
 
   @Action({ rawError: true })
   async actRejectItemApplication(params: any): Promise<string | undefined> {
-      try {
-          const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.REJECT_ITEMAPPLICATION, { itemId: params?.itemId })
-          return await $api.patch(url )
-      } catch (error) { }
+    try {
+      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.REJECT_ITEMAPPLICATION, { itemId: params?.itemId })
+      return await $api.patch(url, params.reason, {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    } catch (error) { }
   }
 }
