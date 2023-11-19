@@ -110,8 +110,8 @@ class UserList extends Vue {
   status: number = 0
   oStatus = [
     { name: 'Tất cả', value: 0 },
-    { name: 'Đã duyệt', value: 2 },
     { name: 'Chưa duyệt', value: 1 },
+    { name: 'Đã đồng ý', value: 2 },
     { name: 'Đã từ chối', value: 3 }
   ]
   //-----Pagination---------------------------------

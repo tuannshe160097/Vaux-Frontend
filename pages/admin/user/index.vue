@@ -76,10 +76,8 @@
             <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
                 <div>
-                  <Tag class="px-2 bg-green-100" v-if="data.deleted != null" severity="danger"><span
-                      class="font-bold text-400 font-size-small">Bị chặn</span></Tag>
-                  <Tag class="px-2 surface-200" v-else severity="danger"><span
-                      class="font-bold text-green-400 font-size-small">Hoạt động</span></Tag>
+                  <Tag class="px-2" v-if="data.deleted != null" severity="danger" value="Đã cấm"></Tag>
+                  <Tag class="px-2" v-else severity="success" value="Hoạt động"></Tag>
                 </div>
               </template>
             </Column>

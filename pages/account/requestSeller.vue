@@ -43,15 +43,21 @@
               </div>
               <div class="field col-4">
                 <label>{{ fieldLabels.city }}</label>
-                <InputText class="w-100" :class="{ 'p-invalid': errors.city }" type="text" v-model="city" />
+                <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': errors.city }" v-model="selectedCity"
+                  :options="oCitys" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                  placeholder="-Chọn Thành phố-" @change="onSelectCity()" />
               </div>
               <div class="field col-4">
                 <label>{{ fieldLabels.district }}</label>
-                <InputText class="w-100" :class="{ 'p-invalid': errors.district }" type="text" v-model="district" />
+                <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': errors.district }" v-model="selectedDistrict"
+                  :options="oDistricts" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                  placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
               </div>
               <div class="field col-4">
                 <label>{{ fieldLabels.street }}</label>
-                <InputText class="w-100" :class="{ 'p-invalid': errors.street }" type="text" v-model="street" />
+                <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': errors.street }" v-model="street"
+                  :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                  placeholder="-Chọn Phố/Phường-" optionValue="value" />
               </div>
               <div class="field col-12">
                 <label>
@@ -78,7 +84,7 @@
                 <div :class="{ 'input-invalid': errors.fileCitizenId }"
                   class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
                   <ImagePreview :src="citizenIdUrl || require('~/assets/images/default.jpg')
-                    " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
+                  " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
                   <div class="small font-italic text-muted mb-2">
                     JPG or PNG no larger than 3 MB
                   </div>
@@ -92,7 +98,9 @@
                   placeholder="Ví dụ: Tôi sẽ bán các sản phẩm đồ gia dụng cổ" />
               </div>
               <div class="field col-12">
-                <Button label="Yêu cầu" @click="onSubmit()" />
+                <BlockUI :blocked="disableButton">
+                  <Button label="Yêu cầu" @click="onSubmit()" />
+                </BlockUI>
               </div>
             </div>
           </div>
@@ -106,6 +114,8 @@
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { GENDER_OPTION } from '~/utils'
 import { User } from '~/models/User'
+import { Option } from '~/models/Option'
+const nsStoreAddress = namespace('address/store-address')
 const nsStoreSeller = namespace('seller/store-seller')
 const nsStoreUser = namespace('user-auth/store-user')
 
@@ -131,7 +141,7 @@ class requestSeller extends Vue {
   //private
   portraitUrl: string = ''
   citizenIdUrl: string = ''
-
+  disableButton: boolean = false
   //
   fieldLabels: Record<string, string> = {
     name: 'Tên người dùng',
@@ -167,6 +177,13 @@ class requestSeller extends Vue {
 
   //option data
   oGenders = GENDER_OPTION
+  selectedCity: Option.Option | null = null
+  selectedDistrict: Option.Option | null = null
+  selectedStreet: Option.Option | null = null
+  option: Option.Option | undefined
+  oCitys: Option.Option[] = GENDER_OPTION
+  oDistricts: Option.Option[] = GENDER_OPTION
+  oStreets: Option.Option[] = GENDER_OPTION
 
   @nsStoreSeller.Action
   actCreateSeller!: (params: any) => Promise<any>
@@ -174,7 +191,13 @@ class requestSeller extends Vue {
   actGetCategory!: (params: any) => Promise<any>
   @nsStoreUser.State('user')
   user!: User.Model | undefined
-  mounted() {
+  @nsStoreAddress.Action
+  actGetCity!: () => Promise<string>
+  @nsStoreAddress.Action
+  actGetDistrict!: (params: any) => Promise<string>
+  @nsStoreAddress.Action
+  actGetStreet!: (params: any) => Promise<string>
+  async mounted() {
     this.name = this.user?.name || ''
     this.gender = this.user?.gender || ''
     this.dob = this.user?.dob || ''
@@ -185,11 +208,16 @@ class requestSeller extends Vue {
     this.district = this.user?.district || ''
     this.street = this.user?.street || ''
     this.houseNumber = this.user?.houseNumber || ''
+    await this.GetCity();
+    await this.getDistrict();
+    await this.getStreet();
   }
   async onSubmit() {
+    this.disableButton = true
     //const response = await this.actGetCategory(null)
     //console.log(response)
     if (!this.checkValid()) {
+      this.disableButton = false
       return
     }
     const formData = new FormData();
@@ -208,8 +236,10 @@ class requestSeller extends Vue {
     console.log(this.fileCitizenId.name)
     const response = await this.actCreateSeller(formData)
     if (response) {
-  		this.$toast.add({severity: 'info', summary: 'Success', detail: 'Đã gửi yêu cầu cho VAUX', life: 10000})
+      this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã gửi yêu cầu cho VAUX', life: 10000 })
+      this.$router.push('/account/profile')
     }
+    this.disableButton = false
   }
   onUploadFile(event: Event, imgFor: string) {
     const inputElement = event.target as HTMLInputElement
@@ -230,6 +260,43 @@ class requestSeller extends Vue {
         this.citizenIdUrl = URL.createObjectURL(this.fileCitizenId)
       }
     }
+  }
+  async GetCity() {
+    const response: any = await this.actGetCity()
+    this.oCitys = response.map((city: any) => ({
+      id: city.code,
+      name: city.name,
+      value: city.codename,
+    }));
+    this.selectedCity = this.oCitys.find((city) => city.value === this.city) || null;
+  }
+  async getDistrict() {
+    if (this.selectedCity == undefined || this.selectedCity == null) return
+    this.city = this.selectedCity.value
+    const response: any = await this.actGetDistrict({ cityId: this.selectedCity?.id })
+    this.oDistricts = response.districts.map((district: any) => ({
+      id: district.code,
+      name: district.name,
+      value: district.codename,
+    }));
+    this.selectedDistrict = this.oDistricts.find((district) => district.value === this.district) || null;
+  }
+  async getStreet() {
+    if (this.selectedDistrict == undefined || this.selectedDistrict == null) return
+    this.district = this.selectedDistrict.value
+    const response: any = await this.actGetStreet({ districtId: this.selectedDistrict?.id })
+    this.oStreets = response.wards.map((street: any) => ({
+      id: street.code,
+      name: street.name,
+      value: street.codename,
+    }));
+    this.selectedStreet = this.oStreets.find((street) => street.value === this.street) || null;
+  }
+  onSelectCity() {
+    this.district = ''
+    this.street = ''
+    this.oStreets = []
+    this.getDistrict()
   }
   checkValid() {
     const invalidFields: string[] = this.validateFields(this.requiredFields)
