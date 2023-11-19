@@ -100,7 +100,7 @@
                     </div>
                 </div>
                 <div class="grid formgrid">
-                    <div class="field col-12 flex justify-content-center">
+                    <div v-if="isDisplayButton()" class="field col-12 flex justify-content-center">
                         <Button class="mx-2 btn-primary border-10" :disabled="blockedAddButton ? 'disabled' : false"
                             label="Cập nhật" @click="onUpdate()" />
                     </div>
@@ -128,6 +128,7 @@ class DetailItem extends Vue {
     categoryId: number = 0
     description: string = ''
     reservePrice: string = ''
+    status: any
 
     fileThumbnail: any = null
     thumbnailUrl: any = ''
@@ -183,7 +184,7 @@ class DetailItem extends Vue {
             this.description = result.description
             this.reservePrice = result.reservePrice
             // this.expertId = result.expertId
-            // this.status = result.status
+            this.status = result.status
             // this.displayAction() 
             this.thumbnailId = result.thumbnailId
             this.thumbnailUrl = await this.getImageUrl(result.id, result.thumbnailId, true)
@@ -337,6 +338,9 @@ class DetailItem extends Vue {
             itemId: itemId,
         }
         return this.actAddItemApplicationThumbnail(param)
+    }
+    isDisplayButton(){
+        return !(this.status>1)
     }
 }
 export default DetailItem

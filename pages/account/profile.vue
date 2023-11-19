@@ -75,7 +75,7 @@
                                         <!-- <InputText class="w-full" type="text" v-model="city" /> -->
                                         <Dropdown class="w-100 line-height-1" v-model="selectedCity" :options="oCitys"
                                             :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                                            placeholder="-Chọn Thành phố-" @change="getDistrict()" />
+                                            placeholder="-Chọn Thành phố-" @change="onSelectCity()" />
                                     </div>
                                     <div class="align-self-center col-4 field">
                                         <label class="md:m-0">Quận/ Huyện</label>
@@ -113,20 +113,26 @@
                             <i class="pi pi-user"></i>
                             <span>Yêu cầu lên người bán</span>
                         </template>
-
-                        <div class="check">
-                            <div class="check__border"></div>
-                            <div class="check__check">
-                                <div class="check__check-bottom"></div>
-                                <div class="check__check-top"></div>
+                        <div>
+                            <div v-if="!userApliId" class="check">
+                                <Button class="btn-primary border-10" label="Cập nhật" @click="onCreateApp()" />
                             </div>
-                        </div>
+                            <div v-else>
+                                <div v-if="userApliId" class="check">
+                                    <div class="check__border"></div>
+                                    <div class="check__check">
+                                        <div class="check__check-bottom"></div>
+                                        <div class="check__check-top"></div>
+                                    </div>
+                                </div>
 
-                        <div class="check">
-                            <div class="x__border"></div>
-                            <div class="x__check">
-                                <div class="x__check-bottom"></div>
-                                <div class="x__check-top"></div>
+                                <div v-if="userApliId" class="check">
+                                    <div class="x__border"></div>
+                                    <div class="x__check">
+                                        <div class="x__check-bottom"></div>
+                                        <div class="x__check-top"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </TabPanel>
@@ -163,7 +169,8 @@ class Profile extends Vue {
     categoryId: number = 0
     description: string = ''
     reservePrice: string = ''
-    userApliId: string = ''
+    userApliId: any
+    userApliStatus: any
     user: any = null
     //option data------------------------------
     oGenders = GENDER_OPTION
@@ -215,8 +222,14 @@ class Profile extends Vue {
         await this.GetCity();
         await this.getDistrict();
         await this.getStreet();
-        const result = await this.actGetSellerApplication({ userId: this.user?.id });
-        console.log(result)
+        const result: any = await this.actGetSellerApplication({ userId: this.user?.id });
+        if (!result) {
+            this.userApliId = null
+        }
+        else if (result) {
+            this.userApliId = result.id
+            this.userApliStatus = result.status
+        }
     }
     async onUpdate() {
         const params = {
@@ -231,8 +244,7 @@ class Profile extends Vue {
             doB: this.doB
         }
         const response = await this.actUpdateProfile(params)
-        this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã cập nhật thông tin', life: 10000 })
-        console.log('LTA: ', response)
+        if (response) this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã cập nhật thông tin', life: 10000 })
     }
 
     async GetCity() {
@@ -243,7 +255,6 @@ class Profile extends Vue {
             value: city.codename,
         }));
         this.selectedCity = this.oCitys.find((city) => city.value === this.city) || null;
-        console.log('LTA: ', this.selectedCity)
     }
     async getDistrict() {
         if (this.selectedCity == undefined || this.selectedCity == null) return
@@ -255,7 +266,6 @@ class Profile extends Vue {
             value: district.codename,
         }));
         this.selectedDistrict = this.oDistricts.find((district) => district.value === this.district) || null;
-        console.log('LTA2: ', this.selectedDistrict)
     }
     async getStreet() {
         if (this.selectedDistrict == undefined || this.selectedDistrict == null) return
@@ -267,9 +277,16 @@ class Profile extends Vue {
             value: street.codename,
         }));
         this.selectedStreet = this.oStreets.find((street) => street.value === this.street) || null;
-        console.log('LTA: ', this.selectedStreet)
     }
-
+    onSelectCity() {
+        this.district = ''
+        this.street = ''
+        this.oStreets = []
+        this.getDistrict()
+    }
+    onCreateApp() {
+        this.$router.push("/account/requestseller")
+    }
     formatDate(dateString: string) {
         const date = new Date(dateString)
         const day = date.getDate().toString().padStart(2, '0')

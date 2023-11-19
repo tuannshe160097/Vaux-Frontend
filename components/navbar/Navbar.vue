@@ -54,14 +54,14 @@
 				<li class="flex-grow-1">
 					<InputText type="text" class="w-full px-2" placeholder="Tìm sản phẩm" />
 				</li>
-				<li><a href="/seller" class=" ml-6">Tạo sản phẩm</a></li>
+				<li><a href="/seller" class=" ml-6">Kênh bán</a></li>
 			</ul>
 			<div class="user-info" v-if="user != null">
 				<a href="#" class="desktop-item"><span>{{ userDisplayName }}</span></a>
 				<div class="relative">
 					<ul class="drop-menu2 absolute ">
-						<li><a href="/account/profile">Profile</a></li>
-						<li><a @click="logout()">Logout</a></li>
+						<li><a href="/account/profile">Cá nhân</a></li>
+						<li><a @click="logout()">Đăng xuất</a></li>
 					</ul>
 				</div>
 			</div>

@@ -33,8 +33,7 @@
                     <div class="field col-4">
                         <div class="card-header font-medium text-xl">Ảnh bìa</div>
                         <div class="field">
-                            <div class="text-center border-1 border-solid surface-border w-full"
-                                >
+                            <div class="text-center border-1 border-solid surface-border w-full">
                                 <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
                                     imageClass="w-max-100" imageStyle="object-fit: contain" />
                             </div>
@@ -69,27 +68,58 @@
                     </div>
                 </div>
                 <div class="grid formgrid">
+                    <h4 class="col-12 font-bold text-brown">5. Thuộc tính</h4>
+                    <div class="field col-12 md:col-12">
+                        <DataTable :value="properties" editMode="cell" @cell-edit-complete="onCellEditComplete"
+                            class="editable-cells-table p-invalid border-bottom-1 border-300" responsiveLayout="scroll">
+                            <Column field="index" header="STT">
+                                <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
+                            </Column>
+                            <Column v-for="col of columns" :field="col.field" :header="col.header"
+                                :styles="{ width: '50%' }" :key="col.field">
+                                <template #editor="slotProps">
+                                    <InputText :class="{ 'p-invalid': (!slotProps.data[slotProps.column.field]) }"
+                                        class="w-full" v-model="slotProps.data[slotProps.column.field]" autofocus />
+                                </template>
+                            </Column>
+                            <Column header="">
+                                <template #body="slotProps">
+                                    <Button class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center "
+                                        icon="pi pi-times" @click="onDeleteProperty(slotProps.index)">
+                                    </Button>
+                                </template>
+                            </Column>
+                        </DataTable>
+                    </div>
+                    <span class="col-12 field">
+                        <Button icon="pi pi-plus" label="Thêm dòng" @click="onAddProperty()" />
+                    </span>
+                </div>
+                <div class="grid formgrid">
                     <h4 class="col-12 font-bold text-brown">6. Phản hồi từ người kiểm duyệt</h4>
                     <span class="col-12">
                     </span>
                     <div class="field col-12">
                         <Textarea class="text-left w-full" :autoResize="true" v-model="reason" rows="5"
-                            placeholder="Sử dụng phần này để thêm thông tin lý do." style="height: 3rem;"  />
+                            placeholder="Sử dụng phần này để thêm thông tin lý do." style="height: 3rem;" />
                     </div>
                 </div>
                 <div class="grid formgrid">
                     <div class="field col-12 flex justify-content-center">
-                        <div v-if="showAssign">
-                            <Button class="mx-2 btn-success border-10 p-3" label="Assign" @click="onAssign()" />
+                        <div v-if="getShowAssign()">
+                            <Button class="mx-2 btn-success border-10 p-3" label="Tiếp nhận" @click="onAssign()" />
                         </div>
                         <div v-if="showUnassign">
-                            <Button class="mx-2 btn-warning border-10 p-3" label="Unassign" @click="onUnassign()" />
+                            <Button class="mx-2 btn-warning border-10 p-3" label="Hủy tiếp nhận" @click="onUnassign()" />
                         </div>
                         <div v-if="showDeny">
-                            <Button class="mx-2 btn-danger border-10 p-3" label="Deny" @click="onDeny()" />
+                            <Button class="mx-2 btn-info border-10 p-3" label="Cập nhật" @click="onUpdate()" />
+                        </div>
+                        <div v-if="showDeny">
+                            <Button class="mx-2 btn-danger border-10 p-3" label="Từ chối" @click="onDeny()" />
                         </div>
                         <div v-if="showAccept">
-                            <Button class="mx-2 btn-success border-10 p-3" label="Accept" @click="onAccept()" />
+                            <Button class="mx-2 btn-success border-10 p-3" label="Đồng ý" @click="onAccept()" />
                         </div>
                     </div>
                 </div>
@@ -127,11 +157,19 @@ class ViewUser extends Vue {
     dateUpdated: string = ''
     dateDeleted: string = ''
 
+    properties: any[] = []
+    columns = [
+        { field: 'label', header: 'Tên' },
+        { field: 'value', header: 'Giá trị' }
+    ];
+
     showAssign: boolean = false
     showUnassign: boolean = false
     showDeny: boolean = false
     showAccept: boolean = false
-
+    getShowAssign(){
+        return this.showAssign
+    }
     //option data
     oCategories: Array<any> | null = null
 
@@ -152,6 +190,8 @@ class ViewUser extends Vue {
     actAcceptItemApplication!: (params: any) => Promise<any>
     @nsExpItem.Action
     actRejectItemApplication!: (params: any) => Promise<any>
+    @nsExpItem.Action
+    actUpdateItemApplication!: (params: any) => Promise<any>
 
     async mounted() {
         const response = await this.actGetAllCategory()
@@ -172,6 +212,7 @@ class ViewUser extends Vue {
             this.categoryId = result.categoryId
             this.description = result.description
             this.reservePrice = result.reservePrice
+            this.properties = result.itemProperties
             this.expertId = result.expertId
             this.status = result.status
             this.displayAction()
@@ -188,6 +229,9 @@ class ViewUser extends Vue {
     }
     async getImageUrl(itemId: any, imgId: any) {
         try {
+            if (itemId == null || imgId == null) {
+                return ''
+            }
             const params = {
                 itemId: itemId,
                 imgId: imgId,
@@ -215,6 +259,25 @@ class ViewUser extends Vue {
         return `${day}-${month}-${year}`
     }
 
+    onCellEditComplete(event: any) {
+        let { data, newValue, field } = event;
+        switch (field) {
+            default:
+                if (newValue != null && newValue.trim().length > 0)
+                    data[field] = newValue;
+                else {
+                    event.preventDefault()
+                }
+                break;
+        }
+        // console.log(this.properties)
+    }
+    onAddProperty() {
+        this.properties.push({ label: null, value: null })
+    }
+    onDeleteProperty(index: any) {
+        this.properties.splice(index, 1)
+    }
     async onAssign() {
         const params = {
             itemId: this.itemId || '',
@@ -256,6 +319,33 @@ class ViewUser extends Vue {
             this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối sản phẩm', life: 10000 })
             this.displayAction()
         }
+    }
+    async onUpdate() {
+        if (this.checkProperties()) {
+            return
+        }
+        const params = {
+            itemId: this.itemId,
+            itemProperties: this.properties,
+        }
+        const result = await this.actUpdateItemApplication(params)
+        if (result) {
+            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã cập nhật thông tin sản phẩm', life: 10000 })
+        }
+    }
+    checkProperties(): boolean {
+        let invalidLines: number[] = [];
+        for (let i = 0; i < this.properties.length; i++) {
+            const temp = this.properties[i];
+            if (temp.label == null || temp.value == null || temp.label.trim() === '' || temp.value.trim() === '') {
+                invalidLines.push(i + 1);
+            }
+        }
+        if (invalidLines.length > 0) {
+            this.$toast.add({ severity: 'error', summary: 'Lỗi khi thêm dữ liệu', detail: `Dữ liệu không hợp lệ ở dòng ${invalidLines.join(', ')}`, life: 10000 })
+            return true;
+        }
+        return false;
     }
     displayAction() {
         this.showAssign = false

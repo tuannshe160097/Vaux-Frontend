@@ -65,8 +65,8 @@
                   <div v-else>
                     <Tag class="px-2 surface-200  bg-green-100" v-if="data.expertId == user?.id" severity="info"><span
                         class="font-bold text-green-400 font-size-small">Đang nhận xử lý</span></Tag>
-                    <Tag class="px-2 surface-200  bg-green-100" v-else severity="info"><span
-                        class="font-bold text-green-400 font-size-small">Đang xử lý</span></Tag>
+                    <Tag class="px-2 surface-200  bg-yellow-100" v-else severity="info"><span
+                        class="font-bold text-yellow-400 font-size-small">Đang xử lý</span></Tag>
                   </div>
                 </template>
               </Column>
