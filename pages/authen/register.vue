@@ -11,15 +11,25 @@
               <h2 class="form-title">Đăng ký</h2>
               <form class="signin-form">
                 <div class="form-group mb-3">
-                  <label class="block label" for="inputName" >Họ và tên</label>
-                  <InputText class="form-control w-full" id="inputName" type="text" v-model="name" placeholder="Họ và tên" />
+                  <label class="block label" for="inputName">Họ và tên</label>
+                  <InputText
+                    class="form-control w-full"
+                    id="inputName"
+                    type="text"
+                    v-model="name"
+                    placeholder="Họ và tên"
+                  />
                 </div>
                 <div class="form-group mb-3">
-                  <label class="block label" for="inputSdt">Số điện thoại</label>
+                  <label class="block label" for="inputSdt"
+                    >Số điện thoại</label
+                  >
                   <InputMask
                     mask="9999999999"
                     class="w-full form-control"
-                    id="inputSdt" v-model="sdt" slotChar=" "
+                    id="inputSdt"
+                    v-model="sdt"
+                    slotChar=" "
                     placeholder="Số điện thoại"
                   />
                 </div>
@@ -47,7 +57,7 @@
                     class="form-control btn btn-primary submit px-3"
                     @click="callRegister"
                   >
-                  Đăng ký
+                    Đăng ký
                   </Button>
                 </div>
                 <div class="form-group d-md-flex">
@@ -78,35 +88,48 @@ class Register extends Vue {
   checked: boolean = true
 
   @nsStoreUser.Action
-  actRegister !: (params: { phone: string, name: string }) => Promise<any>
+  actRegister!: (params: { phone: string; name: string }) => Promise<any>
 
   @nsStoreUser.Action
-  actVerify !: (params: any) => Promise<string>
+  actVerify!: (params: any) => Promise<string>
 
   async sendOtp() {
     if (this.sdt && this.name) {
       const params = {
         name: this.name,
-        phone: this.sdt
+        phone: this.sdt,
       }
       const result = await this.actRegister(params)
       if (result !== undefined && result !== null) {
-        this.$store.commit('commons/store-error/setError', 'Đăng ký thành công. Vui lòng xác nhận OTP để tiếp tục')
-              }
+        this.$toast.add({
+          severity: 'success',
+          summary: 'Thành công',
+          detail: 'Đăng ký thành công. Vui lòng xác nhận OTP để tiếp tục',
+          life: 5000,
+        })
+      }
     } else {
-      this.$store.commit('commons/store-error/setError', 'Vui lòng nhập Họ và tên và Số điện thoại')
+      this.$store.commit(
+        'commons/store-error/setError',
+        'Vui lòng nhập Họ và tên và Số điện thoại'
+      )
     }
   }
 
   async callRegister() {
     const params = {
       otp: this.otp,
-      phone: this.sdt
+      phone: this.sdt,
     }
     let result = await this.actVerify(params)
     if (result !== undefined && result !== null) {
-      this.$store.commit('commons/store-error/setError', 'Xác nhận thành công. Vui lòng đăng nhập lại để tiếp tục')
-            this.$router.push('/authen/login')
+      this.$toast.add({
+        severity: 'success',
+        summary: 'Thành công',
+        detail: 'Xác nhận thành công. Vui lòng đăng nhập lại để tiếp tục',
+        life: 5000,
+      })
+      this.$router.push('/authen/login')
     }
   }
 }
@@ -114,7 +137,6 @@ export default Register
 </script>
 
 <style lang='sass' scoped>
-
 .signup-content
   padding: 80px 0
 
@@ -184,7 +206,6 @@ div
   letter-spacing: 1px
   color: #000
   font-weight: 700
-
 
 label
   display: inline-block

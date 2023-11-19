@@ -29,9 +29,9 @@
       </div>
       <div class="col-fixed">
         <div class="grid align-content-center">
-          <!-- <div class="col-fixed">
+        <!-- <div class="col-fixed">
             <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="onAddNew()"></Button>
-          </div> -->
+            </div> -->
         </div>
       </div>
     </div>
@@ -40,21 +40,14 @@
       <div class="col-fixed grid">
         <div class="md:col-8 sm:col-12">
           <div class="card-control card">
-            <div
-              class="card-header justify-content-between flex align-items-center"
-              style="padding: 0.8rem 1.5rem !important"
-            >
+            <div class="card-header justify-content-between flex align-items-center"
+              style="padding: 0.8rem 1.5rem !important">
               <div class="title text-xl flex">
                 <span>Thông tin tài khoản</span>
               </div>
               <div class="card-action">
                 <label class="text-normal">Quyền hạn:</label>
-                <Dropdown
-                  v-model="curSubject"
-                  :options="oRoles"
-                  optionLabel="name"
-                  optionValue="value"
-                />
+                <Dropdown v-model="curSubject" :options="oRoles" optionLabel="name" optionValue="value" />
               </div>
             </div>
             <div class="p-4 grid formgrid">
@@ -76,65 +69,53 @@
               </div>
               <div class="field col-6">
                 <label>Giới tính</label>
-                <Dropdown
-                  class="w-100"
-                  v-model="gender"
-                  :options="oGenders"
-                  optionLabel="name"
-                  optionValue="value"
-                />
+                <Dropdown class="w-100" v-model="gender" :options="oGenders" optionLabel="name" optionValue="value" />
               </div>
               <div class="field col-6">
                 <label>Ngày sinh</label>
-                <Calendar
-                  class="w-100"
-                  v-model="dob"
-                  dateFormat="dd-mm-yy"
-                />
+                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" />
+              </div>
+              <div class="field col-4">
+                <label>Thành phố</label>
+                <!-- <InputText class="w-100" type="text" v-model="city" /> -->
+                <Dropdown class="w-100 line-height-1" v-model="selectedCity" :options="oCitys" :filter="true"
+                  filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="-Chọn Thành phố-"
+                  @change="onSelectCity()" />
+              </div>
+              <div class="field col-4">
+                <label>Quận, huyện</label>
+                <!-- <InputText class="w-100" type="text" v-model="district" /> -->
+                <Dropdown class="w-100 line-height-1" v-model="selectedDistrict" :options="oDistricts" :filter="true"
+                  filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
+              </div>
+              <div class="field col-4">
+                <label>Phường, xã</label>
+                <!-- <InputText class="w-100" type="text" v-model="street" /> -->
+                <Dropdown class="w-100 line-height-1" v-model="street" :options="oStreets" :filter="true"
+                  filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="-Chọn Phố/Phường-" optionValue="value" />
               </div>
               <div class="field col-12">
                 <label>Địa chỉ</label>
                 <InputText class="w-100" type="text" v-model="houseNumber" />
-              </div>
-              <div class="field col-4">
-                <label>Phường, xã</label>
-                <InputText class="w-100" type="text" v-model="street" />
-              </div>
-              <div class="field col-4">
-                <label>Quận, huyện</label>
-                <InputText class="w-100" type="text" v-model="district" />
-              </div>
-              <div class="field col-4">
-                <label>Thành phố</label>
-                <InputText class="w-100" type="text" v-model="city" />
               </div>
 
               <div class="field col-4">
                 <label>Ngày tạo</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="dateCreated"
-                  disabled
-                />
+                  type="text" v-model="dateCreated" disabled />
               </div>
               <div class="field col-4">
                 <label>Ngày cập nhật</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="dateUpdated"
-                  disabled
-                />
+                  type="text" v-model="dateUpdated" disabled />
               </div>
               <div class="field col-4">
                 <label>Ngày cấm</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="dateDeleted"
-                  disabled
-                />
+                  type="text" v-model="dateDeleted" disabled />
               </div>
               <div class="field col-12 justify-content-center flex">
                 <div v-if="curThread === 'ADD'">
@@ -154,26 +135,16 @@
           <div class="card-control">
             <div class="card-header font-medium text-xl">Ảnh Đại Diện</div>
             <div class="p-5 text-center">
-              <ImagePreview
-                src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
-                alt="Image"
-                class="wm-100"
-                preview
-                imageStyle="width: 100%"
-              />
+              <ImagePreview src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
+                alt="Image" class="wm-100" preview imageStyle="width: 100%" />
               <Button>Xóa ảnh</Button>
             </div>
           </div>
           <div class="card-control mt-3">
             <div class="card-header font-medium text-xl">Ảnh CCCD</div>
             <div class="p-5 text-center">
-              <ImagePreview
-                src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
-                alt="Image"
-                class="wm-100"
-                preview
-                imageStyle="width: 100%"
-              />
+              <ImagePreview src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
+                alt="Image" class="wm-100" preview imageStyle="width: 100%" />
               <Button>Xóa ảnh</Button>
             </div>
           </div>
@@ -186,14 +157,16 @@
 <script lang="ts" >
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { GENDER_OPTION, ROLE_OPTION_ADMIN, ROLE_OPTION_MOD } from '~/utils'
+import { Option } from '~/models/Option'
 const nsStoreUser = namespace('user/store-user')
+const nsStoreAddress = namespace('address/store-address')
 
 @Component({
   middleware: ['authenticate'],
   layout: 'admin',
   meta: {
-    role: [1,5]
-  }
+    role: [1, 5],
+  },
 })
 class DetailUser extends Vue {
   //data
@@ -217,6 +190,13 @@ class DetailUser extends Vue {
   //option data
   oGenders = GENDER_OPTION
   oRoles: any = null
+  selectedCity: Option.Option | null = null
+  selectedDistrict: Option.Option | null = null
+  selectedStreet: Option.Option | null = null
+  option: Option.Option | undefined
+  oCitys: Option.Option[] = []
+  oDistricts: Option.Option[] = []
+  oStreets: Option.Option[] = []
 
   @nsStoreUser.Action
   actGetUser!: (params: { userId: string }) => Promise<any>
@@ -226,6 +206,12 @@ class DetailUser extends Vue {
   actCreateExpert!: (params: any) => Promise<any>
   @nsStoreUser.Action
   actUpdateUser!: (params: any) => Promise<any>
+  @nsStoreAddress.Action
+  actGetCity!: () => Promise<string>
+  @nsStoreAddress.Action
+  actGetDistrict!: (params: any) => Promise<string>
+  @nsStoreAddress.Action
+  actGetStreet!: (params: any) => Promise<string>
 
   async mounted() {
     this.fetchData()
@@ -235,6 +221,9 @@ class DetailUser extends Vue {
     } else if (role == 5) {
       this.oRoles = ROLE_OPTION_ADMIN
     }
+    await this.GetCity()
+    await this.getDistrict()
+    await this.getStreet()
   }
   async fetchData() {
     this.curUserId =
@@ -269,6 +258,52 @@ class DetailUser extends Vue {
     }
   }
 
+  async GetCity() {
+    const response: any = await this.actGetCity()
+    this.oCitys = response.map((city: any) => ({
+      id: city.code,
+      name: city.name,
+      value: city.codename,
+    }))
+    this.selectedCity =
+      this.oCitys.find((city) => city.value === this.city) || null
+  }
+  async getDistrict() {
+    if (this.selectedCity == undefined || this.selectedCity == null) return
+    this.city = this.selectedCity.value
+    const response: any = await this.actGetDistrict({
+      cityId: this.selectedCity?.id,
+    })
+    this.oDistricts = response.districts.map((district: any) => ({
+      id: district.code,
+      name: district.name,
+      value: district.codename,
+    }))
+    this.selectedDistrict =
+      this.oDistricts.find((district) => district.value === this.district) ||
+      null
+  }
+  async getStreet() {
+    if (this.selectedDistrict == undefined || this.selectedDistrict == null)
+      return
+    this.district = this.selectedDistrict.value
+    const response: any = await this.actGetStreet({
+      districtId: this.selectedDistrict?.id,
+    })
+    this.oStreets = response.wards.map((street: any) => ({
+      id: street.code,
+      name: street.name,
+      value: street.codename,
+    }))
+    this.selectedStreet =
+      this.oStreets.find((street) => street.value === this.street) || null
+  }
+  onSelectCity() {
+    this.district = ''
+    this.street = ''
+    this.oStreets = []
+    this.getDistrict()
+  }
   async createUser() {
     const params = {
       subject: this.curSubject,
@@ -289,12 +324,6 @@ class DetailUser extends Vue {
     } else if (this.curSubject === 'EXP') {
       result = await this.actCreateExpert(params)
     } else {
-      // this.$toast.add({
-      //   severity: 'error',
-      //   summary: 'Error Message',
-      //   detail: "Chưa chọn loại tài khoản muốn tạo",
-      //   life: 3000
-      // })
       this.$store.commit(
         'commons/store-error/setError',
         'Chưa chọn loại tài khoản muốn tạo'
@@ -303,10 +332,11 @@ class DetailUser extends Vue {
     if (result) {
       this.$toast.add({
         severity: 'success',
-        summary: 'Success Message',
+        summary: 'Thành công',
         detail: 'Yêu cầu thành công',
         life: 3000,
       })
+      this.$router.push('/admin/user')
     }
   }
   async UpdateUser() {

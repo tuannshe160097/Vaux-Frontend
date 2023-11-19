@@ -7,9 +7,9 @@
       </div>
       <div class="col-fixed">
         <div class="grid align-content-center">
-          <!-- <div class="col-fixed">
+        <!-- <div class="col-fixed">
             <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="onAddNew()"></Button>
-          </div> -->
+              </div> -->
         </div>
       </div>
     </div>
@@ -19,26 +19,16 @@
         <div class="col-4">
           <div class="card-control">
             <div class="card-header font-medium text-xl">Ảnh Đại Diện</div>
-            <div class=" p-5 text-center">
-              <ImagePreview
-                src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
-                alt="Image"
-                class="wm-100"
-                preview
-                imageStyle="width: 100%"
-              />
+            <div class="p-5 text-center">
+              <ImagePreview src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
+                alt="Image" class="wm-100" preview imageStyle="width: 100%" />
             </div>
           </div>
           <div class="card-control mt-3">
             <div class="card-header font-medium text-xl">Ảnh CCCD</div>
             <div class="p-5 text-center">
-              <ImagePreview
-                src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
-                alt="Image"
-                class="wm-100"
-                preview
-                imageStyle="width: 100%"
-              />
+              <ImagePreview src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
+                alt="Image" class="wm-100" preview imageStyle="width: 100%" />
             </div>
           </div>
         </div>
@@ -52,84 +42,57 @@
                 <label>Tên</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="name"
-                  disabled
-                />
+                  type="text" v-model="name" disabled />
               </div>
               <div class="field">
                 <label>Số điện thoại</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="phone"
-                  disabled
-                />
+                  type="text" v-model="phone" disabled />
               </div>
               <div class="field">
                 <label>Email</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="email"
-                  disabled
-                />
+                  type="text" v-model="email" disabled />
               </div>
               <div class="field">
                 <label>Số CCCD</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="cccd"
-                  disabled
-                />
+                  type="text" v-model="cccd" disabled />
               </div>
               <div class="field">
                 <label>Địa chỉ</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="address"
-                  disabled
-                />
+                  type="text" v-model="address" disabled />
               </div>
               <div class="field">
                 <label>Quyền hạn</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="role"
-                  disabled
-                />
+                  type="text" v-model="role" disabled />
               </div>
               <div class="field">
                 <label>Ngày tạo</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="dateCreated"
-                  disabled
-                />
+                  type="text" v-model="dateCreated" disabled />
               </div>
               <div class="field">
                 <label>Ngày cập nhật</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="dateUpdated"
-                  disabled
-                />
+                  type="text" v-model="dateUpdated" disabled />
               </div>
               <div class="field">
                 <label>Ngày cấm</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text"
-                  v-model="dateDeleted"
-                  disabled
-                />
+                  type="text" v-model="dateDeleted" disabled />
               </div>
-              <div class="field"><Button label="Sửa" @click="Edit()" /></div>
+              <div v-if="displayButton" class="field"><Button label="Sửa" @click="Edit()" /></div>
             </div>
           </div>
         </div>
@@ -156,17 +119,25 @@ class ViewUser extends Vue {
   dateCreated: string = ''
   dateUpdated: string = ''
   dateDeleted: string = ''
-  curUserId: string =''
+  curUserId: string = ''
   curUserRoleId: any
+
+  displayButton: boolean = true
 
   @nsStoreUser.Action
   actGetUser!: (params: { userId: string }) => Promise<any>
 
   async mounted() {
     this.fetchData()
+    const role = this.$cookies.get('auth.role')
+    if (role == 1) {
+      this.displayButton = false
+    }
   }
   async fetchData() {
-    const userId = Array.isArray(this.$route.query.userId) ? this.$route.query.userId[0] : this.$route.query.userId
+    const userId = Array.isArray(this.$route.query.userId)
+      ? this.$route.query.userId[0]
+      : this.$route.query.userId
     if (userId) {
       this.curUserId = userId
       const params = {
@@ -205,11 +176,11 @@ class ViewUser extends Vue {
     return `${day}-${month}-${year}`
   }
 
-  Edit(){
+  Edit() {
     let url = '/admin/user/detail?userId=' + this.curUserId
-    if(this.curUserRoleId == 5) url + '&subject=ADM'
-    else if(this.curUserRoleId == 1) url + '&subject=MOD'
-    else if(this.curUserRoleId == 2) url + '&subject=EXP'
+    if (this.curUserRoleId == 5) url + '&subject=ADM'
+    else if (this.curUserRoleId == 1) url + '&subject=MOD'
+    else if (this.curUserRoleId == 2) url + '&subject=EXP'
     this.$router.push(url)
   }
 }
