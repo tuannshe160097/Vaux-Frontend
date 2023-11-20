@@ -320,7 +320,7 @@ class DetailItem extends Vue {
         if (newFileList.length > 0) {
             await this.AddMultiImage(this.itemId, newFileList)
         }
-        this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã thêm sản phẩm mới', life: 10000 })
+        this.$toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã cập nhật sản phẩm', life: 10000 })
         this.blockedAddButton = false
     }
     async AddMultiImage(itemId: any, fileList: any) {

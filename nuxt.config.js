@@ -49,6 +49,8 @@ export default {
     theme:      'bootstrap4-light-blue',
     ripple:     true,
     components: [
+      'Badge',
+      'BadgeDirective',
       'BlockUI',
       'Button',
       'Breadcrumb',

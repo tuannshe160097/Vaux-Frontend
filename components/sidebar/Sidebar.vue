@@ -1,36 +1,51 @@
 <template>
-  <div class="sidebar" :style="{ width: sidebarWidth }">
-    <div class="menu-section sidebar-head">
-      <template v-if="!collapsed">
-        <img class="user-avatar"
-          :src='require("assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png")' />
-        <div class="user-info">
-          <span class="user-name">{{ userDisplayName }}</span>
-          <span>{{ userDisplayRole }}</span>
-        </div>
-      </template>
-      <div class="icon icon--xlarge icon-menu-toggle surface-500 cursor-pointer" :class="{ 'bg-primary': collapsed }"
-        @click="toggleSidebar"></div>
-    </div>
-    <hr />
-    <div class="menu-section sidebar-menu">
-      <SidebarItem v-for="item in pageMenu" :key="item.id" :item="item" @select="onSelectMenu(item)" />
-    </div>
-    <div class="menu-section sidebar-foot">
+  <div class="">
+    <div class="sidebar" :style="{ width: sidebarWidth }">
+      <div class="menu-section sidebar-head">
+        <template v-if="!collapsed">
+          <img class="user-avatar"
+            :src='require("assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png")' />
+          <div class="user-info">
+            <span class="user-name white-space-nowrap overflow-hidden text-overflow-ellipsis">{{ userDisplayName }}</span>
+            <span>{{ userDisplayRole }}</span>
+          </div>
+        </template>
+        <div class="icon icon--xlarge icon-menu-toggle surface-500 cursor-pointer" :class="{ 'bg-primary': collapsed }"
+          @click="toggleSidebar"></div>
+      </div>
       <hr />
-      <div data-v-e4dd1d5e="" data-v-1084c69e="" class="menu-item flex-row pt-1"><!---->
-        <div data-v-e4dd1d5e="">
-          <div data-v-e60c5f60="" data-v-e4dd1d5e="" class="item-value"><!---->
-            <div data-v-e60c5f60="" class="item__icon">
-              <div data-v-e60c5f60="" class="icon icon--large icon-notification "></div>
+      <div class="menu-section sidebar-menu">
+        <SidebarItem v-for="item in pageMenu" :key="item.id" :item="item" @select="onSelectMenu(item)" />
+      </div>
+      <div class="menu-section sidebar-foot">
+        <hr />
+        <div class="menu-item flex-row pt-1 noti-area" @click="onNotificationClick()">
+          <div>
+            <div class="item-value" :class="{ 'active': notiActive }"><!---->
+              <div class="item__icon">
+                <div class="icon icon--large icon-notification "></div>
+              </div>
+              <div class="item__label"><span>Notifications</span> <span
+                  class="icon toggle icon-chevron-down surface-500 toggle-none"></span> <span
+                  class="mr-2 badge-notify p-badge p-component p-badge-no-gutter">{{ unseen }}</span></div>
             </div>
-            <div data-v-e60c5f60="" class="item__label"><span data-v-e60c5f60="">Notifications</span> <span
-                data-v-e60c5f60="" class="icon toggle icon-chevron-down surface-500  toggle-none"></span> <span
-                data-v-e60c5f60="" class="mr-2 badge-notify p-badge p-component p-badge-no-gutter">3</span></div>
           </div>
         </div>
+        <SidebarItem v-for="item in settingMenu" :key="item.id" :item="item" @select="onSelectMenu(item)" />
       </div>
-      <SidebarItem v-for="item in settingMenu" :key="item.id" :item="item" @select="onSelectMenu(item)" />
+    </div>
+    <div class="Noti overflow-y-scroll" :class="{ 'hidden': !notiActive }"
+      :style="{ left: sidebarWidth, width: sidebarWidth }" style="height: 70%;">
+      <div v-for="item in notifications" class="border-bottom-1 border-200 " :key="item.id" :item="item">
+        <div class="p-2 hover:surface-300 border-10 cursor-pointer" style="text-indent: 10px;">
+
+          <Badge v-if="!item.seen" value="" class="mr-2"></Badge>
+          <span v-badge.danger  v-badge="2">
+            {{ item.content }}
+          </span>
+        </div>
+      </div>
+      <!-- <SidebarItem v-for="item in pageMenu" @select="onSelectMenu(item)" /> -->
     </div>
   </div>
 </template>
@@ -46,6 +61,8 @@ const nsUser = namespace('user-auth/store-user')
 
 @Component
 class MenuSidebar extends Vue {
+  notiActive: boolean = false
+  unseen: number = 0
   // -- [ Statement Properties ] ------------------------------------------------
 
   @nsSidebar.Getter('sidebarWidth')
@@ -59,6 +76,7 @@ class MenuSidebar extends Vue {
 
   @nsUser.State('user')
   user!: User.Model | undefined
+  notifications!: User.Notification[] | undefined
 
   // -- [ Properties ] ----------------------------------------------------------
   @ProvideReactive()
@@ -80,16 +98,55 @@ class MenuSidebar extends Vue {
   }
 
   get userDisplayRole() {
-    return this.user?.role?.title || 'Role Ex'
+    switch (this.user?.role?.id) {
+      case 1: return 'Quản lý'
+      case 2: return 'Kiểm định viên'
+      case 3: return 'Người bán'
+      case 4: return 'Người mua'
+      case 5: return 'Quản trị viên'
+      default: return 'Role Ex'
+    }
   }
   // -- [ Methods ] ------------------------------------------------------------
 
   mounted() {
+    console.log(this.user)
     if (this.user?.role?.id == 2) {
       this.pageMenu = PAGE_MENU_EXPERT
     }
+    else if (this.user?.role?.id == 1) {
+      this.pageMenu = PAGE_MENU_MOD
+    }
+    if (this.user?.notifications) {
+      this.notifications = this.user?.notifications;
+      for (const noti of this.notifications) {
+        if (!noti.seen) {
+          this.unseen += 1;
+        }
+      }
+    }
+    document.body.addEventListener('click', this.handleBodyClick);
   }
 
+  beforeDestroy() {
+    // Remove the click event listener when the component is destroyed
+    document.body.removeEventListener('click', this.handleBodyClick);
+  }
+
+  handleBodyClick(event: Event) {
+    // Check if the clicked element is outside the notification and notification button
+    const target = event.target as HTMLElement;
+    const isNotiElement = target.closest('.Noti');
+    const isNotificationButton = target.closest('.noti-area');
+
+    if (!isNotiElement && !isNotificationButton) {
+      // Clicked outside, so hide the notification
+      this.notiActive = false;
+    }
+  }
+  onNotificationClick() {
+    this.notiActive = !this.notiActive
+  }
   onSelectMenu(item: any) {
     this.selectedItem = !item.parentId && item.id === this.selectedItem?.id ? null : item
     if (!item.parentId) {
@@ -117,6 +174,15 @@ export default MenuSidebar
 </script>
 
 <style lang="sass" scoped>
+.Noti
+  float: left
+  position: fixed
+  z-index: 1000
+  bottom: 0
+  padding: 0
+  transition: 0.3s ease
+  background: #fefefe
+  border: 1px solid $primary
 .sidebar
   @include flex-column
   float: left
@@ -166,4 +232,100 @@ export default MenuSidebar
     border: 0
     border-top : 1px solid $primary-orange
     @include flex-center-vert
+
+
+
+.toggle-none
+  display: none
+
+.sidebar-foot
+  .badge-notify
+    border-radius: 3px
+    background-color: $bg-orange
+.menu-item
+  .nuxt-link-exact-active
+    .item-value
+      border-radius: 10px
+      background-color: $second-yellow
+      color:$primary
+.child-item
+  margin-left: 25px
+  .item-collapsed
+    display: none !important
+  &::before
+    display: none
+  .item__label
+    position: relative
+
+.item-value
+  @include flex-center-vert
+  height: 100%
+  position: relative
+  color: $text-color-base
+  font-size: $font-size-medium
+  font-weight: $font-weight-semi-bold
+  .item-collapsed
+    display: none
+  &.active
+   .item-collapsed
+     &.active-child
+       display: block
+     position: absolute
+     top: 40px
+     width: 230px
+     background-color: $white
+     border: 1px solid $bg-body-base
+     box-shadow: 0px 10px 30px rgba(0, 10, 24, 0.1)
+     border-radius: 8px
+     z-index: 111
+     li
+      list-style: none
+     .item-collapsed__children
+       display: block
+       text-decoration: none
+       color: $text-color-900
+       background-color: $primary-dark
+       &:hover
+        border-radius: 4px
+        background-color: $second-yellow
+       &.nuxt-link-active
+        background: $primary
+        color: $white
+        border-radius: 4px
+
+   &::before
+    content: ""
+    position: absolute
+    border-radius: 0 5px 5px 0
+    left: -16px
+    width: 6px
+    height: 35px
+    background-color: $primary
+
+  &:hover
+    color: $white
+    border-radius: 10px
+
+  &.active
+    border-radius: 10px
+    background-color: $second-yellow
+    color : $primary
+
+  .item__label
+    @include flex-center-space-between
+    width: 100%
+    min-height: 56px
+    .icon 
+      color:$primary
+  .item__icon
+    padding: $space-size-16
+
+  .item__icon, .item__parent-link
+    min-height: 56px
+
+  .toggle
+    margin-right: $space-size-20
+
+.pl-16
+  padding-left: $space-size-16
 </style>

@@ -20,6 +20,7 @@ export namespace User {
     street: string,
     houseNumber: string,
     name: string,
+    notifications: User.Notification[]
   }
 
   export interface Detail {
@@ -29,10 +30,17 @@ export namespace User {
     phoneNumber: string
     pictureUrl:  string
   }
-
   export interface Token {
     userId: string
     token:  string
     user?:  User.Model
+  }
+  export interface Notification {
+    content: string
+    id:  string
+    redirect:  string
+    seen:  boolean
+    user?:  User.Model
+    created: string
   }
 }

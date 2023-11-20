@@ -91,7 +91,7 @@
                             </Column>
                         </DataTable>
                     </div>
-                    <span class="col-12 field">
+                    <span v-if="showUnassign" class="col-12 field">
                         <Button icon="pi pi-plus" label="Thêm dòng" @click="onAddProperty()" />
                     </span>
                 </div>
@@ -100,7 +100,7 @@
                     <span class="col-12">
                     </span>
                     <div class="field col-12">
-                        <Textarea class="text-left w-full" :autoResize="true" v-model="reason" rows="5"
+                        <Textarea class="text-left w-full" :autoResize="true" v-model="reason" rows="5" :disabled="!showUnassign"
                             placeholder="Sử dụng phần này để thêm thông tin lý do." style="height: 3rem;" />
                     </div>
                 </div>
@@ -150,7 +150,7 @@ class ViewUser extends Vue {
     reason: string = ''
     thumbnailUrl: any = ''
     images: any[] = []
-    expertId: number | null = null
+    expertId: number | undefined | null = null
     status: number | null = null
 
     dateCreated: string = ''
@@ -167,7 +167,7 @@ class ViewUser extends Vue {
     showUnassign: boolean = false
     showDeny: boolean = false
     showAccept: boolean = false
-    getShowAssign(){
+    getShowAssign() {
         return this.showAssign
     }
     //option data
@@ -236,15 +236,16 @@ class ViewUser extends Vue {
                 itemId: itemId,
                 imgId: imgId,
             }
-            const response = await this.actGetItemApplicationImage(params)
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(response);
-                reader.onloadend = () => {
-                    const base64Image = reader.result;
-                    resolve(base64Image);
-                };
-            });
+            return process.env.BE_API_URL + '/api/item/' + itemId + '/images/' + imgId
+            // const response = await this.actGetItemApplicationImage(params)
+            // return new Promise((resolve) => {
+            //     const reader = new FileReader();
+            //     reader.readAsDataURL(response);
+            //     reader.onloadend = () => {
+            //         const base64Image = reader.result;
+            //         resolve(base64Image);
+            //     };
+            // });
         } catch (error) {
             this.$store.commit('commons/store-error/setError', "Error fetching or converting image")
             console.error("Error fetching or converting image:", error);
@@ -284,6 +285,7 @@ class ViewUser extends Vue {
         }
         const result2 = await this.actAssignItemApplication(params)
         if (result2) {
+            this.expertId = this.user?.id
             this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã tiếp nhận xử lý sản phẩm', life: 10000 })
             this.displayAction()
         }
@@ -294,6 +296,7 @@ class ViewUser extends Vue {
         }
         const result2 = await this.actUnassignItemApplication(params)
         if (result2) {
+            this.expertId = null
             this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã hủy nhận xử lý sản phẩm', life: 10000 })
             this.displayAction()
         }
@@ -305,6 +308,7 @@ class ViewUser extends Vue {
         }
         const result = await this.actAcceptItemApplication(params)
         if (result) {
+            this.status = 3
             this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã đồng ý sản phẩm', life: 10000 })
             this.displayAction()
         }
@@ -316,6 +320,7 @@ class ViewUser extends Vue {
         }
         const result = await this.actRejectItemApplication(params)
         if (result) {
+            this.status = 2
             this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối sản phẩm', life: 10000 })
             this.displayAction()
         }
@@ -353,7 +358,6 @@ class ViewUser extends Vue {
         this.showAccept = false
         this.showDeny = false
         if (this.status != 1) {
-            console.log('here: ')
         }
         else if (this.expertId == null) {
             this.showAssign = true
@@ -363,6 +367,7 @@ class ViewUser extends Vue {
             this.showAccept = true
             this.showDeny = true
         }
+            console.log('here: ',this.expertId,this.showAssign,this.showUnassign,this.showAccept,this.showDeny)
     }
 }
 export default ViewUser

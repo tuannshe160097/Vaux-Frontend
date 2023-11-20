@@ -5,7 +5,7 @@
             <div v-if="!isSeller" class="card-body my-3">
                 <div class="grid">
                     <div class="col-6 field">
-                        <Button @click="createNewItem()" label="Trở thành Người bán ngay ->" />
+                        <Button @click="$router.push('/account/requestSeller')" label="Trở thành Người bán ngay ->" />
                     </div>
                 </div>
             </div>
