@@ -6,7 +6,7 @@
           :src='require("assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png")' />
         <div class="user-info">
           <span class="user-name">{{ userDisplayName }}</span>
-          <span>{{ userDisplayName }}</span>
+          <span>{{ userDisplayRole }}</span>
         </div>
       </template>
       <div class="icon icon--xlarge icon-menu-toggle surface-500 cursor-pointer" :class="{ 'bg-primary': collapsed }"
@@ -18,6 +18,18 @@
     </div>
     <div class="menu-section sidebar-foot">
       <hr />
+      <div data-v-e4dd1d5e="" data-v-1084c69e="" class="menu-item flex-row pt-1"><!---->
+        <div data-v-e4dd1d5e="">
+          <div data-v-e60c5f60="" data-v-e4dd1d5e="" class="item-value"><!---->
+            <div data-v-e60c5f60="" class="item__icon">
+              <div data-v-e60c5f60="" class="icon icon--large icon-notification "></div>
+            </div>
+            <div data-v-e60c5f60="" class="item__label"><span data-v-e60c5f60="">Notifications</span> <span
+                data-v-e60c5f60="" class="icon toggle icon-chevron-down surface-500  toggle-none"></span> <span
+                data-v-e60c5f60="" class="mr-2 badge-notify p-badge p-component p-badge-no-gutter">3</span></div>
+          </div>
+        </div>
+      </div>
       <SidebarItem v-for="item in settingMenu" :key="item.id" :item="item" @select="onSelectMenu(item)" />
     </div>
   </div>
@@ -72,8 +84,8 @@ class MenuSidebar extends Vue {
   }
   // -- [ Methods ] ------------------------------------------------------------
 
-  mounted(){
-    if(this.user?.role?.id == 2){
+  mounted() {
+    if (this.user?.role?.id == 2) {
       this.pageMenu = PAGE_MENU_EXPERT
     }
   }
