@@ -2,7 +2,14 @@
     <section class="surface-0 flex align-items-center justify-content-center p-2">
         <div class="box-page-container flex flex-column container w-full">
             <Breadcrumb :home="home" :model="items" />
-            <div class="card-body my-3">
+            <div v-if="!isSeller" class="card-body my-3">
+                <div class="grid">
+                    <div class="col-6 field">
+                        <Button @click="createNewItem()" label="Trở thành Người bán ngay ->" />
+                    </div>
+                </div>
+            </div>
+            <div v-if="isSeller" class="card-body my-3">
                 <div class="grid">
                     <div class="col-12 field">
                         <Button @click="createNewItem()" label="+ Tạo mới" />
@@ -74,9 +81,9 @@
                                         <template #footer="">
                                             <div>
                                                 <div class="flex align-items-center">
-                                                    <span class="ml-3 text-400 font-size-small">Showing
+                                                    <span class="ml-3 text-400 font-size-small">Hiển thị
                                                         {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
-                                                        - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
+                                                        - {{ Math.min(pPagenum * pPageSize, totalRecords) }} trên
                                                         {{ totalRecords }}</span>
                                                 </div>
                                             </div>
@@ -100,58 +107,13 @@
                     <TabPanel>
                         <template #header>
                             <i class="pi pi-user"></i>
-                            <span>Địa chỉ</span>
+                            <span>Đã từ chối</span>
                         </template>
-                        <div class="grid formgrid">
-                            <div class="field col-12">
-                                <h2 class="font-bold text-brown mb-0">Địa chỉ của tôi</h2>
-                            </div>
-                            <div class="field md:col-6 md:col-offset-3 col-12">
-                                <div class="grid">
-                                    <div class="align-self-center col-4 field">
-                                        <label class="md:m-0">Thành phố</label>
-                                    </div>
-                                    <div class="col-8 field">
-                                        <!-- <InputText class="w-full" type="text" v-model="city" /> -->
-                                        <Dropdown class="w-100 line-height-1" v-model="selectedCity" :options="oCitys"
-                                            :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                                            placeholder="-Chọn Thành phố-" @change="getDistrict()" />
-                                    </div>
-                                    <div class="align-self-center col-4 field">
-                                        <label class="md:m-0">Quận/ Huyện</label>
-                                    </div>
-                                    <div class="col-8 field">
-                                        <!-- <InputText class="w-full" type="text" v-model="district" /> -->
-                                        <Dropdown class="w-100 line-height-1" v-model="selectedDistrict"
-                                            :options="oDistricts" :filter="true" filterPlaceholder="Tìm kiếm"
-                                            optionLabel="name" placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
-                                    </div>
-                                    <div class="align-self-center col-4 field">
-                                        <label class="md:m-0">Phố/ Phường</label>
-                                    </div>
-                                    <div class="col-8 field">
-                                        <!-- <InputText class="w-full" type="text" v-model="street" /> -->
-                                        <Dropdown class="w-100 line-height-1" v-model="street" :options="oStreets"
-                                            :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                                            placeholder="-Chọn Phố/Phường-" optionValue="value" />
-                                    </div>
-                                    <div class="align-self-center col-4 field">
-                                        <label class="md:m-0">Địa chỉ cụ thể</label>
-                                    </div>
-                                    <div class="col-8 field">
-                                        <InputText class="w-full" type="text" v-model="houseNumber" />
-                                    </div>
-                                    <div class="col-8 col-offset-4">
-                                        <Button class="btn-primary border-10" label="Cập nhật" @click="onUpdate()" />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </TabPanel>
                     <TabPanel>
                         <template #header>
                             <i class="pi pi-user"></i>
-                            <span>Yêu cầu lên người bán</span>
+                            <span>Đã duyệt</span>
                         </template>
 
                     </TabPanel>
@@ -163,8 +125,10 @@
   
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import { User } from '~/models/User'
 const nsStoreItem = namespace('seller/store-itemApplication')
 const nsCategory = namespace('category/store-category')
+const nsStoreUser = namespace('user-auth/store-user')
 
 @Component({
     middleware: ['authenticate'],
@@ -180,7 +144,7 @@ class CreateItem extends Vue {
 
     //-----Pagination---------------------------------
     pPagenum: number = 1
-    pPageSize: number = 10
+    pPageSize: number = 5
     totalRecords: number = 0
     blockedTable: boolean = false
 
@@ -189,9 +153,12 @@ class CreateItem extends Vue {
     items = [
         { label: 'Kênh bán' },
     ]
+    isSeller: boolean = false
     //----------------------------------------
     oCategories: Array<any> | null = null
 
+    @nsStoreUser.State('user')
+    user!: User.Model | undefined
     @nsCategory.Action
     actGetAllCategory!: () => Promise<any>
     @nsStoreItem.Action
@@ -200,18 +167,32 @@ class CreateItem extends Vue {
     actGetItemApplicationImage!: (params: any) => Promise<any>
 
     async mounted() {
-        const response1 = await this.actGetAllCategory()
-        this.oCategories = response1.records
+        if (this.user?.role.id == 4) {
+            this.$toast.add({
+                severity: 'error', summary: 'Cảnh báo',
+                detail: 'Bạn chưa nâng cấp lên tài khoản người bán. Vui lòng nâng cấp để thực hiện hành động', life: 10000
+            })
+            this.isSeller = false
+            return
+        }
+        else {
+            this.isSeller = true
+            const response1 = await this.actGetAllCategory()
+            this.oCategories = response1.records
+            this.Search()
+        }
+    }
+    async Search(pageNum: number = this.pPagenum) {
         const params = {
             pageNum: this.pPagenum || 1,
-            pageSize: this.pPageSize || 10,
-            // search: this.search,
-            // status: this.status,
+            pageSize: this.pPageSize || 5,
+            search: '',
+            status: '',
+            category: '',
         }
         this.blockedTable = true
         let response = await this.actSearchItemApplication(params)
-        if (response) {
-            console.log(response)
+        if (response && response.records.length > 0) {
             for (let i = 0; i < response.records.length; i++) {
                 if (response.records[i].thumbnailId == undefined || response.records[i].thumbnailId == null) {
                     response.records[i].imgUrl = ''
@@ -223,38 +204,27 @@ class CreateItem extends Vue {
             this.totalRecords = response.totalRecords
             this.totalWaiting = response.totalRecords
         }
+        console.log('hẻh')
         this.boxData = response.records
         this.blockedTable = false
     }
-    async Search(pageNum: number = this.pPagenum) {
-        const params = {
-            pageNum: pageNum || 1,
-            pageSize: this.pPageSize || 10,
-            // search: this.search,
-            // status: this.status,
-        }
-        const response = await this.actSearchItemApplication(params)
-        console.log(response)
-        if (response) {
-            this.boxData = response.records
-            this.totalRecords = response.totalRecords
-        }
-    }
     async getImageUrl(itemId: any, imgId: any) {
         try {
+            console.log(imgId, 'lll', itemId)
             const params = {
                 itemId: itemId,
                 imgId: imgId,
             }
-            const response = await this.actGetItemApplicationImage(params)
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(response);
-                reader.onloadend = () => {
-                    const base64Image = reader.result;
-                    resolve(base64Image);
-                };
-            });
+            return process.env.BE_API_URL + '/api/item/' + itemId + '/images/' + imgId
+            // const response = await this.actGetItemApplicationImage(params)
+            // return new Promise((resolve) => {
+            //     const reader = new FileReader();
+            //     reader.readAsDataURL(response);
+            //     reader.onloadend = () => {
+            //         const base64Image = reader.result;
+            //         resolve(base64Image);
+            //     };
+            // });
         } catch (error) {
             this.$store.commit('commons/store-error/setError', "Error fetching or converting image")
             console.error("Error fetching or converting image:", error);

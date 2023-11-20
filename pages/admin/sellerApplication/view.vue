@@ -3,13 +3,13 @@
   <div class="box-page-container flex flex-column">
     <div class="header flex justify-content-between container">
       <div class="col-fixed">
-        <h2 class="font-bold m-0 text-uppercase">Thông tin người dùng</h2>
+        <h2 class="font-bold m-0 text-uppercase">Đơn xin quyền người bán</h2>
       </div>
       <div class="col-fixed">
         <div class="grid align-content-center">
-          <!-- <div class="col-fixed">
+        <!-- <div class="col-fixed">
             <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="onAddNew()"></Button>
-          </div> -->
+            </div> -->
         </div>
       </div>
     </div>
@@ -22,7 +22,7 @@
             <div class="card-header justify-content-between flex align-items-center"
               style="padding: 0.8rem 1.5rem !important">
               <div class="title text-xl flex">
-                <span>Thông tin tài khoản</span>
+                <span>Thông tin đơn</span>
               </div>
               <div class="card-action"></div>
             </div>
@@ -33,7 +33,7 @@
               </div>
               <div class="field col-12">
                 <label>Số điện thoại</label>
-                <InputText class="w-100" type="text" v-model="phone"  disabled/>
+                <InputText class="w-100" type="text" v-model="phone" disabled />
               </div>
               <div class="field col-4">
                 <label>Email</label>
@@ -41,19 +41,20 @@
               </div>
               <div class="field col-4">
                 <label>Giới tính</label>
-                <Dropdown class="w-100" v-model="gender" :options="oGenders" optionLabel="name" optionValue="value"  disabled/>
+                <Dropdown class="w-100" v-model="gender" :options="oGenders" optionLabel="name" optionValue="value"
+                  disabled />
               </div>
               <div class="field col-4">
                 <label>Ngày sinh</label>
-                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy"  disabled/>
+                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" disabled />
               </div>
               <div class="field col-12">
                 <label>Địa chỉ</label>
-                <InputText class="w-100" type="text" v-model="houseNumber"  disabled/>
+                <InputText class="w-100" type="text" v-model="houseNumber" disabled />
               </div>
               <div class="field col-4">
                 <label>Phường, xã</label>
-                <InputText class="w-100" type="text" v-model="street"  disabled/>
+                <InputText class="w-100" type="text" v-model="street" disabled />
               </div>
               <div class="field col-4">
                 <label>Quận, huyện</label>
@@ -61,11 +62,11 @@
               </div>
               <div class="field col-4">
                 <label>Thành phố</label>
-                <InputText class="w-100" type="text" v-model="city"  disabled/>
+                <InputText class="w-100" type="text" v-model="city" disabled />
               </div>
               <div class="field col-12">
                 <label>Số CCCD</label>
-                <InputText class="w-100" type="text" v-model="cccd"  disabled/>
+                <InputText class="w-100" type="text" v-model="cccd" disabled />
               </div>
               <div class="field col-6">
                 <label>Ảnh chân dung</label>
@@ -78,18 +79,19 @@
                 <label>Ảnh cccd/cmnd</label>
                 <div class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
                   <ImagePreview :src="citizenIdUrl || require('~/assets/images/default.jpg')
-                    " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
+                  " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
                 </div>
               </div>
               <div class="field col-12">
                 <label>Nội dung muốn bán</label>
-                <Textarea class="text-left w-full" v-model="content" rows="15" cols="100" placeholder="Ghi chú..."  disabled/>
+                <Textarea class="text-left w-full" v-model="content" rows="15" cols="100" placeholder="Ghi chú..."
+                  disabled />
               </div>
               <div class="field col-12">
                 <label>Phản hồi từ người bán</label>
-                <Textarea class="text-left w-full" v-model="reason" rows="15" cols="100" placeholder="Lý do..."/>
+                <Textarea class="text-left w-full" v-model="reason" rows="15" cols="100" placeholder="Lý do..." />
               </div>
-              <!-- <div class="field col-4">
+            <!-- <div class="field col-4">
                 <label>Ngày tạo</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
@@ -106,8 +108,8 @@
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                   type="text" v-model="dateDeleted" disabled />
-              </div> -->
-              <div v-if="appId != null" class="field col-12 justify-content-center flex">
+                </div> -->
+              <div v-if="appId != null && appStatus == 1" class="field col-12 justify-content-center flex">
                 <Button class="btn-danger border-10" label="Từ chối" @click="onDeny()" />
                 <Button class="ml-3 btn-success border-10" label="Đồng ý" @click="onAccept()" />
               </div>
@@ -147,6 +149,8 @@ class ViewUser extends Vue {
   dateCreated: string = ''
   dateUpdated: string = ''
   dateDeleted: string = ''
+
+  appStatus: any = null
 
   imagePortrait: any | null
   imageCccd: any | null
@@ -189,6 +193,7 @@ class ViewUser extends Vue {
       this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId)
       this.content = result.content
       this.reason = result.reason
+      this.appStatus = result.appStatus
     }
     else {
       this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin application Id")
@@ -224,8 +229,10 @@ class ViewUser extends Vue {
       reason: this.reason || '',
     }
     const result = await this.actApproveSeller(params)
-    this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã đồng ý đơn duyệt', life: 10000 })
-    console.log(result)
+    if (result) {
+      this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã đồng ý đơn duyệt', life: 10000 })
+      this.$router.push('/admin/sellerApplication')
+    }
   }
   async onDeny() {
     const params = {
@@ -233,8 +240,10 @@ class ViewUser extends Vue {
       reason: this.reason || '',
     }
     const result = await this.actDenySeller(params)
-    this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối đơn duyệt', life: 10000 })
-    console.log(result)
+    if (result) {
+      this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối đơn duyệt', life: 10000 })
+      this.$router.push('/admin/sellerApplication')
+    }
   }
 }
 export default ViewUser

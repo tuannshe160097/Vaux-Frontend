@@ -8,12 +8,12 @@
       <div class="col-fixed">
         <div class="grid align-content-center">
           <div class="col-fixed">
-            <!-- <Button
+          <!-- <Button
               class="w-9rem h-3rem"
               type="button"
               label="Thêm Mới"
               @click="onAddNew()"
-            ></Button> -->
+                  ></Button> -->
           </div>
         </div>
       </div>
@@ -41,8 +41,7 @@
       <div class="row flex-1 relative">
         <div class="col-12 md:col-12">
           <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="boxData" :value="boxData"
-            responsiveLayout="scroll" :selection.sync="selectedBoxes" dataKey="id" :resizableColumns="true" :rows="20"
-            :scrollable="false" stripedRows>
+            responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="20" :scrollable="false" stripedRows>
             <Column field="id" header="STT">
               <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
             </Column>
@@ -64,11 +63,11 @@
                 </div>
               </template>
             </Column>
-            <!-- <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
+          <!-- <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
               <template #body="{ data }">{{
                 data.created | dateTimeFomat
               }}</template>
-            </Column> -->
+                  </Column> -->
             <Column field="updated" header="NGÀY CẬP NHẬT" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.updated | dateTimeFomat
@@ -77,10 +76,8 @@
             <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
                 <div>
-                  <Tag class="px-2 bg-green-100" v-if="data.deleted != null" severity="danger"><span
-                      class="font-bold text-400 font-size-small">Bị chặn</span></Tag>
-                  <Tag class="px-2 surface-200" v-else severity="danger"><span
-                      class="font-bold text-green-400 font-size-small">Hoạt động</span></Tag>
+                  <Tag class="px-2" v-if="data.deleted != null" severity="danger" value="Đã cấm"></Tag>
+                  <Tag class="px-2" v-else severity="success" value="Hoạt động"></Tag>
                 </div>
               </template>
             </Column>
@@ -96,19 +93,22 @@
                 </Button>
               </template>
             </Column>
-            <template #footer="">
+            <template #footer>
               <div>
-                <div class="flex align-items-center" v-if="selectedBoxes.length &lt;= 0">
+                <div class="flex align-items-center">
                   <div class="icon--large icon-footer-paginator surface-400"></div>
-                  <span class="ml-3 text-400 font-size-small">Showing 01 - 100 of 1280</span>
+                  <span class="ml-3 text-400 font-size-small">Showing
+                    {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
+                    - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
+                    {{ totalRecords }}</span>
                 </div>
-                <Button class="p-button-danger opacity-70" @click="deleteBoxById(null)"
-                  v-if="selectedBoxes.length &gt; 0">
-                  <div class="icon--small icon-delete bg-white"></div>
-                  <span class="ml-3">Delete {{ selectedBoxes.length }} items selected</span>
-                </Button>
               </div>
-              <Paginator class="p-0" :rows="20" :totalRecords="totalItemsCount"></Paginator>
+              <div v-if="totalRecords > 0">
+                <Paginator class="p-0" :rows="pPageSize" :totalRecords="totalRecords"
+                  template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
+                  @page="onPage($event)">
+                </Paginator>
+              </div>
             </template>
           </DataTable>
         </div>
@@ -118,6 +118,7 @@
 </template>
   
 <script lang="ts">
+import { thisExpression } from '@babel/types'
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 const nsStoreUser = namespace('user/store-user')
 
@@ -126,11 +127,10 @@ const nsStoreUser = namespace('user/store-user')
   layout: 'admin',
 })
 class UserList extends Vue {
-  pageNum: number = 1
-  pageSize: number = 10
   boxData = []
-  totalItemsCount: number = 150
-  selectedBoxes = []
+  pPagenum: number = 1
+  pPageSize: number = 10
+  totalRecords: number = 0
   search: string = ''
   role: number = 0
   oRoles = [
@@ -144,32 +144,24 @@ class UserList extends Vue {
 
   @nsStoreUser.Action
   actSearchUser!: (params: any) => Promise<any>
+  @nsStoreUser.Action
+  actAdminBanUser!: (params: any) => Promise<any>
+  @nsStoreUser.Action
+  actModBanUser!: (params: any) => Promise<any>
 
   async mounted() {
-    const params = {
-      pageNum: this.pageNum || 1,
-      pageSize: this.pageSize || 10,
-      search: this.search,
-      role: this.role != 0 ? this.role : '',
-    }
-    const response = await this.actSearchUser(params)
-    if (response) {
-      console.log(response.records)
-      this.boxData = response.records
-      this.totalItemsCount = response.totalRecords
-    }
+    this.Search()
   }
-  async Search() {
+  async Search(pageNum: number = this.pPagenum) {
     const params = {
-      pageNum: this.pageNum || 1,
-      pageSize: this.pageSize || 10,
+      pageNum: pageNum,
+      pageSize: this.pPageSize,
       search: this.search,
-      role: this.role != 0 ? this.role : '',
     }
     const response = await this.actSearchUser(params)
     if (response) {
       this.boxData = response.records
-      this.totalItemsCount = response.totalRecords
+      this.totalRecords = response.totalRecords
     }
   }
 
@@ -186,7 +178,24 @@ class UserList extends Vue {
   onAddNew() {
     this.$router.push('/admin/user/detail')
   }
-  deleteBoxById(id: any) { }
+  async deleteBoxById(id: any) {
+    const params = {
+      userId: id,
+    }
+    let response;
+    const role = this.$cookies.get('auth.role')
+    if (role == 1) {
+      response = await this.actModBanUser(params)
+    } else if (role == 5) {
+      response = await this.actAdminBanUser(params)
+    }
+    if (response) {
+      this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã cấm người dùng', life: 5000 })
+    }
+  }
+  onPage(event: any) {
+    this.Search(event.page + 1)
+  }
 }
 
 export default UserList

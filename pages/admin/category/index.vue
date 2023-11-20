@@ -25,105 +25,48 @@
           <div class="grid formgrid">
             <div class="col-3">
               <label>Tên thể loại</label>
-              <InputText
-                class="w-21rem h-3rem"
-                type="text"
-                placeholder="Tìm kiếm"
-                v-model="search"
-              ></InputText>
+              <InputText class="w-21rem h-3rem" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
             </div>
             <div class="col field justify-content-end flex pt-5">
-              <Button
-                class="mr-2"
-                label="Tìm kiếm"
-                style="height: 36px"
-                @click="getCategory()"
-              />
-              <Button
-                class=""
-                label="Thêm Mới"
-                style="height: 36px"
-                @click="openModelCategory(null)"
-              />
+              <Button class="mr-2" label="Tìm kiếm" style="height: 36px" @click="getCategory()" />
+              <Button class="" label="Thêm Mới" style="height: 36px" @click="openModelCategory(null)" />
             </div>
           </div>
         </div>
       </div>
       <div class="row flex-1 relative">
         <div class="col-12 md:col-12">
-          <DataTable
-            class="w-full airtag-datatable h-full flex flex-column"
-            v-if="categories"
-            :value="categories"
-            responsiveLayout="scroll"
-            dataKey="id"
-            :resizableColumns="true"
-            :rows="10"
-            :scrollable="false"
-            stripedRows
-          >
+          <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="categories" :value="categories"
+            responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="10" :scrollable="false" stripedRows>
             <Column field="id" header="STT" sortable="sortable">
               <template #body="slotProps">
                 <span class="">{{ slotProps.index + 1 }}</span>
               </template>
             </Column>
-            <Column
-              field="name"
-              className="font-semibold"
-              header="Tên"
-              sortable="sortable"
-            ></Column>
-            <Column
-              field="description"
-              header="Mô tả"
-              sortable="sortable"
-              className="overflow-ellipsis"
-            >
+            <Column field="name" className="font-semibold" header="Tên" sortable="sortable"></Column>
+            <Column field="description" header="Mô tả" sortable="sortable" className="overflow-ellipsis">
               <template #body="{ data }">
                 <p class="element">{{ data.description }}</p>
               </template>
             </Column>
-            <Column
-              field="status"
-              header="TRẠNG THÁI"
-              sortable="sortable"
-              className="p-text-right"
-            >
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
                 <div>
-                  <Tag
-                    class="px-2 bg-green-100"
-                    v-if="!data.deleted"
-                    severity="success"
-                    ><span class="font-bold text-green-400 font-size-small"
-                      >Đang hoạt động</span
-                    ></Tag
-                  >
-                  <Tag class="px-2 surface-200" v-else severity="success"
-                    ><span class="font-bold text-400 font-size-small"
-                      >Dừng hoạt động</span
-                    ></Tag
-                  >
+                  <Tag class="px-2 bg-green-100" v-if="!data.deleted" severity="success"><span
+                      class="font-bold text-green-400 font-size-small">Đang hoạt động</span></Tag>
+                  <Tag class="px-2 surface-200" v-else severity="success"><span
+                      class="font-bold text-400 font-size-small">Dừng hoạt động</span></Tag>
                 </div>
               </template>
             </Column>
-            <Column
-              :exportable="false"
-              header="Hoạt động"
-              sortable="sortable"
-              className="p-text-right"
-            >
+            <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
-                <Button
-                  class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
-                  @click="openModelCategory(data)"
-                >
+                <Button class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
+                  @click="openModelCategory(data)">
                   <div class="icon--small icon-compose"></div>
                 </Button>
-                <Button
-                  class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
-                  @click="onDeleteCategory(data)"
-                >
+                <Button class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
+                  @click="onDeleteCategory(data)">
                   <div class="icon--small icon-bin"></div>
                 </Button>
               </template>
@@ -131,68 +74,42 @@
             <template #footer="">
               <div>
                 <div class="flex align-items-center">
-                  <div
-                    class="icon--large icon-footer-paginator surface-400"
-                  ></div>
-                  <span class="ml-3 text-400 font-size-small"
-                    >Showing
+                  <div class="icon--large icon-footer-paginator surface-400"></div>
+                  <span class="ml-3 text-400 font-size-small">Showing
                     {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
                     - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
-                    {{ totalRecords }}</span
-                  >
+                    {{ totalRecords }}</span>
                 </div>
               </div>
               <div v-if="totalRecords > 0">
-                <Paginator
-                  class="p-0"
-                  :rows="pPageSize"
-                  :totalRecords="totalRecords"
+                <Paginator class="p-0" :rows="pPageSize" :totalRecords="totalRecords"
                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
-                  @page="onPage($event)"
-                >
+                  @page="onPage($event)">
                 </Paginator>
               </div>
             </template>
             <template #empty>
               <div class="justify-content-center flex font-italic">
                 Không có dữ liệu
-              </div></template
-            >
+              </div>
+            </template>
           </DataTable>
         </div>
-        <Dialog
-          :header="titleModel"
-          :visible.sync="displayBasic"
-          :containerStyle="{ width: '50vw' }"
-          :maximizable="true"
-          :modal="true"
-        >
+        <Dialog :header="titleModel" :visible.sync="displayBasic" :containerStyle="{ width: '50vw' }" :maximizable="true"
+          :modal="true">
           <div class="field">
             <label>Tên</label>
             <InputText
               class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-              type="text"
-              v-model="sName"
-              placeholder="Vui lòng nhập tên"
-            />
+              type="text" v-model="sName" placeholder="Vui lòng nhập tên" />
           </div>
           <div class="field">
             <label>Mô tả</label>
-            <Textarea
-              class="text-left w-full"
-              v-model="sDescription"
-              rows="15"
-              cols="100"
-              placeholder="Vui lòng nhập mô tả"
-            />
+            <Textarea class="text-left w-full" v-model="sDescription" rows="15" cols="100"
+              placeholder="Vui lòng nhập mô tả" />
           </div>
           <template #footer>
-            <Button
-              label="Hủy bỏ"
-              icon="pi pi-times"
-              @click="closeModel"
-              class="p-button-text"
-            />
+            <Button label="Hủy bỏ" icon="pi pi-times" @click="closeModel" class="p-button-text" />
             <Button label="Lưu" icon="pi pi-check" @click="onSaveCategory" />
           </template>
         </Dialog>

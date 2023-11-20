@@ -28,7 +28,7 @@ class Dashboard extends Vue {
     if (_error) {
       this.$toast.add({
         severity: 'error',
-        summary: 'Error Message',
+        summary: 'Lỗi',
         detail: _error,
         life: 15000
       })

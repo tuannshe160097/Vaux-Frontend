@@ -12,6 +12,8 @@ export default class StoreCategory extends VuexModule {
         UPDATE_USER: '/Admin/Account/:userId',
         CREATE_MOD: '/Admin/Account/CreateModerator',
         CREATE_EXPERT: '/Mod/Account/CreateExpert',
+        ADMIN_BAN_USER: '/Admin/Account/ChangeAccess/:userId',
+        MOD_BAN_USER: '/Mod/Account/ChangeAccess/:userId',
     }
 
 
@@ -51,6 +53,20 @@ export default class StoreCategory extends VuexModule {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.UPDATE_USER, { userId: params?.userId })
             return await $api.put(url, params)
+        } catch (error) { }
+    }
+    @Action({ rawError: true })
+    async actAdminBanUser(params: any): Promise<string | undefined> {
+        try {
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.ADMIN_BAN_USER, { userId: params?.userId })
+            return await $api.patch(url)
+        } catch (error) { }
+    }
+    @Action({ rawError: true })
+    async actModBanUser(params: any): Promise<string | undefined> {
+        try {
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.MOD_BAN_USER, { userId: params?.userId })
+            return await $api.patch(url)
         } catch (error) { }
     }
 

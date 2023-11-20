@@ -45,6 +45,9 @@ const auth: Plugin = ({ app, $auth, store }) => {
     else if (error.response && error.response.status === 403) {
       store.commit('commons/store-error/setError', "Không có quyền thực hiện hành động này!")
     }
+    else if (error.response && error.response.status === 500) {
+      store.commit('commons/store-error/setError', "Đã xảy ra lỗi, vui lòng thử lại sau")
+    }
     const errorResponse: ErrorResponse = error.response.data
 
     if (errorResponse) {
