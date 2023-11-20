@@ -58,7 +58,7 @@
                     <Tag class="px-2 bg-danger-100" v-if="data.status == 3" severity="danger"><span
                         class="font-bold text-400 font-size-small">Từ chối</span></Tag>
                     <Tag class="px-2 surface-200" v-else-if="data.status == 1" severity="danger"><span
-                        class="font-bold text-400 font-size-small">Chờ duyệt</span></Tag>
+                        class="font-bold text-700 font-size-small">Chờ duyệt</span></Tag>
                     <Tag class="px-2 surface-200  bg-green-100" v-else severity="danger"><span
                         class="font-bold text-green-400 font-size-small">Đồng ý</span></Tag>
                   </div>
@@ -119,10 +119,10 @@ const nsStoreUser = namespace('user-auth/store-user')
   layout: 'admin',
 })
 class ItemList extends Vue {
-  
+
   @nsStoreUser.State('user')
   user!: User.Model | undefined
-  curUserId: number|undefined
+  curUserId: number | undefined
   boxData: any[] = []
   selectedBoxes = []
   search: string = ''
@@ -161,7 +161,7 @@ class ItemList extends Vue {
         }
         response.records[i].imgUrl = await this.getImageUrl(response.records[i].id, response.records[i].thumbnailId)
       }
-      console.log(this.boxData) 
+      console.log(this.boxData)
       this.totalRecords = response.totalRecords
     }
     this.boxData = response.records
@@ -183,20 +183,21 @@ class ItemList extends Vue {
   }
   async getImageUrl(itemId: any, imgId: any) {
     try {
-      if(itemId==null||imgId==null) return ''
+      if (itemId == null || imgId == null) return ''
       const params = {
         itemId: itemId,
         imgId: imgId,
       }
-      const response = await this.actGetItemApplicationImage(params)
-      return new Promise((resolve) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(response);
-        reader.onloadend = () => {
-          const base64Image = reader.result;
-          resolve(base64Image);
-        };
-      });
+      return process.env.BE_API_URL + '/api/item/' + itemId + '/images/' + imgId
+      // const response = await this.actGetItemApplicationImage(params)
+      // return new Promise((resolve) => {
+      //   const reader = new FileReader();
+      //   reader.readAsDataURL(response);
+      //   reader.onloadend = () => {
+      //     const base64Image = reader.result;
+      //     resolve(base64Image);
+      //   };
+      // });
     } catch (error) {
       this.$store.commit('commons/store-error/setError', "Error fetching or converting image")
       console.error("Error fetching or converting image:", error);

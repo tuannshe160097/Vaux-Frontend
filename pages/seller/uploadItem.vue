@@ -131,7 +131,7 @@ class CreateItem extends Vue {
   files: File[] = []
   images: any[] = []
 
-  blockedAddButton : boolean = false
+  blockedAddButton: boolean = false
   //---------------------------------------
   home = { icon: 'pi pi-home', to: '/homepage' }
   items = [
@@ -159,6 +159,16 @@ class CreateItem extends Vue {
     const fileList = Array.from(files);
     if (files != null) {
       for (const file of fileList) {
+
+
+        if (file.size / 1024 / 1024 > 3) {
+          this.$store.commit(
+            'commons/store-error/setError',
+            'File tải lên quá lớn'
+          )
+          return
+        }
+
         const objectURL = URL.createObjectURL(file);
         const imageInfo = { objectURL, name: file.name, size: file.size };
         this.images.push(imageInfo);
@@ -188,7 +198,7 @@ class CreateItem extends Vue {
   }
   async onSubmit() {
     this.blockedAddButton = true
-        this.$toast.add({ severity: 'warn', summary: 'Success', detail: 'Đang tạo sản phẩm, Vui lòng đợi trong giây lát', life: 3000 })
+    this.$toast.add({ severity: 'warn', summary: 'Success', detail: 'Đang tạo sản phẩm, Vui lòng đợi trong giây lát', life: 3000 })
     const params = {
       name: this.name,
       categoryId: this.categoryId,
@@ -204,6 +214,7 @@ class CreateItem extends Vue {
       }
     }
     this.blockedAddButton = false
+    this.$router.push('/seller')
   }
   async AddMultiImage(itemId: any, fileList: any) {
     const formData = new FormData();

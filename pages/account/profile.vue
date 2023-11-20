@@ -51,7 +51,9 @@
                                         </Calendar>
                                     </div>
                                     <div class="col-8 col-offset-4">
-                                        <Button class="btn-primary border-10" label="Cập nhật" @click="onUpdate()" />
+                                        <BlockUI :blocked="disableButton">
+                                            <Button class="btn-primary border-10" label="Cập nhật" @click="onUpdate()" />
+                                        </BlockUI>
                                     </div>
                                 </div>
                             </div>
@@ -102,13 +104,15 @@
                                         <InputText class="w-full" type="text" v-model="houseNumber" />
                                     </div>
                                     <div class="col-8 col-offset-4">
-                                        <Button class="btn-primary border-10" label="Cập nhật" @click="onUpdate()" />
+                                        <BlockUI :blocked="disableButton">
+                                            <Button class="btn-primary border-10" label="Cập nhật" @click="onUpdate()" />
+                                        </BlockUI>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </TabPanel>
-                    <TabPanel>
+                    <!-- <TabPanel>
                         <template #header>
                             <i class="pi pi-user"></i>
                             <span>Yêu cầu lên người bán</span>
@@ -153,7 +157,7 @@
                                 </div>
                             </div>
                         </div>
-                    </TabPanel>
+                    </TabPanel> -->
                 </TabView>
             </div>
         </div>
@@ -161,6 +165,7 @@
 </template>
   
 <script lang="ts">
+import { BlobOptions } from 'buffer'
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 const nsStoreUser = namespace('user-auth/store-user')
 import { Option } from '~/models/Option'
@@ -204,6 +209,7 @@ class Profile extends Vue {
     items = [
         { label: 'Profile' }
     ]
+    disableButton: boolean = false
     //----------------------------------------
 
     @nsStoreUser.Action
@@ -250,6 +256,7 @@ class Profile extends Vue {
         }
     }
     async onUpdate() {
+        this.disableButton = true;
         const params = {
             name: this.name,
             phone: this.phone,
@@ -261,8 +268,9 @@ class Profile extends Vue {
             gender: this.gender,
             doB: this.doB
         }
-        const response = await this.actUpdateProfile(params)
-        if (response) this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã cập nhật thông tin', life: 10000 })
+        const response: any = await this.actUpdateProfile(params)
+        if (response.status == 200) this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã cập nhật thông tin', life: 10000 })
+        this.disableButton = false;
     }
 
     async GetCity() {

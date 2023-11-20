@@ -200,7 +200,7 @@ class requestSeller extends Vue {
   async mounted() {
     this.name = this.user?.name || ''
     this.gender = this.user?.gender || ''
-    this.dob = this.user?.dob || ''
+    this.dob = this.user?.doB || ''
     this.phone = this.user?.phone || ''
     this.email = this.user?.email || ''
     this.cccd = this.user?.citizenId || ''

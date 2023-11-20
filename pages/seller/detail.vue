@@ -41,16 +41,13 @@
                         <input type="file" @change="onUploadFile($event)" accept=".png, .jpg, .jpeg" multiple />
                         <div class="grid formgrid">
                             <div v-for="(image, index) in images" :key="index" class="image-item col-3">
-                                <div id="image-container" class="flex flex-column w-full">
+                                <div id="image-container"
+                                    class="flex flex-column w-full  border-1 border-solid surface-border field">
                                     <div class="image-container w-full bg-center bg-cover"
                                         :style="{ backgroundImage: 'url(' + image.objectURL + ')' }"
                                         style="padding-bottom: 100%;">
                                     </div>
-                                    <div
-                                        class="image-info text-left white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                                        <span class=" text-overflow-ellipsis">Name: {{ image.name }}</span>
-                                    </div>
-                                    <div class="product-list-action p-2 w-100 text-right">
+                                    <div class="product-list-action p-2 w-100 text-center">
                                         <Button class="btn" @click="removeImage(index)" label="Xóa" />
                                     </div>
                                 </div>
@@ -68,8 +65,7 @@
                                     <div class="small font-italic text-muted mb-2">
                                         JPG or PNG no larger than 1 MB
                                     </div>
-                                    <input type="file" @change="onUploadThumbnail($event)"
-                                        accept="image/jpeg,image/jpg,image/png" />
+                                    <input type="file" @change="onUploadThumbnail($event)" accept=".png, .jpg, .jpeg" />
                                 </div>
                             </div>
                         </div>
@@ -134,7 +130,7 @@ class DetailItem extends Vue {
     thumbnailUrl: any = ''
 
     thumbnailId: number | null = null
-    files: File[] = []
+    files: any[] = []
     images: any[] = []
 
     deleteThumbnailOnSv: boolean = false
@@ -193,7 +189,7 @@ class DetailItem extends Vue {
                 const imageInfo = { objectURL: result2, name: "result2.name", imgId: imgId };
                 this.images.push(imageInfo);
             }
-            console.log(this.images.length + " ??? " + this.files.length)
+            //console.log(this.images.length + " ??? " + this.files.length)
         }
         else {
             this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin Item Id")
@@ -206,20 +202,22 @@ class DetailItem extends Vue {
                 itemId: itemId,
                 imgId: imgId,
             }
-            const response = await this.actGetItemApplicationImage(params)
+            //const response = await this.actGetItemApplicationImage(params)
             //custom
             if (!isThumbnail) {
-                this.files.push(response)
+                //this.files.push(process.env.BE_API_URL + '/api/item/' + itemId + '/images/' + imgId)
             }
             //
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(response);
-                reader.onloadend = () => {
-                    const base64Image = reader.result;
-                    resolve(base64Image);
-                };
-            });
+
+            return process.env.BE_API_URL + '/api/item/' + itemId + '/images/' + imgId
+            // return new Promise((resolve) => {
+            //     const reader = new FileReader();
+            //     reader.readAsDataURL(response);
+            //     reader.onloadend = () => {
+            //         const base64Image = reader.result;
+            //         resolve(base64Image);
+            //     };
+            // });
         } catch (error) {
             this.$store.commit('commons/store-error/setError', "Có lỗi khi đọc dữ liệu ảnh: " + imgId)
             console.error("Có lỗi khi đọc dữ liệu ảnh: " + imgId, error);
@@ -231,6 +229,7 @@ class DetailItem extends Vue {
         const fileList = Array.from(files);
         if (files != null) {
             for (const file of fileList) {
+                console.log(file)
                 if (file.size / 1024 / 1024 > 3) {
                     this.$store.commit(
                         'commons/store-error/setError',
@@ -238,13 +237,20 @@ class DetailItem extends Vue {
                     )
                     return
                 }
+                if (!['image/jpeg', 'image/jpg', 'image/png'].includes(files[0].type)) {
+                    this.$store.commit(
+                        'commons/store-error/setError',
+                        'File tải lên không đúng định dạng (jpeg, jpg, png)'
+                    )
+                    return
+                }
                 const objectURL = URL.createObjectURL(file);
-                const imageInfo = { objectURL, name: file.name, size: file.size, imgId: null };
+                const imageInfo = { objectURL, name: file.name, size: file.size, imgId: null, fileContent: file };
                 this.images.push(imageInfo);
-                this.files.push(file);
+                //this.files.push(file);
             }
         }
-        console.log(this.images.length + " ??? " + this.files.length)
+        //console.log(this.images.length + " ??? " + this.files.length)
     }
     onUploadThumbnail(event: Event) {
         const inputElement = event.target as HTMLInputElement
@@ -278,24 +284,22 @@ class DetailItem extends Vue {
         }
         console.log(this.deleteImgOnSv)
         this.$delete(this.images, index);
-        this.$delete(this.files, index);
-        console.log(this.images.length + " ??? " + this.files.length)
+        //this.$delete(this.files, index);
+        //console.log(this.images.length + " ??? " + this.files.length)
     }
     async onUpdate() {
         this.blockedAddButton = true
         this.$toast.add({ severity: 'warn', summary: 'Success', detail: 'Đang cập nhật. Vui lòng đợi trong giây lát', life: 3000 })
 
         let newFileList: File[] = []
-        if (this.images.length != this.files.length) {
-            this.$toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Lỗi điều kiện', life: 10000 })
-            return
-        }
-        else {
-            for (let i = 0; i < this.images.length; i++) {
-                if (this.images[i].imgId == null) {
-                    this.images[i].imgId = 0
-                    newFileList.push(this.files[i])
-                }
+        // if (this.images.length != this.files.length) {
+        //     this.$toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Lỗi điều kiện', life: 10000 })
+        //     return
+        // }
+        for (let i = 0; i < this.images.length; i++) {
+            if (this.images[i].imgId == null) {
+                this.images[i].imgId = 0
+                newFileList.push(this.images[i].fileContent)
             }
         }
         const params = {
@@ -339,8 +343,8 @@ class DetailItem extends Vue {
         }
         return this.actAddItemApplicationThumbnail(param)
     }
-    isDisplayButton(){
-        return !(this.status>1)
+    isDisplayButton() {
+        return !(this.status > 1)
     }
 }
 export default DetailItem

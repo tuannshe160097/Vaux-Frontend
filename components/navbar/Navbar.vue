@@ -84,7 +84,7 @@ class MenuNavbar extends Vue {
 	// -- [ Statement Properties ] ------------------------------------------------
 
 	@nsUser.State('user')
-	user!: User.Model | undefined
+	user!: User.Model | null
 
 	// -- [ Properties ] ----------------------------------------------------------
 	@ProvideReactive()
@@ -95,10 +95,11 @@ class MenuNavbar extends Vue {
 	// -- [ Getters ] -------------------------------------------------------------
 
 	get userDisplayName() {
-		console.log(this.user)
+		console.log('LTA0: ',this.user)
 		return this.user?.name || 'Unknown'
 	}
 	logout() {
+		this.user = null
 		this.$cookies.remove('auth._token')
 		this.$auth.logout()
 	}

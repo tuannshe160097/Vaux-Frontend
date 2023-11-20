@@ -2,7 +2,14 @@
     <section class="surface-0 flex align-items-center justify-content-center p-2">
         <div class="box-page-container flex flex-column container w-full">
             <Breadcrumb :home="home" :model="items" />
-            <div class="card-body my-3">
+            <div v-if="!isSeller" class="card-body my-3">
+                <div class="grid">
+                    <div class="col-6 field">
+                        <Button @click="createNewItem()" label="Trở thành Người bán ngay ->" />
+                    </div>
+                </div>
+            </div>
+            <div v-if="isSeller" class="card-body my-3">
                 <div class="grid">
                     <div class="col-12 field">
                         <Button @click="createNewItem()" label="+ Tạo mới" />
@@ -118,8 +125,10 @@
   
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import { User } from '~/models/User'
 const nsStoreItem = namespace('seller/store-itemApplication')
 const nsCategory = namespace('category/store-category')
+const nsStoreUser = namespace('user-auth/store-user')
 
 @Component({
     middleware: ['authenticate'],
@@ -144,9 +153,12 @@ class CreateItem extends Vue {
     items = [
         { label: 'Kênh bán' },
     ]
+    isSeller: boolean = false
     //----------------------------------------
     oCategories: Array<any> | null = null
 
+    @nsStoreUser.State('user')
+    user!: User.Model | undefined
     @nsCategory.Action
     actGetAllCategory!: () => Promise<any>
     @nsStoreItem.Action
@@ -155,21 +167,32 @@ class CreateItem extends Vue {
     actGetItemApplicationImage!: (params: any) => Promise<any>
 
     async mounted() {
-        const response1 = await this.actGetAllCategory()
-        this.oCategories = response1.records
-        this.Search()
+        if (this.user?.role.id == 4) {
+            this.$toast.add({
+                severity: 'error', summary: 'Cảnh báo',
+                detail: 'Bạn chưa nâng cấp lên tài khoản người bán. Vui lòng nâng cấp để thực hiện hành động', life: 10000
+            })
+            this.isSeller = false
+            return
+        }
+        else {
+            this.isSeller = true
+            const response1 = await this.actGetAllCategory()
+            this.oCategories = response1.records
+            this.Search()
+        }
     }
     async Search(pageNum: number = this.pPagenum) {
         const params = {
             pageNum: this.pPagenum || 1,
             pageSize: this.pPageSize || 5,
-            // search: this.search,
-            // status: this.status,
+            search: '',
+            status: '',
+            category: '',
         }
         this.blockedTable = true
         let response = await this.actSearchItemApplication(params)
-        if (response) {
-            console.log(response)
+        if (response && response.records.length > 0) {
             for (let i = 0; i < response.records.length; i++) {
                 if (response.records[i].thumbnailId == undefined || response.records[i].thumbnailId == null) {
                     response.records[i].imgUrl = ''
@@ -181,24 +204,27 @@ class CreateItem extends Vue {
             this.totalRecords = response.totalRecords
             this.totalWaiting = response.totalRecords
         }
+        console.log('hẻh')
         this.boxData = response.records
         this.blockedTable = false
     }
     async getImageUrl(itemId: any, imgId: any) {
         try {
+            console.log(imgId, 'lll', itemId)
             const params = {
                 itemId: itemId,
                 imgId: imgId,
             }
-            const response = await this.actGetItemApplicationImage(params)
-            return new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(response);
-                reader.onloadend = () => {
-                    const base64Image = reader.result;
-                    resolve(base64Image);
-                };
-            });
+            return process.env.BE_API_URL + '/api/item/' + itemId + '/images/' + imgId
+            // const response = await this.actGetItemApplicationImage(params)
+            // return new Promise((resolve) => {
+            //     const reader = new FileReader();
+            //     reader.readAsDataURL(response);
+            //     reader.onloadend = () => {
+            //         const base64Image = reader.result;
+            //         resolve(base64Image);
+            //     };
+            // });
         } catch (error) {
             this.$store.commit('commons/store-error/setError', "Error fetching or converting image")
             console.error("Error fetching or converting image:", error);
