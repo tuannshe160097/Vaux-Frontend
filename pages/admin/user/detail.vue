@@ -158,15 +158,14 @@
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { GENDER_OPTION, ROLE_OPTION_ADMIN, ROLE_OPTION_MOD } from '~/utils'
 import { Option } from '~/models/Option'
+import { User } from '~/models/User'
 const nsStoreUser = namespace('user/store-user')
 const nsStoreAddress = namespace('address/store-address')
+const nsUser = namespace('user-auth/store-user')
 
 @Component({
   middleware: ['authenticate'],
   layout: 'admin',
-  meta: {
-    role: [1, 5],
-  },
 })
 class DetailUser extends Vue {
   //data
@@ -198,6 +197,8 @@ class DetailUser extends Vue {
   oDistricts: Option.Option[] = []
   oStreets: Option.Option[] = []
 
+  @nsUser.State('user')
+  user!: User.Model | undefined
   @nsStoreUser.Action
   actGetUser!: (params: { userId: string }) => Promise<any>
   @nsStoreUser.Action
@@ -214,8 +215,9 @@ class DetailUser extends Vue {
   actGetStreet!: (params: any) => Promise<string>
 
   async mounted() {
+    console.log('Lương tiến ANh')
     this.fetchData()
-    const role = this.$cookies.get('auth.role')
+    const role = this.user?.role.id
     if (role == 1) {
       this.oRoles = ROLE_OPTION_MOD
     } else if (role == 5) {

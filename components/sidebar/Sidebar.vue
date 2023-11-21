@@ -6,8 +6,8 @@
           <img class="user-avatar"
             :src='require("assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png")' />
           <div class="user-info white-space-nowrap overflow-hidden text-overflow-ellipsis" style="display: inline-block;">
-            <p class="user-name"  style="display: inline;">{{ userDisplayName }}</p>
-            <!-- <span>{{ userDisplayRole }}</span> -->
+            <p class="user-name" style="display: inline-block;">{{ userDisplayName }}</p>
+            <span style="display: inline-block;">{{ userDisplayRole }}</span>
           </div>
         </template>
         <div class="icon icon--xlarge icon-menu-toggle surface-500 cursor-pointer" :class="{ 'bg-primary': collapsed }"
@@ -36,13 +36,14 @@
     </div>
     <div class="Noti overflow-y-scroll" :class="{ 'hidden': !notiActive }"
       :style="{ left: sidebarWidth, width: sidebarWidth }" style="height: 70%;">
-      <div v-for="item in notifications" class="border-bottom-1 border-200 " :key="item.id" :item="item">
-        <div class="p-2 hover:surface-300 border-10 cursor-pointer" style="text-indent: 10px;">
-
-          <Badge v-if="!item.seen" value="" class="mr-2"></Badge>
-          <span v-badge.danger  v-badge="2">
-            {{ item.content }}
-          </span>
+      <div v-if="notifications != undefined && notifications != null && notifications.length > 0">
+        <div v-for="item in notifications" class="border-bottom-1 border-200 " :key="item.id" :item="item">
+          <div class="p-2 hover:surface-300 border-10 cursor-pointer" style="text-indent: 10px;">
+            <Badge v-if="!item.seen" value="" class="mr-2"></Badge>
+            <span v-badge.danger v-badge="2">
+              {{ item.content }}
+            </span>
+          </div>
         </div>
       </div>
       <!-- <SidebarItem v-for="item in pageMenu" @select="onSelectMenu(item)" /> -->
@@ -76,7 +77,7 @@ class MenuSidebar extends Vue {
 
   @nsUser.State('user')
   user!: User.Model | undefined
-  notifications!: User.Notification[] | undefined
+  notifications: User.Notification[] | undefined = []
 
   // -- [ Properties ] ----------------------------------------------------------
   @ProvideReactive()

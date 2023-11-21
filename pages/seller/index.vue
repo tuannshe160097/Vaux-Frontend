@@ -3,9 +3,14 @@
         <div class="box-page-container flex flex-column container w-full">
             <Breadcrumb :home="home" :model="items" />
             <div v-if="!isSeller" class="card-body my-3">
-                <div class="grid">
+                <div v-if="!appId" class="grid">
                     <div class="col-6 field">
                         <Button @click="$router.push('/account/requestSeller')" label="Trở thành Người bán ngay ->" />
+                    </div>
+                </div>
+                <div v-if="appId" class="grid">
+                    <div class="col-6 field">
+                        Quản lý đang xem xét hồ sơ của bạn.
                     </div>
                 </div>
             </div>
@@ -154,6 +159,7 @@ class CreateItem extends Vue {
         { label: 'Kênh bán' },
     ]
     isSeller: boolean = false
+    appId: string | null = null
     //----------------------------------------
     oCategories: Array<any> | null = null
 
@@ -161,6 +167,8 @@ class CreateItem extends Vue {
     user!: User.Model | undefined
     @nsCategory.Action
     actGetAllCategory!: () => Promise<any>
+    @nsStoreUser.Action
+    actGetSellerApplication!: (params: any) => Promise<string>
     @nsStoreItem.Action
     actSearchItemApplication!: (params: any) => Promise<any>
     @nsStoreItem.Action
@@ -168,19 +176,22 @@ class CreateItem extends Vue {
 
     async mounted() {
         if (this.user?.role.id == 4) {
-            this.$toast.add({
-                severity: 'error', summary: 'Cảnh báo',
-                detail: 'Bạn chưa nâng cấp lên tài khoản người bán. Vui lòng nâng cấp để thực hiện hành động', life: 10000
-            })
-            this.isSeller = false
+            const result: any = await this.actGetSellerApplication({ userId: this.user?.id })
+            console.log(result)
+            this.appId = result.id
+            if (!this.appId) {
+                this.$toast.add({
+                    severity: 'error', summary: 'Cảnh báo',
+                    detail: 'Bạn chưa nâng cấp lên tài khoản người bán. Vui lòng nâng cấp để thực hiện hành động', life: 10000
+                })
+                this.isSeller = false
+            }
             return
         }
-        else {
-            this.isSeller = true
-            const response1 = await this.actGetAllCategory()
-            this.oCategories = response1.records
-            this.Search()
-        }
+        this.isSeller = true
+        const response1 = await this.actGetAllCategory()
+        this.oCategories = response1.records
+        this.Search()
     }
     async Search(pageNum: number = this.pPagenum) {
         const params = {

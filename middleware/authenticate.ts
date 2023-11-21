@@ -18,7 +18,6 @@ const authenticate: Middleware = async ({ store, redirect, route }) => {
     if (isPublic) return
     redirect('/authen/login');
   } else {
-    console.log('here0')
     await store.dispatch('user-auth/store-user/actGetUserDetail')
     if (!store.state['user-auth']['store-user'].user) {
     } else if (requiredRole != null && !(requiredRole.includes(store.state['user-auth']['store-user'].user.roleId))) {

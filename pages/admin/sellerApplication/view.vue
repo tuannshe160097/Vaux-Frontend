@@ -193,7 +193,8 @@ class ViewUser extends Vue {
       this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId)
       this.content = result.content
       this.reason = result.reason
-      this.appStatus = result.appStatus
+      this.appStatus = result.status
+      console.log(result.id, '???' , result.appStatus)
     }
     else {
       this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin application Id")
@@ -218,7 +219,7 @@ class ViewUser extends Vue {
   formatDate(dateString: string) {
     const date = new Date(dateString)
     const day = date.getDate().toString().padStart(2, '0')
-    const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
+    const month = (date.getMonth() + 1).toString().padStart(2, '0')
     const year = date.getFullYear()
     return `${day}-${month}-${year}`
   }
