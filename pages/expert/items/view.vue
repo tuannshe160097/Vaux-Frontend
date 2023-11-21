@@ -100,8 +100,9 @@
                     <span class="col-12">
                     </span>
                     <div class="field col-12">
-                        <Textarea class="text-left w-full" :autoResize="true" v-model="reason" rows="5" :disabled="!showUnassign"
-                            placeholder="Sử dụng phần này để thêm thông tin lý do." style="height: 3rem;" />
+                        <Textarea class="text-left w-full" :autoResize="true" v-model="reason" rows="5"
+                            :disabled="!showUnassign" placeholder="Sử dụng phần này để thêm thông tin lý do."
+                            style="height: 3rem;" />
                     </div>
                 </div>
                 <div class="grid formgrid">
@@ -124,6 +125,7 @@
                     </div>
                 </div>
             </div>
+            <ConfirmDialog></ConfirmDialog>
         </div>
     </div>
 </template>
@@ -132,6 +134,7 @@
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { GENDER_OPTION } from '~/utils'
 import { User } from '~/models/User'
+import { confirm } from '~/utils/commons/helper'
 const nsExpItem = namespace('expert/store-itemApplication')
 const nsCategory = namespace('category/store-category')
 const nsUser = namespace('user-auth/store-user')
@@ -302,28 +305,50 @@ class ViewUser extends Vue {
         }
     }
     async onAccept() {
-        const params = {
-            itemId: this.itemId,
-            reason: this.reason || '',
-        }
-        const result = await this.actAcceptItemApplication(params)
-        if (result) {
-            this.status = 3
-            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã đồng ý sản phẩm', life: 10000 })
-            this.displayAction()
-        }
+        const _this: any = this
+        confirm(_this,
+            'Xác nhận duyệt sản phẩm',
+            'Bạn có chắc bạn muốn duyệt sản phẩm này?',
+            'pi pi-exclamation-triangle',
+            'Duyệt',
+            'btn-success',
+            'Hủy',
+            async () => {
+                const params = {
+                    itemId: this.itemId,
+                    reason: this.reason || '',
+                }
+                const result = await this.actAcceptItemApplication(params)
+                if (result) {
+                    this.status = 3
+                    this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã đồng ý sản phẩm', life: 10000 })
+                    this.displayAction()
+                    this.$router.push('/expert/items')
+                }
+            })
     }
     async onDeny() {
-        const params = {
-            itemId: this.itemId,
-            reason: this.reason || '',
-        }
-        const result = await this.actRejectItemApplication(params)
-        if (result) {
-            this.status = 2
-            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối sản phẩm', life: 10000 })
-            this.displayAction()
-        }
+        const _this: any = this
+        confirm(_this,
+            'Xác nhận từ chối sản phẩm',
+            'Bạn có chắc bạn muốn từ chối sản phẩm này?',
+            'pi pi-info-circle',
+            'Từ chối',
+            'btn-danger',
+            'Hủy',
+            async () => {
+                const params = {
+                    itemId: this.itemId,
+                    reason: this.reason || '',
+                }
+                const result = await this.actRejectItemApplication(params)
+                if (result) {
+                    this.status = 2
+                    this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối sản phẩm', life: 10000 })
+                    this.displayAction()
+                    this.$router.push('/expert/items')
+                }
+            })
     }
     async onUpdate() {
         if (this.checkProperties()) {
@@ -367,7 +392,7 @@ class ViewUser extends Vue {
             this.showAccept = true
             this.showDeny = true
         }
-            console.log('here: ',this.expertId,this.showAssign,this.showUnassign,this.showAccept,this.showDeny)
+        console.log('here: ', this.expertId, this.showAssign, this.showUnassign, this.showAccept, this.showDeny)
     }
 }
 export default ViewUser

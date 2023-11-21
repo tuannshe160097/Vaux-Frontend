@@ -9,6 +9,18 @@ export function confirmDelete(_this: any, accept: any) {
     accept: () => accept()
   });
 }
+export function confirm(_this: any, header: string = '', message: string = '', icon: string = '',
+  acceptLabel: string = '', acceptClass: string = '', rejectLabel: string = '', accept: any) {
+  _this.$confirm.require({
+    message: message,
+    header: header,
+    icon: icon,
+    acceptClass: acceptLabel,
+    acceptLabel: acceptClass,
+    rejectLabel: rejectLabel,
+    accept: () => accept()
+  });
+}
 
 export function getDateFormat(date: string | Date) {
   if (!date) {
