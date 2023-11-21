@@ -77,7 +77,9 @@ export default {
       'Tag',
       'Textarea',
       'TieredMenu',
-      'Toast'
+      'Toast',
+      'DataView',
+      'DataViewLayoutOptions',
     ],
     directives: [
       'Tooltip',
