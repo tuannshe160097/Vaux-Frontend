@@ -93,7 +93,7 @@ class Login extends Vue {
         setTimeout(() => {
           this.startCountdown();
         }, 500);
-        this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Mã OTP đã được gửi tới số điện thoại của bạn', life: 10000 })
+        this.$toast.add({ severity: 'info', summary: 'Thông báo', detail: 'Mã OTP đã được gửi tới số điện thoại của bạn', life: 10000 })
         //alert(`Mã OTP đã được gửi tới số điện thoại của bạn, ${this.sPhoneNumber}`);
       }
     } else {

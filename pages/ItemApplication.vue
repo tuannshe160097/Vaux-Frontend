@@ -186,7 +186,7 @@
   
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-const nsItemApplication = namespace('expert/store-itemApplication')
+const nsItemApplication = namespace('item/store-expert-item')
 
 @Component({
   middleware: ['authenticate'],

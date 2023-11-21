@@ -241,7 +241,7 @@ class ViewUser extends Vue {
     }
     const result = await this.actDenySeller(params)
     if (result) {
-      this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối đơn duyệt', life: 10000 })
+      this.$toast.add({ severity: 'info', summary: 'Từ chối thành công', detail: 'Đã từ chối đơn duyệt', life: 10000 })
       this.$router.push('/admin/sellerApplication')
     }
   }

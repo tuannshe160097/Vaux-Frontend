@@ -13,82 +13,41 @@
           <div class="col p-fluid grid formgrid flex justify-content-between">
             <div class="field col-12 md:col-5">
               <label>Thời gian bắt đầu</label>
-              <Calendar v-model="startDate" dateFormat="dd-mm-yy"/>
+              <Calendar v-model="startDate" dateFormat="dd-mm-yy" />
             </div>
             <div class="field col-12 md:col-5">
               <label>Thời gian kết thúc</label>
-              <Calendar v-model="endDate" dateFormat="dd-mm-yy"/>
+              <Calendar v-model="endDate" dateFormat="dd-mm-yy" />
             </div>
           </div>
           <div class="col field justify-content-end flex pt-5">
-            <Button
-              class=""
-              label="Thêm sản phẩm"
-              style="height: 36px"
-              @click="openModelAddItem"
-            />
+            <Button class="" label="Thêm sản phẩm" style="height: 36px" @click="openModelAddItem" />
           </div>
         </div>
       </div>
       <div class="row flex-1 relative">
         <div class="col-12 md:col-12">
-          <DataTable
-            class="w-full airtag-datatable h-full flex flex-column p-datatable-customers"
-            v-if="selectedItemsApproved"
-            :value="selectedItemsApproved"
-            responsiveLayout="scroll"
-            dataKey="id"
-            :resizableColumns="true"
-            :rows="10"
-            :scrollable="false"
-            stripedRows
-            :rowsPerPageOptions="[10,25,50]"
-            :paginator="true"
-          >
+          <DataTable class="w-full airtag-datatable h-full flex flex-column p-datatable-customers"
+            v-if="selectedItemsApproved" :value="selectedItemsApproved" responsiveLayout="scroll" dataKey="id"
+            :resizableColumns="true" :rows="10" :scrollable="false" stripedRows :rowsPerPageOptions="[10, 25, 50]"
+            :paginator="true">
             <Column field="id" header="STT" sortable="sortable">
               <template #body="slotProps">
                 <span class="">{{ slotProps.index + 1 }}</span>
               </template>
             </Column>
-            <Column
-              field="name"
-              header="TÊN SẢN PHẨM"
-              sortable="sortable"
-              className="w-3 font-semibold"
-            ></Column>
-            <Column
-              field="category"
-              header="Thể Loại"
-              sortable="sortable"
-              className="w-3"
-            ></Column>
-            <Column
-              field="seller"
-              header="Người bán"
-              sortable="sortable"
-              className="w-3"
-            ></Column>
-            <Column
-              field="description"
-              header="Mô tả"
-              sortable="sortable"
-              className="overflow-ellipsis"
-            >
+            <Column field="name" header="TÊN SẢN PHẨM" sortable="sortable" className="w-3 font-semibold"></Column>
+            <Column field="category" header="Thể Loại" sortable="sortable" className="w-3"></Column>
+            <Column field="seller" header="Người bán" sortable="sortable" className="w-3"></Column>
+            <Column field="description" header="Mô tả" sortable="sortable" className="overflow-ellipsis">
               <template #body="{ data }">
                 <p class="element">{{ data.description }}</p>
               </template>
             </Column>
-            <Column
-              :exportable="false"
-              header="Hoạt động"
-              sortable="sortable"
-              className="p-text-right"
-            >
+            <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
-                <Button
-                  class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
-                  @click="onDeleteItem(data)"
-                >
+                <Button class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
+                  @click="onDeleteItem(data)">
                   <div class="icon--small icon-bin"></div>
                 </Button>
               </template>
@@ -96,23 +55,15 @@
             <template #empty>
               <div class="justify-content-center flex font-italic">
                 Không có dữ liệu
-              </div></template
-            >
+              </div>
+            </template>
           </DataTable>
         </div>
-        <CreateAuction
-          :isDisplayDialog="displayAddItem"
-          :selectedItemsProp="selectedItemsApproved"
-          @close-modal="displayAddItem = false"
-          @add-items="addItemApproved"
-        />
+        <CreateAuction :isDisplayDialog="displayAddItem" :selectedItemsProp="selectedItemsApproved"
+          @close-modal="displayAddItem = false" @add-items="addItemApproved" />
       </div>
       <div>
-        <Button
-          label="Lưu"
-          style="height: 36px"
-          @click="onEditAuction"
-        />
+        <Button label="Lưu" style="height: 36px" @click="onEditAuction" />
       </div>
     </div>
   </div>
@@ -185,7 +136,7 @@ class EditAuctionList extends Vue {
   validateThrowMessage() {
     if (!this.startDate || !this.endDate) {
       return 'Vui lòng nhập đầy đủ thông tin thời gian'
-    } 
+    }
     if (!this.selectedItemsApproved || !this.selectedItemsApproved.length) {
       return 'Vui lòng thêm sản phẩm'
     }

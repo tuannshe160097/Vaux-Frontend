@@ -108,7 +108,7 @@
   
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-const nsStoreItem = namespace('seller/store-itemApplication')
+const nsStoreItem = namespace('item/store-seller-item')
 const nsCategory = namespace('category/store-category')
 
 @Component({
@@ -289,7 +289,7 @@ class DetailItem extends Vue {
     }
     async onUpdate() {
         this.blockedAddButton = true
-        this.$toast.add({ severity: 'warn', summary: 'Success', detail: 'Đang cập nhật. Vui lòng đợi trong giây lát', life: 3000 })
+        this.$toast.add({ severity: 'warn', summary: 'Thông báo', detail: 'Đang cập nhật. Vui lòng đợi trong giây lát', life: 3000 })
 
         let newFileList: File[] = []
         // if (this.images.length != this.files.length) {

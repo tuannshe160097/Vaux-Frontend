@@ -13,7 +13,7 @@
               type="button"
               label="Thêm Mới"
               @click="onAddNew()"
-                  ></Button> -->
+                    ></Button> -->
           </div>
         </div>
       </div>
@@ -67,7 +67,7 @@
               <template #body="{ data }">{{
                 data.created | dateTimeFomat
               }}</template>
-                  </Column> -->
+                    </Column> -->
             <Column field="updated" header="NGÀY CẬP NHẬT" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.updated | dateTimeFomat
@@ -87,8 +87,8 @@
                   @click="viewDetail(data.id)">
                   <div class="icon--small icon-compose"></div>
                 </Button>
-                <Button class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
-                  @click="deleteBoxById(data.id)">
+                <Button v-if="data.deleted == null" class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
+                  @click="deleteBoxById(data)">
                   <div class="icon--small icon-bin"></div>
                 </Button>
               </template>
@@ -178,9 +178,9 @@ class UserList extends Vue {
   onAddNew() {
     this.$router.push('/admin/user/detail')
   }
-  async deleteBoxById(id: any) {
+  async deleteBoxById(data: any) {
     const params = {
-      userId: id,
+      userId: data.id,
     }
     let response;
     const role = this.$cookies.get('auth.role')
@@ -190,7 +190,8 @@ class UserList extends Vue {
       response = await this.actAdminBanUser(params)
     }
     if (response) {
-      this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã cấm người dùng', life: 5000 })
+      data.deleted = 'deleted'
+      this.$toast.add({ severity: 'info', summary: 'Thành công', detail: 'Đã cấm người dùng', life: 5000 })
     }
   }
   onPage(event: any) {

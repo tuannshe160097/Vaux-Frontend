@@ -111,7 +111,7 @@
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { User } from '~/models/User'
-const nsExpItem = namespace('expert/store-itemApplication')
+const nsExpItem = namespace('item/store-expert-item')
 const nsStoreUser = namespace('user-auth/store-user')
 
 @Component({

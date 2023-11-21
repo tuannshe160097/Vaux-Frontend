@@ -126,7 +126,7 @@
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { User } from '~/models/User'
-const nsStoreItem = namespace('seller/store-itemApplication')
+const nsStoreItem = namespace('item/store-seller-item')
 const nsCategory = namespace('category/store-category')
 const nsStoreUser = namespace('user-auth/store-user')
 

@@ -135,7 +135,7 @@ import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { GENDER_OPTION } from '~/utils'
 import { User } from '~/models/User'
 import { confirm } from '~/utils/commons/helper'
-const nsExpItem = namespace('expert/store-itemApplication')
+const nsExpItem = namespace('item/store-expert-item')
 const nsCategory = namespace('category/store-category')
 const nsUser = namespace('user-auth/store-user')
 
@@ -289,7 +289,7 @@ class ViewUser extends Vue {
         const result2 = await this.actAssignItemApplication(params)
         if (result2) {
             this.expertId = this.user?.id
-            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã tiếp nhận xử lý sản phẩm', life: 10000 })
+            this.$toast.add({ severity: 'info', summary: 'Thông báo', detail: 'Đã tiếp nhận xử lý sản phẩm', life: 10000 })
             this.displayAction()
         }
     }
@@ -300,7 +300,7 @@ class ViewUser extends Vue {
         const result2 = await this.actUnassignItemApplication(params)
         if (result2) {
             this.expertId = null
-            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã hủy nhận xử lý sản phẩm', life: 10000 })
+            this.$toast.add({ severity: 'info', summary: 'Thông báo', detail: 'Đã hủy nhận xử lý sản phẩm', life: 10000 })
             this.displayAction()
         }
     }
@@ -321,7 +321,7 @@ class ViewUser extends Vue {
                 const result = await this.actAcceptItemApplication(params)
                 if (result) {
                     this.status = 3
-                    this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã đồng ý sản phẩm', life: 10000 })
+                    this.$toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã đồng ý sản phẩm', life: 10000 })
                     this.displayAction()
                     this.$router.push('/expert/items')
                 }
@@ -344,7 +344,7 @@ class ViewUser extends Vue {
                 const result = await this.actRejectItemApplication(params)
                 if (result) {
                     this.status = 2
-                    this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã từ chối sản phẩm', life: 10000 })
+                    this.$toast.add({ severity: 'info', summary: 'Từ chối sản phẩm', detail: 'Đã từ chối sản phẩm', life: 10000 })
                     this.displayAction()
                     this.$router.push('/expert/items')
                 }
@@ -360,7 +360,7 @@ class ViewUser extends Vue {
         }
         const result = await this.actUpdateItemApplication(params)
         if (result) {
-            this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã cập nhật thông tin sản phẩm', life: 10000 })
+            this.$toast.add({ severity: 'info', summary: 'Thành công', detail: 'Đã cập nhật thông tin sản phẩm', life: 10000 })
         }
     }
     checkProperties(): boolean {

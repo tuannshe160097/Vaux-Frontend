@@ -109,7 +109,7 @@
 
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-const nsStoreItem = namespace('seller/store-itemApplication')
+const nsStoreItem = namespace('item/store-seller-item')
 const nsCategory = namespace('category/store-category')
 
 @Component({
@@ -198,7 +198,7 @@ class CreateItem extends Vue {
   }
   async onSubmit() {
     this.blockedAddButton = true
-    this.$toast.add({ severity: 'warn', summary: 'Success', detail: 'Đang tạo sản phẩm, Vui lòng đợi trong giây lát', life: 3000 })
+    this.$toast.add({ severity: 'warn', summary: 'Thành công', detail: 'Đang tạo sản phẩm, Vui lòng đợi trong giây lát', life: 3000 })
     const params = {
       name: this.name,
       categoryId: this.categoryId,
@@ -210,7 +210,7 @@ class CreateItem extends Vue {
       const result = await this.AddMultiImage(response.id, this.files)
       const result2 = await this.AddImage(response.id, this.fileThumbnail)
       if (result2 && result) {
-        this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã thêm sản phẩm mới', life: 10000 })
+        this.$toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã thêm sản phẩm mới', life: 10000 })
       }
     }
     this.blockedAddButton = false
