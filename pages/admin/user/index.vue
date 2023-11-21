@@ -13,7 +13,7 @@
               type="button"
               label="Thêm Mới"
               @click="onAddNew()"
-                    ></Button> -->
+                          ></Button> -->
           </div>
         </div>
       </div>
@@ -29,7 +29,16 @@
             </div>
             <div class="col-3 field">
               <label>Quyền</label>
-              <Dropdown class="w-100" v-model="role" :options="oRoles" optionLabel="name" optionValue="value" />
+              <Dropdown class="w-100  line-height-1" v-model="role" :options="oRoles" optionLabel="name" optionValue="value" />
+            </div>
+            <div class="col-3 field">
+              <label>Tình trạng</label>
+              <div class="col-3 field-checkbox my-2 w-full">
+              <!-- <label>Tình trạng</label>
+                <Dropdown class="w-100" v-model="banned" :options="oBanneds" optionLabel="name" optionValue="value" /> -->
+                <Checkbox id="binary" v-model="banned" :binary="true" />
+                <label for="binary">{{ banned?'Bị cấm':'Hoạt động' }}</label>
+              </div>
             </div>
             <div class="col field justify-content-end flex pt-5">
               <Button class="mr-2" label="Tìm kiếm" style="height: 36px" @click="Search()" />
@@ -67,7 +76,7 @@
               <template #body="{ data }">{{
                 data.created | dateTimeFomat
               }}</template>
-                    </Column> -->
+                          </Column> -->
             <Column field="updated" header="NGÀY CẬP NHẬT" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.updated | dateTimeFomat
@@ -87,8 +96,8 @@
                   @click="viewDetail(data.id)">
                   <div class="icon--small icon-compose"></div>
                 </Button>
-                <Button v-if="data.deleted == null" class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
-                  @click="deleteBoxById(data)">
+                <Button v-if="data.deleted == null"
+                  class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200" @click="deleteBoxById(data)">
                   <div class="icon--small icon-bin"></div>
                 </Button>
               </template>
@@ -133,6 +142,7 @@ class UserList extends Vue {
   totalRecords: number = 0
   search: string = ''
   role: number = 0
+  banned: boolean = false
   oRoles = [
     { name: 'Tất cả', value: 0 },
     { name: 'Quản trị viên', value: 1 },
@@ -140,6 +150,11 @@ class UserList extends Vue {
     { name: 'Người bán', value: 3 },
     { name: 'Người mua', value: 4 },
     { name: 'Admin', value: 5 },
+  ]
+  oBanneds = [
+    { name: 'Tất cả', value: null },
+    { name: 'Hoạt động', value: false },
+    { name: 'Đã cấm', value: true }
   ]
 
   @nsStoreUser.Action
@@ -153,10 +168,13 @@ class UserList extends Vue {
     this.Search()
   }
   async Search(pageNum: number = this.pPagenum) {
+    console.log('LTA', this.search)
     const params = {
       pageNum: pageNum,
       pageSize: this.pPageSize,
       search: this.search,
+      role: this.role == 0 ? '' : this.role,
+      banned: this.banned
     }
     const response = await this.actSearchUser(params)
     if (response) {

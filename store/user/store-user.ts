@@ -7,7 +7,7 @@ import { $api, PathBind } from '~/utils'
 
 export default class StoreCategory extends VuexModule {
     private static readonly STATE_URL = {
-        SEARCH_USER: '/mod/account?pageNum=:pageNum&pageSize=:pageSize&orderBy=:orderBy',
+        SEARCH_USER: '/mod/account?pageNum=:pageNum&pageSize=:pageSize&search=:search&role=:role&banned=:banned',
         GET_USER: '/mod/account/:userId',
         UPDATE_USER: '/Admin/Account/:userId',
         CREATE_MOD: '/Admin/Account/CreateModerator',
@@ -20,7 +20,8 @@ export default class StoreCategory extends VuexModule {
     @Action({ rawError: true })
     async actSearchUser(params: any): Promise<string | undefined> {
         try {
-            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.SEARCH_USER, { pageNum: params?.pageNum, pageSize: params?.pageSize, orderBy : "id", role: params?.role })
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.SEARCH_USER,
+                { pageNum: params?.pageNum, pageSize: params?.pageSize, search: params?.search, role: params?.role, banned: params?.banned })
             return await $api.get(url)
         } catch (error) { }
     }
