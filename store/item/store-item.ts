@@ -77,3 +77,4 @@ export default class StoreItem extends VuexModule {
   }
 
 }
+
