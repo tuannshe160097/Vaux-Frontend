@@ -12,7 +12,6 @@
                 </div>
             </div>
         </div>
-
         <div class="card-body">
             <div class="col-fixed">
                 <div class="grid formgrid">
@@ -126,6 +125,7 @@
                 </div>
             </div>
             <ConfirmDialog></ConfirmDialog>
+            <Chat :labelHeader="'Trao đổi với người bán'"></Chat>
         </div>
     </div>
 </template>
@@ -135,6 +135,7 @@ import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { GENDER_OPTION } from '~/utils'
 import { User } from '~/models/User'
 import { confirm } from '~/utils/commons/helper'
+import Chat from '~/components/chatDialog/chat.vue'
 const nsExpItem = namespace('item/store-expert-item')
 const nsCategory = namespace('category/store-category')
 const nsUser = namespace('user-auth/store-user')
@@ -142,6 +143,9 @@ const nsUser = namespace('user-auth/store-user')
 @Component({
     middleware: ['authenticate'],
     layout: 'admin',
+    components: {
+        Chat
+    }
 })
 class ViewUser extends Vue {
     itemId: string | null = ''
@@ -262,7 +266,6 @@ class ViewUser extends Vue {
         const year = date.getFullYear()
         return `${day}-${month}-${year}`
     }
-
     onCellEditComplete(event: any) {
         let { data, newValue, field } = event;
         switch (field) {
@@ -310,8 +313,8 @@ class ViewUser extends Vue {
             'Xác nhận duyệt sản phẩm',
             'Bạn có chắc bạn muốn duyệt sản phẩm này?',
             'pi pi-exclamation-triangle',
-            'Duyệt',
             'btn-success',
+            'Duyệt',
             'Hủy',
             async () => {
                 const params = {
@@ -333,8 +336,8 @@ class ViewUser extends Vue {
             'Xác nhận từ chối sản phẩm',
             'Bạn có chắc bạn muốn từ chối sản phẩm này?',
             'pi pi-info-circle',
-            'Từ chối',
             'btn-danger',
+            'Từ chối',
             'Hủy',
             async () => {
                 const params = {

@@ -5,9 +5,9 @@
         <template v-if="!collapsed">
           <img class="user-avatar"
             :src='require("assets/images/user-profile-login-avatar-heroes-user-blue-icons-circle-symbol-logo-thumbnail.png")' />
-          <div class="user-info white-space-nowrap overflow-hidden text-overflow-ellipsis" style="display: inline-block;">
-            <p class="user-name" style="display: inline-block;">{{ userDisplayName }}</p>
-            <span style="display: inline-block;">{{ userDisplayRole }}</span>
+          <div class="user-info white-space-nowrap overflow-hidden text-overflow-ellipsis" style="display:block;">
+            <p class="user-name" style="display: inline;">{{ userDisplayName }}</p>
+            <span style="display: block;">{{ userDisplayRole }}</span>
           </div>
         </template>
         <div class="icon icon--xlarge icon-menu-toggle surface-500 cursor-pointer" :class="{ 'bg-primary': collapsed }"

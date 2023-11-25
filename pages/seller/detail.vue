@@ -37,6 +37,22 @@
                         nhất. Hãy nhớ đưa vào những nội dung khác nhau và đặt bức ảnh đẹp nhất
                         của bạn lên hàng đầu.
                     </span>
+                    <div class="field col-4">
+                        <div class="card-header font-medium text-xl">Ảnh bìa</div>
+                        <div class="card-body p-5">
+                            <div class="field">
+                                <div
+                                    class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
+                                    <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
+                                        imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
+                                    <div class="small font-italic text-muted mb-2">
+                                        JPG or PNG no larger than 1 MB
+                                    </div>
+                                    <input type="file" @change="onUploadThumbnail($event)" accept=".png, .jpg, .jpeg" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="field col-8  text-center">
                         <input type="file" @change="onUploadFile($event)" accept=".png, .jpg, .jpeg" multiple />
                         <div class="grid formgrid">
@@ -50,22 +66,6 @@
                                     <div class="product-list-action p-2 w-100 text-center">
                                         <Button class="btn" @click="removeImage(index)" label="Xóa" />
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="field col-4">
-                        <div class="card-header font-medium text-xl">Ảnh bìa</div>
-                        <div class="card-body p-5">
-                            <div class="field">
-                                <div
-                                    class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
-                                    <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
-                                        imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
-                                    <div class="small font-italic text-muted mb-2">
-                                        JPG or PNG no larger than 1 MB
-                                    </div>
-                                    <input type="file" @change="onUploadThumbnail($event)" accept=".png, .jpg, .jpeg" />
                                 </div>
                             </div>
                         </div>
@@ -91,6 +91,34 @@
                     </div>
                 </div>
                 <div class="grid formgrid">
+                    <h4 class="col-12 font-bold text-brown">5. Thuộc tính</h4>
+                    <div class="field col-12 md:col-12">
+                        <DataTable :value="properties" editMode="cell" @cell-edit-complete="onCellEditComplete"
+                            class="editable-cells-table p-invalid border-bottom-1 border-300" responsiveLayout="scroll">
+                            <Column field="index" header="STT">
+                                <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
+                            </Column>
+                            <Column v-for="col of columns" :field="col.field" :header="col.header"
+                                :styles="{ width: '50%' }" :key="col.field">
+                                <template #editor="slotProps">
+                                    <InputText :class="{ 'p-invalid': (!slotProps.data[slotProps.column.field]) }"
+                                        class="w-full" v-model="slotProps.data[slotProps.column.field]" autofocus />
+                                </template>
+                            </Column>
+                            <Column header="">
+                                <template #body="slotProps">
+                                    <Button class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center "
+                                        icon="pi pi-times" @click="onDeleteProperty(slotProps.index)">
+                                    </Button>
+                                </template>
+                            </Column>
+                        </DataTable>
+                    </div>
+                    <span class="col-12 field">
+                        <Button icon="pi pi-plus" label="Thêm dòng" @click="onAddProperty()" />
+                    </span>
+                </div>
+                <div class="grid formgrid">
                     <div class="col-12">
 
                     </div>
@@ -100,6 +128,7 @@
                         <Button class="mx-2 btn-primary border-10" :disabled="blockedAddButton ? 'disabled' : false"
                             label="Cập nhật" @click="onUpdate()" />
                     </div>
+                    <!-- <Chat></Chat> -->
                 </div>
             </div>
         </div>
@@ -108,12 +137,16 @@
   
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import Chat from '~/components/chatDialog/chat.vue'
 const nsStoreItem = namespace('item/store-seller-item')
 const nsCategory = namespace('category/store-category')
 
 @Component({
     middleware: ['authenticate'],
     layout: 'public',
+    components: {
+        Chat
+    }
     // meta: {
     //   role: [3, 2]
     // }
@@ -132,6 +165,12 @@ class DetailItem extends Vue {
     thumbnailId: number | null = null
     files: any[] = []
     images: any[] = []
+
+    properties: any[] = []
+    columns = [
+        { field: 'label', header: 'Tên' },
+        { field: 'value', header: 'Giá trị' }
+    ];
 
     deleteThumbnailOnSv: boolean = false
     deleteImgOnSv: number[] = []
@@ -179,6 +218,7 @@ class DetailItem extends Vue {
             this.categoryId = result.categoryId
             this.description = result.description
             this.reservePrice = result.reservePrice
+            this.properties = result.itemProperties
             // this.expertId = result.expertId
             this.status = result.status
             // this.displayAction() 
@@ -230,7 +270,7 @@ class DetailItem extends Vue {
         if (files != null) {
             for (const file of fileList) {
                 console.log(file)
-                if (file.size / 1024 / 1024 > 3) {
+                if (file.size / 1024 / 1024 > 20) {
                     this.$store.commit(
                         'commons/store-error/setError',
                         'File tải lên quá lớn'
@@ -256,7 +296,7 @@ class DetailItem extends Vue {
         const inputElement = event.target as HTMLInputElement
         const files = inputElement.files
         if (files && files.length > 0) {
-            if (files[0].size / 1024 / 1024 > 1) {
+            if (files[0].size / 1024 / 1024 > 20) {
                 this.$store.commit(
                     'commons/store-error/setError',
                     'File tải lên quá lớn'
@@ -308,6 +348,7 @@ class DetailItem extends Vue {
             categoryId: this.categoryId,
             reservePrice: this.reservePrice,
             description: this.description,
+            itemProperties: this.properties,
         }
         await this.actUpdateItemApplication(params)
         if (this.deleteImgOnSv.length > 0) {
@@ -342,6 +383,25 @@ class DetailItem extends Vue {
             itemId: itemId,
         }
         return this.actAddItemApplicationThumbnail(param)
+    }
+    onCellEditComplete(event: any) {
+        let { data, newValue, field } = event;
+        switch (field) {
+            default:
+                if (newValue != null && newValue.trim().length > 0)
+                    data[field] = newValue;
+                else {
+                    event.preventDefault()
+                }
+                break;
+        }
+        // console.log(this.properties)
+    }
+    onAddProperty() {
+        this.properties.push({ label: null, value: null })
+    }
+    onDeleteProperty(index: any) {
+        this.properties.splice(index, 1)
     }
     isDisplayButton() {
         return !(this.status > 1)

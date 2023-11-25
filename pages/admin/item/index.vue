@@ -16,10 +16,10 @@
       <div class="row justify-content-between">
         <div class="col-fixed">
           <div class="grid formgrid">
-            <div class="col-3">
+            <div class="col-3 field">
               <label>Tên sản phẩm</label>
               <InputText
-                class="w-21rem h-3rem"
+                class="w-full"
                 type="text"
                 placeholder="Tìm kiếm"
                 v-model="search"
@@ -201,8 +201,8 @@
 
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-const nsStoreItem = namespace('item/store-item')
 const nsStoreCategory = namespace('category/store-category')
+const nsStoreItem = namespace('item/store-mod-item')
 
 @Component({
   middleware: ['authenticate'],
@@ -220,7 +220,7 @@ class ItemList extends Vue {
   search: string = ''
 
   @nsStoreItem.Action
-  actGetItem!: (param: any) => Promise<any>
+  actGetItemList!: (param: any) => Promise<any>
 
   @nsStoreCategory.Action
   actGetAllCategory!: () => Promise<any>
@@ -237,7 +237,7 @@ class ItemList extends Vue {
       search: this.search,
       category: this.categoryId,
     }
-    const response = await this.actGetItem(params)
+    const response = await this.actGetItemList(params)
     if (response) {
       this.items = response.records
       this.totalRecords = response.totalRecords

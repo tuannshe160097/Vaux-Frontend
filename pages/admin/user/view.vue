@@ -119,7 +119,6 @@
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { GENDER_OPTION, ROLE_OPTION_ADMIN, ROLE_OPTION_MOD } from '~/utils'
 import { Option } from '~/models/Option'
-import { User } from '~/models/User'
 const nsStoreUser = namespace('user/store-user')
 const nsStoreAddress = namespace('address/store-address')
 

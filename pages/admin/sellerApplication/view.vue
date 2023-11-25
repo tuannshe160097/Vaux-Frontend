@@ -48,21 +48,30 @@
                 <label>Ngày sinh</label>
                 <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" disabled />
               </div>
-              <div class="field col-12">
-                <label>Địa chỉ</label>
-                <InputText class="w-100" type="text" v-model="houseNumber" disabled />
-              </div>
               <div class="field col-4">
-                <label>Phường, xã</label>
-                <InputText class="w-100" type="text" v-model="street" disabled />
+                <label>Thành phố</label>
+                <!-- <InputText class="w-100" type="text" v-model="city" disabled /> -->
+                <Dropdown class="w-100 line-height-1" v-model="selectedCity" :options="oCitys" :filter="true"
+                  filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="-Chọn Thành phố-" @change="onSelectCity()"
+                  disabled />
               </div>
               <div class="field col-4">
                 <label>Quận, huyện</label>
-                <InputText class="w-100" type="text" v-model="district" disabled />
+                <!-- <InputText class="w-100" type="text" v-model="district" disabled /> -->
+                <Dropdown class="w-100 line-height-1" v-model="selectedDistrict" :options="oDistricts" :filter="true"
+                  filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="-Chọn Quận/Huyện-" @change="getStreet()"
+                  disabled />
               </div>
               <div class="field col-4">
-                <label>Thành phố</label>
-                <InputText class="w-100" type="text" v-model="city" disabled />
+                <label>Phường, xã</label>
+                <!-- <InputText class="w-100" type="text" v-model="street" disabled /> -->
+                <Dropdown class="w-100 line-height-1" v-model="street" :options="oStreets" :filter="true"
+                  filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="-Chọn Phố/Phường-" optionValue="value"
+                  disabled />
+              </div>
+              <div class="field col-12">
+                <label>Địa chỉ</label>
+                <InputText class="w-100" type="text" v-model="houseNumber" disabled />
               </div>
               <div class="field col-12">
                 <label>Số CCCD</label>
@@ -124,7 +133,9 @@
 <script lang="ts" >
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { GENDER_OPTION } from '~/utils'
+import { Option } from '~/models/Option'
 const nsStoreSeller = namespace('seller/store-seller')
+const nsStoreAddress = namespace('address/store-address')
 
 @Component({
   middleware: ['authenticate'],
@@ -156,6 +167,14 @@ class ViewUser extends Vue {
   imageCccd: any | null
   //option data
   oGenders = GENDER_OPTION
+  selectedCity: Option.Option | null = null
+  selectedDistrict: Option.Option | null = null
+  selectedStreet: Option.Option | null = null
+  option: Option.Option | undefined
+  oCitys: Option.Option[] = []
+  oDistricts: Option.Option[] = []
+  oStreets: Option.Option[] = []
+
 
   @nsStoreSeller.Action
   actGetSeller!: (params: any) => Promise<any>
@@ -165,9 +184,18 @@ class ViewUser extends Vue {
   actApproveSeller!: (params: any) => Promise<any>
   @nsStoreSeller.Action
   actDenySeller!: (params: any) => Promise<any>
+  @nsStoreAddress.Action
+  actGetCity!: () => Promise<string>
+  @nsStoreAddress.Action
+  actGetDistrict!: (params: any) => Promise<string>
+  @nsStoreAddress.Action
+  actGetStreet!: (params: any) => Promise<string>
 
   async mounted() {
     this.fetchData()
+    await this.GetCity()
+    await this.getDistrict()
+    await this.getStreet()
   }
   async fetchData() {
     this.appId = Array.isArray(this.$route.query.appliId)
@@ -245,6 +273,52 @@ class ViewUser extends Vue {
       this.$toast.add({ severity: 'info', summary: 'Từ chối thành công', detail: 'Đã từ chối đơn duyệt', life: 10000 })
       this.$router.push('/admin/sellerApplication')
     }
+  }
+  async GetCity() {
+    const response: any = await this.actGetCity()
+    this.oCitys = response.map((city: any) => ({
+      id: city.code,
+      name: city.name,
+      value: city.codename,
+    }))
+    this.selectedCity =
+      this.oCitys.find((city) => city.value === this.city) || null
+  }
+  async getDistrict() {
+    if (this.selectedCity == undefined || this.selectedCity == null) return
+    this.city = this.selectedCity.value
+    const response: any = await this.actGetDistrict({
+      cityId: this.selectedCity?.id,
+    })
+    this.oDistricts = response.districts.map((district: any) => ({
+      id: district.code,
+      name: district.name,
+      value: district.codename,
+    }))
+    this.selectedDistrict =
+      this.oDistricts.find((district) => district.value === this.district) ||
+      null
+  }
+  async getStreet() {
+    if (this.selectedDistrict == undefined || this.selectedDistrict == null)
+      return
+    this.district = this.selectedDistrict.value
+    const response: any = await this.actGetStreet({
+      districtId: this.selectedDistrict?.id,
+    })
+    this.oStreets = response.wards.map((street: any) => ({
+      id: street.code,
+      name: street.name,
+      value: street.codename,
+    }))
+    this.selectedStreet =
+      this.oStreets.find((street) => street.value === this.street) || null
+  }
+  onSelectCity() {
+    this.district = ''
+    this.street = ''
+    this.oStreets = []
+    this.getDistrict()
   }
 }
 export default ViewUser
