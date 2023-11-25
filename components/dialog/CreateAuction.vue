@@ -1,55 +1,15 @@
 <template>
-  <Dialog
-    header="Danh sách sản phẩm"
-    :visible.sync="showModal"
-    :containerStyle="{ width: '50vw' }"
-    :contentStyle="{ minHeight: '50vh' }"
-    :maximizable="true"
-    :modal="true"
-  >
+  <Dialog header="Danh sách sản phẩm" :visible.sync="showModal" :containerStyle="{ width: '50vw' }"
+    :contentStyle="{ minHeight: '50vh' }" :maximizable="true" :modal="true">
     <div class="p-fluid">
-      <DataTable
-        class="w-full airtag-datatable h-full flex flex-column"
-        v-if="items"
-        :value="items"
-        responsiveLayout="scroll"
-        dataKey="id"
-        :resizableColumns="true"
-        :rows="10"
-        :scrollable="false"
-        stripedRows
-        :selection.sync="selectedItems"
-        selectionMode="multiple"
-        :rowsPerPageOptions="[10,25,50]"
-        :paginator="true"
-      >
-        <Column
-          selectionMode="multiple" :styles="{width: '3rem'}" :exportable="false"
-        />
-        <Column
-          field="name"
-          header="TÊN SẢN PHẨM"
-          sortable="sortable"
-          className="w-3 font-semibold"
-        ></Column>
-        <Column
-          field="category"
-          header="Thể Loại"
-          sortable="sortable"
-          className="w-3"
-        ></Column>
-        <Column
-          field="seller"
-          header="Người bán"
-          sortable="sortable"
-          className="w-3"
-        ></Column>
-        <Column
-          field="description"
-          header="Mô tả"
-          sortable="sortable"
-          className="overflow-ellipsis"
-        >
+      <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="items" :value="items"
+        responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="10" :scrollable="false" stripedRows
+        :selection.sync="selectedItems" selectionMode="multiple" :rowsPerPageOptions="[10, 25, 50]" :paginator="true">
+        <Column selectionMode="multiple" :styles="{ width: '3rem' }" :exportable="false" />
+        <Column field="name" header="TÊN SẢN PHẨM" sortable="sortable" className="w-3 font-semibold"></Column>
+        <Column field="category" header="Thể Loại" sortable="sortable" className="w-3"></Column>
+        <Column field="seller" header="Người bán" sortable="sortable" className="w-3"></Column>
+        <Column field="description" header="Mô tả" sortable="sortable" className="overflow-ellipsis">
           <template #body="{ data }">
             <p class="element">{{ data.description }}</p>
           </template>
@@ -57,17 +17,12 @@
         <template #empty>
           <div class="justify-content-center flex font-italic">
             Không có dữ liệu
-          </div></template
-        >
+          </div>
+        </template>
       </DataTable>
     </div>
     <template #footer>
-      <Button
-        label="Hủy bỏ"
-        icon="pi pi-times"
-        @click="cancleForm"
-        class="p-button-text"
-      />
+      <Button label="Hủy bỏ" icon="pi pi-times" @click="cancleForm" class="p-button-text" />
       <Button label="Thêm" icon="pi pi-plus" @click="handleSubmit" />
     </template>
   </Dialog>
@@ -87,9 +42,9 @@ class CreateAuction extends Vue {
 
   @nsStoreItem.Action
   actGetItemApproved!: () => Promise<any>
-  
+
   @Watch('isDisplayDialog')
-  setShowModal(){
+  setShowModal() {
     this.selectedItems = [...this.selectedItemsProp]
     this.showModal = this.isDisplayDialog
     if (this.isDisplayDialog) {

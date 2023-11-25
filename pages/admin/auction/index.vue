@@ -18,104 +18,59 @@
         <div class="grid">
           <div class="col grid flex justify-content-between">
             <div class="col-5">
-              <Calendar class="w-full" v-model="startDate" dateFormat="dd-mm-yy" placeholder="Thời gian bắt đầu"/>
+              <Calendar class="w-full" v-model="startDate" dateFormat="dd-mm-yy" placeholder="Thời gian bắt đầu" />
             </div>
             <div class="col-5">
-              <Calendar class="w-full" v-model="endDate" dateFormat="dd-mm-yy" placeholder="Thời gian kết thúc"/>
+              <Calendar class="w-full" v-model="endDate" dateFormat="dd-mm-yy" placeholder="Thời gian kết thúc" />
             </div>
             <div class="col-2">
-              <Button label="Tìm kiếm" style="height: 36px" @click="getAuction" class="w-full max-w-6rem"/>
+              <Button label="Tìm kiếm" style="height: 36px" @click="getAuction" class="w-full max-w-6rem" />
             </div>
           </div>
           <div class="col justify-content-end flex">
-            <Button
-              class=""
-              label="Thêm Mới"
-              style="height: 36px"
-              @click="onCreateAuction"
-            />
+            <Button class="" label="Thêm Mới" style="height: 36px" @click="onCreateAuction" />
           </div>
         </div>
       </div>
       <div class="row flex-1 relative">
         <div class="col-12 md:col-12">
-          <DataTable
-            class="w-full airtag-datatable h-full flex flex-column"
-            v-if="auctions"
-            :value="auctions"
-            responsiveLayout="scroll"
-            dataKey="id"
-            :resizableColumns="true"
-            :rows="10"
-            :scrollable="false"
-            stripedRows
-          >
+          <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="auctions" :value="auctions"
+            responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="10" :scrollable="false" stripedRows>
             <Column field="id" header="STT" sortable="sortable">
               <template #body="slotProps">
                 <span class="">{{ slotProps.index + 1 }}</span>
               </template>
             </Column>
-            <Column
-              field="startDate"
-              header="Bắt đầu"
-              sortable="sortable"
-              className="p-text-right"
-            >
+            <Column field="startDate" header="Bắt đầu" sortable="sortable" className="p-text-right">
               <template #body="{ data }">{{
                 data.startDate | dateTimeFomat
               }}</template>
             </Column>
-            <Column
-              field="endDate"
-              header="Kết thúc"
-              sortable="sortable"
-              className="p-text-right"
-            >
+            <Column field="endDate" header="Kết thúc" sortable="sortable" className="p-text-right">
               <template #body="{ data }">{{
                 data.endDate | dateTimeFomat
               }}</template>
             </Column>
-                        <Column
-              field="status"
-              header="TRẠNG THÁI"
-              sortable="sortable"
-              className="p-text-right"
-            >
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
                 <div>
-                  <Tag
-                    class="px-2 bg-green-100"
-                    v-if="!data.deleted"
-                    severity="success"
-                    ><span class="font-bold text-green-400 font-size-small"
-                      >Đang hoạt động</span
-                    ></Tag
-                  >
-                  <Tag class="px-2 surface-200" v-else severity="success"
-                    ><span class="font-bold text-400 font-size-small"
-                      >Dừng hoạt động</span
-                    ></Tag
-                  >
+                  <Tag class="px-2 bg-green-100" v-if="data.status == 1" severity="success"><span
+                      class="font-bold text-green-400 font-size-small">Đang chờ</span></Tag>
+                  <Tag class="px-2 surface-200" v-else-if="data.status == 2" severity="success"><span
+                      class="font-bold text-400 font-size-small">Đang hoạt động</span></Tag>
+                  <Tag class="px-2 surface-200" v-else-if="data.status == 3" severity="success"><span
+                      class="font-bold text-400 font-size-small">Đã kết thúc</span></Tag>
                 </div>
               </template>
-        </Column>
-            <Column
-              :exportable="false"
-              header="Hoạt động"
-              sortable="sortable"
-              className="p-text-right"
-            >
+            </Column>
+            <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
-                <Button
-                  class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
-                  @click="onUpdateAuction(data)"
-                >
+                <Button class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
+                  @click="onUpdateAuction(data)">
                   <div class="icon--small icon-compose"></div>
                 </Button>
-                <Button
-                  class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
-                  @click="onDeleteAuction(data.id)"
-                >
+                <Button class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200"
+                  @click="onDeleteAuction(data.id)">
                   <div class="icon--small icon-bin"></div>
                 </Button>
               </template>
@@ -123,30 +78,22 @@
             <template #empty>
               <div class="justify-content-center flex font-italic">
                 Không có dữ liệu
-              </div></template
-            >
+              </div>
+            </template>
             <template #footer="">
               <div>
                 <div class="flex align-items-center">
-                  <div
-                    class="icon--large icon-footer-paginator surface-400"
-                  ></div>
-                  <span class="ml-3 text-400 font-size-small"
-                    >Showing
+                  <div class="icon--large icon-footer-paginator surface-400"></div>
+                  <span class="ml-3 text-400 font-size-small">Showing
                     {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
                     - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
-                    {{ totalRecords }}</span
-                  >
+                    {{ totalRecords }}</span>
                 </div>
               </div>
               <div v-if="totalRecords > 0">
-                <Paginator
-                  class="p-0"
-                  :rows="pPageSize"
-                  :totalRecords="totalRecords"
+                <Paginator class="p-0" :rows="pPageSize" :totalRecords="totalRecords"
                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
-                  @page="onPage($event)"
-                >
+                  @page="onPage($event)">
                 </Paginator>
               </div>
             </template>
@@ -185,7 +132,7 @@ class AuctionList extends Vue {
   async mounted() {
     this.getAuction()
   }
-  
+
   async getAuction() {
     const response = await this.actGetAuction({
       pageSize: this.pPageSize,
