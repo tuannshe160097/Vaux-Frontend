@@ -7,11 +7,11 @@ import { $api, PathBind } from '~/utils'
 
 export default class StoreItem extends VuexModule {
   private static readonly STATE_URL = {
-    GET_ITEM: '/Mod/Item?pageNum=:pageNum&pageSize=:pageSize',
+    GET_ITEM: '/Mod/Item?pageNum=:pageNum&pageSize=:pageSize&search=:search&category=:category',
     GET_ITEM_APPROVED: '/Item/Approved',
 
   }
-
+  
   @Action({ rawError: true })
   async actGetItem(param: any): Promise<string | undefined> {
     try {

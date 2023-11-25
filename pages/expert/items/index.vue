@@ -74,7 +74,7 @@
                 <template #body="{ data }">
                   <Button class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
                     @click="viewDetail(data.id)">
-                    <div class="icon--small icon-eye"></div>
+                    <div class="icon--small icon-file"></div>
                   </Button>
                 </template>
               </Column>
