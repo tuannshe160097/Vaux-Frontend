@@ -15,8 +15,7 @@
                 <div class="chat-logs" ref="chatLogs">
                     <div v-for="message in messages" :key="message.id" :class="['chat-msg', message.type]">
                         <span class="msg-avatar">
-                            <img
-                                src="https://localhost:6565/api/item/5/images/55" />
+                            <img src="https://localhost:6565/api/item/5/images/55" />
                         </span>
                         <div class="cm-msg-text">{{ message.text }}</div>
                     </div>
@@ -24,7 +23,8 @@
                 <!--chat-log -->
             </div>
             <div class="chat-input">
-                <input v-model="msg" type="text" id="chat-input"  @keyup.enter="onChatSubmitClick()" placeholder="Send a message..." />
+                <input v-model="msg" type="text" id="chat-input" @keyup.enter="onChatSubmitClick()"
+                    placeholder="Send a message..." />
                 <button class="chat-submit" @click="onChatSubmitClick()"><i class="material-icons">send</i></button>
             </div>
         </div>
@@ -34,6 +34,8 @@
 <script lang="ts">
 import { Component, Vue, Prop, namespace, Watch } from 'nuxt-property-decorator'
 const nsStoreItem = namespace('item/store-item')
+import SignalRPlugin from '~/plugins/signalr'
+import hubConnection from '~/plugins/signalr'
 
 @Component
 class Chat extends Vue {
@@ -55,6 +57,32 @@ class Chat extends Vue {
 
     @nsStoreItem.Action
     actGetItemApproved!: () => Promise<any>;
+
+
+
+
+    private connection = hubConnection
+
+    async setup() {
+        this.connection = hubConnection
+
+        this.connection.on('receiveMessage', (message : any) => {
+            // Thêm tin nhắn mới vào 
+        })
+
+        await this.connection.start()
+    }
+
+    async onChatSubmitClick() {
+        await this.connection.invoke('sendMessage', this.msg)
+    }
+
+    beforeUnmount() {
+        this.connection.stop()
+    }
+
+
+
     async onChatSubmitClick() {
         const msg = this.msg
         if (this.msg.trim() == '') {
@@ -105,6 +133,8 @@ class Chat extends Vue {
         if (chatLogs)
             chatLogs.scrollTop = chatLogs.scrollHeight;
     }
+
+
 
 }
 export default Chat
