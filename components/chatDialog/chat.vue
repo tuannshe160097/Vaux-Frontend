@@ -56,14 +56,6 @@ class Chat extends Vue {
     @nsStoreItem.Action
     actGetItemApproved!: () => Promise<any>;
 
-    @Watch('isDisplayDialog')
-    setShowModal() {
-        this.selectedItems = [...this.selectedItemsProp];
-        this.showModal = this.isDisplayDialog;
-        if (this.isDisplayDialog) {
-            this.getItemApproved();
-        }
-    }
     async onChatSubmitClick() {
         const msg = this.msg
         if (this.msg.trim() == '') {
