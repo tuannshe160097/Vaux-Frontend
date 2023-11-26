@@ -128,7 +128,7 @@
                         <Button class="mx-2 btn-primary border-10" :disabled="blockedAddButton ? 'disabled' : false"
                             label="Cập nhật" @click="onUpdate()" />
                     </div>
-                    <!-- <Chat></Chat> -->
+                    <Chat :labelHeader="'Trao đổi với chuyên gia'" :curUserId="user?.id" :curItemId="itemId"></Chat>
                 </div>
             </div>
         </div>
@@ -138,6 +138,8 @@
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import Chat from '~/components/chatDialog/chat.vue'
+import { User } from '~/models/User'
+const nsUser = namespace('user-auth/store-user')
 const nsStoreItem = namespace('item/store-seller-item')
 const nsCategory = namespace('category/store-category')
 
@@ -152,6 +154,12 @@ const nsCategory = namespace('category/store-category')
     // }
 })
 class DetailItem extends Vue {
+    // -- [ Statement Properties ] ------------------------------------------------
+
+    @nsUser.State('user')
+    user!: User.Model | null
+
+    // -- [ Properties ] ----------------------------------------------------------
     itemId: any | null
     name: string = ''
     categoryId: number = 0

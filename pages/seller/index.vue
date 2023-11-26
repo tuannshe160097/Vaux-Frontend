@@ -195,7 +195,7 @@ class CreateItem extends Vue {
     }
     async Search(pageNum: number = this.pPagenum) {
         const params = {
-            pageNum: this.pPagenum || 1,
+            pageNum: pageNum,
             pageSize: this.pPageSize || 5,
             search: '',
             status: '',

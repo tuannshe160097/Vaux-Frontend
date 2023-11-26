@@ -1,141 +1,172 @@
 <template>
-    <div id="body">
-        <div id="chat-circle" ref="chatCircle" class="btn btn-raised" :class="{ 'hidden': !isHiddenChat }"
-            @click="onChatCircleClick()">
-            <i class="material-icons">🗨️</i>
-        </div>
-        <div class="chat-box" :class="{ 'hidden': isHiddenChat }">
-            <div class="chat-box-header" ref="chatBox" @click="onChatBoxToggleClick()">
-                {{ labelHeader }}
-                <span class="chat-box-toggle"><i class="material-icons">_</i></span>
-            </div>
-            <div class="chat-box-body">
-                <div class="chat-box-overlay">
-                </div>
-                <div class="chat-logs" ref="chatLogs">
-                    <div v-for="message in messages" :key="message.id" :class="['chat-msg', message.type]">
-                        <span class="msg-avatar">
-                            <img src="https://localhost:6565/api/item/5/images/55" />
-                        </span>
-                        <div class="cm-msg-text">{{ message.text }}</div>
-                    </div>
-                </div>
-                <!--chat-log -->
-            </div>
-            <div class="chat-input">
-                <input v-model="msg" type="text" id="chat-input" @keyup.enter="onChatSubmitClick()"
-                    placeholder="Send a message..." />
-                <button class="chat-submit" @click="onChatSubmitClick()"><i class="material-icons">send</i></button>
-            </div>
-        </div>
+  <div id="body">
+    <div id="chat-circle" ref="chatCircle" class="btn btn-raised" :class="{ 'hidden': !isHiddenChat }"
+      @click="onChatCircleClick()">
+      <i class="material-icons">🗨️</i>
     </div>
+    <div class="chat-box" :class="{ 'hidden': isHiddenChat }">
+      <div class="chat-box-header" ref="chatBox" @click="onChatBoxToggleClick()">
+        {{ labelHeader }}
+        <span class="chat-box-toggle"><i class="material-icons">_</i></span>
+      </div>
+      <div class="chat-box-body">
+        <div class="chat-box-overlay">
+        </div>
+        <div class="chat-logs" ref="chatLogs">
+          <div v-for="message in messages" :key="message.id" :class="['chat-msg', message.type]">
+            <span class="msg-avatar">
+              <!-- <img src="https://localhost:6565/api/item/5/images/55" /> -->
+            </span>
+            <div class="cm-msg-text">{{ message.text }}</div>
+          </div>
+        </div>
+        <!--chat-log -->
+      </div>
+      <div class="chat-input">
+        <input v-model="msg" type="text" id="chat-input" @keyup.enter="onChatSubmitClick()"
+          placeholder="Send a message..." />
+        <button class="chat-submit" @click="onChatSubmitClick()"><i class="material-icons">🗨️</i></button>
+      </div>
+    </div>
+  </div>
 </template>
   
 <script lang="ts">
 import { Component, Vue, Prop, namespace, Watch } from 'nuxt-property-decorator'
 const nsStoreItem = namespace('item/store-item')
-import SignalRPlugin from '~/plugins/signalr'
-import hubConnection from '~/plugins/signalr'
+import * as signalR from "@microsoft/signalr"
+const nsStoreChat = namespace('chat/store-chat')
 
 @Component
 class Chat extends Vue {
-    @Prop() labelHeader!: string;
-    @Prop() selectedItemsProp: any;
+  @Prop() labelHeader!: string;
+  @Prop() curUserId!: any;
+  @Prop() curItemId!: any;
 
-    isHiddenChat: boolean = true
+  isHiddenChat: boolean = true
+  msg: string = ''
+  INDEX: number = 0
+  messages: any[] = []
+  connection: any
+  @nsStoreChat.Action
+  actSendChat!: (param: any) => Promise<any>
+  @nsStoreChat.Action
+  actGetChatHistory!: (param: any) => Promise<any>
 
-    items = [];
-    selectedItems: any = [];
-    showModal = false;
-    msg: string = ''
-    INDEX: number = 0
-    messages: any[] = []
-    buttons: any[] = [
-        { name: 'Existing User', value: 'existing' },
-        { name: 'New User', value: 'new' }
-    ]
-
-    @nsStoreItem.Action
-    actGetItemApproved!: () => Promise<any>;
-
-
-
-
-    private connection = hubConnection
-
-    async setup() {
-        this.connection = hubConnection
-
-        this.connection.on('receiveMessage', (message : any) => {
-            // Thêm tin nhắn mới vào 
-        })
-
-        await this.connection.start()
+  async created() {
+    const loginToken = this.$cookies.get('auth._token');
+    this.connection = new signalR.HubConnectionBuilder()
+      .withUrl("https://localhost:6565/vauxchathub", { accessTokenFactory: () => loginToken })
+      .build();
+    await this.start()
+    await this.joinChatRoom();
+    await this.receiveMessage();
+  }
+  async mounted() {
+    const param = {
+      itemId: this.curItemId,
     }
-
-    async onChatSubmitClick() {
-        await this.connection.invoke('sendMessage', this.msg)
+    const result = await this.actGetChatHistory(param)
+    await result.records.forEach((record: any) => {
+      this.generate_message(record.content, record.imageId, 15, record.sender, record.created);
+    });
+    this.scrollToBottom();
+    console.log(result)
+  }
+  async start() {
+    try {
+      await this.connection.start();
+      console.log("Connected to signal r hub");
+    } catch (error) {
+      console.log(error);
     }
-
-    beforeUnmount() {
-        this.connection.stop()
+  }
+  async joinChatRoom() {
+    const roomname = "ItemApplication_" + this.curItemId;
+    if (roomname) {
+      sessionStorage.setItem('room', roomname);
+      // here user will join the chat
+      await this.joinChat(roomname);
     }
-
-
-
-    async onChatSubmitClick() {
-        const msg = this.msg
-        if (this.msg.trim() == '') {
-            return false;
-        }
-        await this.generate_message(msg, 'self');
-        await this.generate_message(msg, 'user');
-        this.scrollToBottom();
+  }
+  async joinChat(roomname: any) {
+    if (!roomname)
+      return;
+    try {
+      await this.connection.invoke("JoinRoom", roomname, this.curItemId);
+      console.log("Room Joined " + roomname)
+    } catch (error) {
+      console.log(error);
     }
-    generate_message(msg: string, type: string) {
-        this.INDEX++;
-        const newMessage = {
-            id: this.INDEX,
-            text: msg,
-            type: type
-        };
-        this.messages.push(newMessage);
-
-        // Các dòng code xử lý DOM đã được thay thế bằng việc cập nhật mảng messages
-        if (type === 'self') {
-            // Nếu là tin nhắn của người dùng, có thể xóa nội dung input
-            // (Nếu muốn giữ nội dung, bạn có thể bỏ đoạn này)
-            this.msg = ''
-        }
+  }
+  async receiveMessage() {
+    try {
+      await this.connection.on("VauxItemMessage", (user: any, message: any) => {
+        console.log(user);
+        console.log(message);
+        this.generate_message(message.content, message.imageId, 15, message.sender, message.created);
+      })
+    } catch (error) {
+      console.log(error);
     }
-    onChatCircleClick() {
-        // this.$nextTick(() => {
-        //     const chatCircle = this.$refs.chatCircle as HTMLElement;
-        //     const chatBox = this.$refs.chatBox as HTMLElement;
-
-        //     chatCircle.style.transform = chatCircle.style.transform === 'scale(0)' ? 'scale(1)' : 'scale(0)';
-        //     chatBox.style.transform = chatBox.style.transform === 'scale(0)' ? 'scale(1)' : 'scale(0)';
-        // });
-        this.isHiddenChat = !this.isHiddenChat
+  }
+  async sendMessage(message: any) {
+    var formData = new FormData();
+    console.log(this.curUserId);
+    formData.append("SenderId", this.curUserId);
+    // formData.append("ReceiverId", '1002');
+    formData.append("ItemId", this.curItemId);
+    formData.append("Content", message);
+    formData.append("RawImage", '$("#txtMessage")[0].files[0]');
+    const param = {
+      formdata: formData,
+      itemId: this.curItemId,
     }
-    onChatBoxToggleClick() {
-        // this.$nextTick(() => {
-        //     const chatCircle = this.$refs.chatCircle as HTMLElement;
-        //     const chatBox = this.$refs.chatBox as HTMLElement;
-
-        //     chatCircle.style.transform = 'scale(0)';
-        //     chatBox.style.transform = chatBox.style.transform === 'scale(0)' ? 'scale(1)' : 'scale(0)';
-        // });
-        this.isHiddenChat = !this.isHiddenChat
+    await this.actSendChat(param)
+  }
+  async onChatSubmitClick() {
+    const msg = this.msg
+    if (this.msg.trim() == '') {
+      return false;
     }
-    scrollToBottom() {
-        const chatLogs = this.$refs.chatLogs as HTMLElement
-        if (chatLogs)
-            chatLogs.scrollTop = chatLogs.scrollHeight;
+    await this.sendMessage(msg);
+    this.msg = ''
+    this.scrollToBottom();
+  }
+  async generate_message(msg: string, imgId: number, senderId: number, senderName: string, sendDate: string) {
+    this.INDEX++;
+    const type = senderId == this.curUserId ? 'self' : 'user'
+    const newMessage = {
+      id: this.INDEX,
+      text: msg,
+      imgId: imgId,
+      type: type,
+      name: senderName,
+      date: sendDate
+    };
+    await this.messages.push(newMessage);
+    this.scrollToBottom();
+  }
+  async onChatCircleClick() {
+    this.isHiddenChat = !this.isHiddenChat
+    if (!this.isHiddenChat) {
+      this.scrollToBottom(); // Thêm cuộc gọi scrollToBottom khi hộp chat được mở
     }
-
-
-
+  }
+  onChatBoxToggleClick() {
+    this.isHiddenChat = !this.isHiddenChat
+    if (!this.isHiddenChat) {
+      this.scrollToBottom(); // Thêm cuộc gọi scrollToBottom khi hộp chat được mở
+    }
+  }
+  scrollToBottom() {
+    this.$nextTick(() => {
+      const chatLogs = this.$refs.chatLogs as HTMLElement;
+      if (chatLogs) {
+        chatLogs.scrollTop = chatLogs.scrollHeight;
+      }
+    });
+  }
 }
 export default Chat
 </script>

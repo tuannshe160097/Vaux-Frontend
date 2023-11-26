@@ -26,7 +26,7 @@ export default {
   },
 
   plugins: [
-    '~/plugins/vuelidate.ts', '~/plugins/filters.ts', '~/plugins/signalr'
+    '~/plugins/vuelidate.ts', '~/plugins/filters.ts'
   ],
 
   components: true,

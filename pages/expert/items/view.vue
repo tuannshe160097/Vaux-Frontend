@@ -125,7 +125,7 @@
                 </div>
             </div>
             <ConfirmDialog></ConfirmDialog>
-            <Chat :labelHeader="'Trao đổi với người bán'"></Chat>
+            <Chat :labelHeader="'Trao đổi với người bán'" :curUserId="user?.id" :curItemId="itemId"></Chat>
         </div>
     </div>
 </template>
