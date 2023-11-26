@@ -16,7 +16,7 @@ export default class StoreItem extends VuexModule {
     GET_ITEM_BIDS: '/Item/:itemId/Bids',
     POST_ITEM_BID: '/Item/:itemId/Bids',
   }
-
+  
   @Action({ rawError: true })
   async actGetItem(params: any): Promise<string | undefined> {
     try {

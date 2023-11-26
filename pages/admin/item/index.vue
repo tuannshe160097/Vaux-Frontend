@@ -15,31 +15,35 @@
     <div class="card-body">
       <div class="row justify-content-between">
         <div class="col-fixed">
-          <!-- <div class="grid formgrid">
-            <div class="col-3">
+          <div class="grid formgrid">
+            <div class="col-3 field">
               <label>Tên sản phẩm</label>
               <InputText
-                class="w-21rem h-3rem"
+                class="w-full"
                 type="text"
                 placeholder="Tìm kiếm"
                 v-model="search"
               ></InputText>
+            </div>
+            <div class="col-3 field">
+              <label>Hạng mục</label>
+              <Dropdown
+                class="w-100 line-height-1"
+                v-model="categoryId"
+                :options="categories"
+                optionLabel="name"
+                optionValue="id"
+              />
             </div>
             <div class="col field justify-content-end flex pt-5">
               <Button
                 class="mr-2"
                 label="Tìm kiếm"
                 style="height: 36px"
-                @click="getCategory()"
-              />
-              <Button
-                class=""
-                label="Thêm Mới"
-                style="height: 36px"
-                @click="openModelCategory(null)"
+                @click="getItem()"
               />
             </div>
-          </div> -->
+          </div>
         </div>
       </div>
       <div class="row flex-1 relative">
@@ -67,13 +71,13 @@
               sortable="sortable"
             ></Column>
             <Column
-              field="categoryid"
+              field="category.name"
               className="font-semibold"
               header="Hạng mục"
               sortable="sortable"
             ></Column>
             <Column
-              field="sellerid"
+              field="seller.name"
               className="font-semibold"
               header="Người bán"
               sortable="sortable"
@@ -89,6 +93,26 @@
               </template>
             </Column>
             <Column
+              field="created"
+              header="NGÀY TẠO"
+              sortable="sortable"
+              className="p-text-right"
+            >
+              <template #body="{ data }">{{
+                data.created | dateTimeFomat
+              }}</template>
+            </Column>
+            <Column
+              field="updated"
+              header="NGÀY CẬP NHẬT"
+              sortable="sortable"
+              className="p-text-right"
+            >
+              <template #body="{ data }">{{
+                data.updated | dateTimeFomat
+              }}</template>
+            </Column>
+            <Column
               field="status"
               header="TRẠNG THÁI"
               sortable="sortable"
@@ -97,16 +121,27 @@
               <template #body="{ data }">
                 <div>
                   <Tag
-                    class="px-2 bg-green-100"
-                    v-if="!data.deleted"
-                    severity="success"
-                    ><span class="font-bold text-green-400 font-size-small"
-                      >Đang hoạt động</span
+                    class="px-2 bg-danger-100"
+                    v-if="data.status == 3"
+                    severity="danger"
+                    ><span class="font-bold text-400 font-size-small"
+                      >Từ chối</span
                     ></Tag
                   >
-                  <Tag class="px-2 surface-200" v-else severity="success"
-                    ><span class="font-bold text-400 font-size-small"
-                      >Dừng hoạt động</span
+                  <Tag
+                    class="px-2 surface-200"
+                    v-else-if="data.status == 1"
+                    severity="danger"
+                    ><span class="font-bold text-700 font-size-small"
+                      >Chờ duyệt</span
+                    ></Tag
+                  >
+                  <Tag
+                    class="px-2 surface-200 bg-green-100"
+                    v-else
+                    severity="danger"
+                    ><span class="font-bold text-green-400 font-size-small"
+                      >Đồng ý</span
                     ></Tag
                   >
                 </div>
@@ -118,16 +153,16 @@
               sortable="sortable"
               className="p-text-right"
             >
-              <!-- <template #body="{ data }">
+              <template #body="{ data }">
                 <Button
                   class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
-                  @click="openModelCategory(data)"
+                  @click="onDetailItem(data)"
                 >
-                  <div class="icon--small icon-compose"></div>
+                  <div class="icon--small icon-file"></div>
                 </Button>
-              </template> -->
+              </template>
             </Column>
-            <!-- <template #footer="">
+            <template #footer="">
               <div>
                 <div class="flex align-items-center">
                   <div
@@ -151,7 +186,7 @@
                 >
                 </Paginator>
               </div>
-            </template> -->
+            </template>
             <template #empty>
               <div class="justify-content-center flex font-italic">
                 Không có dữ liệu
@@ -159,43 +194,6 @@
             >
           </DataTable>
         </div>
-        <!-- <Dialog
-          :header="titleModel"
-          :visible.sync="displayBasic"
-          :containerStyle="{ width: '50vw' }"
-          :maximizable="true"
-          :modal="true"
-        >
-          <div class="field">
-            <label>Tên</label>
-            <InputText
-              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-              type="text"
-              v-model="sName"
-              placeholder="Vui lòng nhập tên"
-            />
-          </div>
-          <div class="field">
-            <label>Mô tả</label>
-            <Textarea
-              class="text-left w-full"
-              v-model="sDescription"
-              rows="15"
-              cols="100"
-              placeholder="Vui lòng nhập mô tả"
-            />
-          </div>
-          <template #footer>
-            <Button
-              label="Hủy bỏ"
-              icon="pi pi-times"
-              @click="closeModel"
-              class="p-button-text"
-            />
-            <Button label="Lưu" icon="pi pi-check" @click="onSaveCategory" />
-          </template>
-        </Dialog>
-        <ConfirmDialog></ConfirmDialog> -->
       </div>
     </div>
   </div>
@@ -203,7 +201,7 @@
 
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-import { confirmDelete } from '~/utils/commons/helper'
+const nsStoreCategory = namespace('category/store-category')
 const nsStoreItem = namespace('item/store-mod-item')
 
 @Component({
@@ -212,25 +210,54 @@ const nsStoreItem = namespace('item/store-mod-item')
 })
 class ItemList extends Vue {
   items = []
+  categories = []
+  categoryId = ''
   sName: string = ''
   sDescription: string = ''
+  pPagenum: number = 1
+  pPageSize: number = 10
+  totalRecords: number = 0
+  search: string = ''
 
   @nsStoreItem.Action
   actGetItemList!: (param: any) => Promise<any>
 
+  @nsStoreCategory.Action
+  actGetAllCategory!: () => Promise<any>
+
   async mounted() {
-    this.GetItem()
+    this.getItem()
+    this.getCategory()
   }
-  async GetItem() {
-    const param = {
-      pageNum:  1,
-      pageSize: 10,
-      orderBy: 'id',
+
+  async getItem() {
+    const params = {
+      pageNum: this.pPagenum,
+      pageSize: this.pPageSize,
+      search: this.search,
+      category: this.categoryId,
     }
-    const response = await this.actGetItemList(param)
+    const response = await this.actGetItemList(params)
     if (response) {
       this.items = response.records
+      this.totalRecords = response.totalRecords
     }
+  }
+
+  async getCategory() {
+    const response = await this.actGetAllCategory()
+    if (response) {
+      this.categories = response.records
+    }
+  }
+
+  onPage(event: any) {
+    this.pPagenum = event.page + 1
+    this.getItem()
+  }
+
+  onDetailItem(row?: any){
+    
   }
 }
 export default ItemList
@@ -239,7 +266,6 @@ export default ItemList
 <style lang="sass" scoped>
 .box-page-container
   height: calc(100vh - 100px)
-
 .element
   @include overflow-ellipsis(400px)
 </style>
