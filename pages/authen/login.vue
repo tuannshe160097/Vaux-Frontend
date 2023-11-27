@@ -164,7 +164,7 @@ export default Login
   min-height: 100vh
 
 .side-image
-  background-image: url('assets/images/IMG_3326.png')
+  background-image: url('assets/images/IMG_3321.png')
   max-width: 100%
   height: 550px
   background-repeat: no-repeat
