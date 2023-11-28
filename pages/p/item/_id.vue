@@ -4,20 +4,20 @@
             <Breadcrumb :home="home" :model="items" />
             <div class="card-body my-3">
                 <div class="grid">
-                    <div class="col-7">
+                    <div class="md:col-7 col-12">
                         <div class="grid nested-grid">
-                            <h1 class="font-bold text-brown mb-0 col-12">Thanh gươm của thần rùa, vua Lý Thái Tổ</h1>
+                            <h1 class="font-bold text-brown mb-0 col-12">{{ item.name }}</h1>
                             <div class="field col-12">
-                                <Galleria :value="images" :activeIndex.sync="activeIndex"
+                                <Galleria :value="images" :activeIndex.sync="activeIndex" class="viewImage"
                                     :responsiveOptions="responsiveOptions" :numVisible="5" :showItemNavigators="true">
                                     <template #item="slotProps">
                                         <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt"
-                                            style="width: 100%; display: block;"
+                                            style=" width: auto;  height : auto;  max-height: 100%; max-width: 100%;"
                                             @click="displayFullScreen(slotProps.item.index)" />
                                     </template>
                                     <template #thumbnail="slotProps">
                                         <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt"
-                                            style="width: 100%; display: block; padding-left: 10px;" />
+                                            style="width: auto;  height : auto;  max-height: 100%; max-width: 100%; padding-left: 10px;" />
                                     </template>
                                 </Galleria>
 
@@ -27,11 +27,11 @@
                                     :visible.sync="displayBasic2">
                                     <template #item="slotProps">
                                         <img :src="slotProps.item.itemImageSrc" :alt="slotProps.item.alt"
-                                            style="width: 100%; display: block;" />
+                                            style=" width: auto;  height : auto;  max-height: 100vh; max-width: 90vw;" />
                                     </template>
                                     <template #thumbnail="slotProps">
                                         <img :src="slotProps.item.thumbnailImageSrc" :alt="slotProps.item.alt"
-                                            style="display: block;" />
+                                            style="max-width: 200px; display: block; max-height: 100px;" />
                                     </template>
                                     <template #footer>
                                         <div class="custom-galleria-footer">
@@ -41,27 +41,14 @@
                                 </Galleria>
                             </div>
                             <div class="field col-12">
-                                This is description This is description This is description This is description This is
-                                description This is description This is description This is description This is description
-                                This
-                                is description This is description This is description This is description This is
-                                description
-                                This is description This is description This is description This is description This is
-                                description This is description This is description This is description This is description
-                                This
-                                is description This is description This is description This is description This is
-                                description
-                                This is description This is description This is description This is description This is
-                                description This is description This is description This is description This is description
-                                This
-                                is description This is description This is description
+                                {{ item.description }}
                             </div>
                             <div class="field col-12">
                                 <div class="grid nested-grid">
-                                    <div v-for="property in Properties" :key="property.name" class=" col-6">
+                                    <div v-for="property in Properties" :key="property.label" class=" col-6">
                                         <div class="grid nested-grid">
                                             <div class=" col-12 pb-0 text-brown">
-                                                {{ property.name }}
+                                                {{ property.label }}
                                             </div>
                                             <div class=" col-12 pt-0">
                                                 {{ property.value }}
@@ -75,55 +62,10 @@
                     <div class="md:col-5 col-12 md:pl-3">
                         <div class="grid nested-grid">
                             <div class="align-self-center col-12 field">
-                                <h4 class="mb-0">Thời gian còn lại: 12:34:33</h4>
+                                <h4 class="mb-0">{{ countdownText }}</h4>
                             </div>
                             <div class="col-12 border-solid border-1 ">
-                                <div class="grid nested-grid">
-                                    <div class="col-12 text-brown">
-                                        Giá hiện tại
-                                    </div>
-                                    <div class="col-12">
-                                        <h1>{{ formatNumber(1200000) }}</h1>
-                                    </div>
-                                    <div class="col-12 text-brown">
-                                        Đã đạt mức giá tối thiểu
-                                    </div>
-                                    <div class="col-12 mt-3 text-brown border-bottom-1" style="border-color: #E0A26F;">
-                                        <div class="grid">
-                                            <div class="col-4">
-                                                <button class="p-3 btn-second border-10 w-full">{{ formatNumber(1400000)
-                                                }}</button>
-                                            </div>
-                                            <div class="col-4">
-                                                <button class="p-3 btn-second border-10 w-full">{{ formatNumber(1500000)
-                                                }}</button>
-                                            </div>
-                                            <div class="col-4">
-                                                <button class="p-3 btn-second border-10 w-full">{{ formatNumber(1600000)
-                                                }}</button>
-                                            </div>
-                                            <div class="col-12">
-                                                <InputNumber class="w-full this-p-inputtext-p-4" v-model="priceBid"
-                                                    placeholder="1,210,000 hoặc cao hơn">
-                                                </InputNumber>
-                                            </div>
-                                            <div class="col-12">
-                                                <button class="p-3 btn-primary border-10 w-full">Đấu giá</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="text-brown mb-1">Lịch sử đấu giá</div>
-
-                                        <table class="w-full" style="  border-collapse: collapse;  border-spacing: 0;">
-                                            <tr v-for="bid in bids" :key="bid.id">
-                                                <td class="p-0 pe-2">Người tham gia {{ bid.id }}</td>
-                                                <td class="px-2">{{ formatDistanceToNow(bid.time) }}</td>
-                                                <td class="text-right ps-2">{{ formatNumber(bid.price) }}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
+                                <BidDialog :curItemId="itemId" :reservePrice="item.reservePrice"></BidDialog>
                             </div>
                         </div>
                     </div>
@@ -134,19 +76,35 @@
 </template>
   
 <script lang="ts">
+import { thisExpression } from '@babel/types'
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-import CreateAuction from '~/components/dialog/CreateAuction.vue'
+import BidDialog from '~/components/bidDialog/bidDialog.vue'
 import { getDateFormat } from '~/utils/commons/helper'
-const nsStoreAuction = namespace('auction/store-auction')
+const nsStoreItem = namespace('item/store-item')
 const dayjs = require('dayjs')
 
 @Component({
     layout: 'public',
-    meta: { isPublic: true }
+    meta: { isPublic: true },
+    components: {
+        BidDialog
+    }
 })
 class EditAuctionList extends Vue {
+    itemId: any
+    item: any = {
+        id: '',
+        name: '',
+        thumbnailId: '',
+        reservePrice: '',
+        itemProperties: '',
+        images: '',
+        description: '',
+        category: '',
+    }
     startDate: any = null
-    endDate: any = null
+    endDate: any = '2023-12-29T20:00:00'
+    countdownText: string = ""; // Thêm dòng này
     displayAddItem: boolean = false
     display: boolean = false
     selectedItemsApproved: any = []
@@ -157,17 +115,7 @@ class EditAuctionList extends Vue {
     rotation: number = 0;
     activeIndex: number = 0;
     displayBasic2: boolean = false
-    images = [{ index: 0, itemImageSrc: 'https://localhost:6565/api/Item/1/Images/8', alt: 'Item/1/Images/8' },
-    { index: 0, itemImageSrc: 'https://localhost:6565/api/Item/1/Images/9', alt: 'Item/1/Images/9' },
-    { index: 1, itemImageSrc: 'https://localhost:6565/api/Item/1/Images/10', alt: 'Item/1/Images/10' },
-    { index: 2, itemImageSrc: 'https://localhost:6565/api/Item/1/Images/11', alt: 'Item/1/Images/11' },
-    { index: 3, itemImageSrc: 'https://localhost:6565/api/Item/1/Images/12', alt: 'Item/1/Images/12' },
-    { index: 4, itemImageSrc: 'https://localhost:6565/api/Item/1/Images/13', alt: 'Item/1/Images/13' },
-    { index: 5, itemImageSrc: 'https://localhost:6565/api/Item/1/Images/14', alt: 'Item/1/Images/14' },
-    { index: 6, itemImageSrc: 'https://localhost:6565/api/Item/1/Images/15', alt: 'Item/1/Images/15' },
-    { index: 7, itemImageSrc: 'https://localhost:6565/api/Item/1/Images/16', alt: 'Item/1/Images/16' },
-    { index: 8, itemImageSrc: 'https://localhost:6565/api/Item/1/Images/17', alt: 'Item/1/Images/17' },
-    { index: 9, itemImageSrc: 'https://localhost:6565/api/Item/1/Images/18', alt: 'Item/1/Images/18' },]
+    images: any = []
 
     responsiveOptions = [
         { breakpoint: '1024px', numVisible: 5 },
@@ -175,43 +123,86 @@ class EditAuctionList extends Vue {
         { breakpoint: '768px', numVisible: 3 },
         { breakpoint: '560px', numVisible: 1 }
     ]
-
     home = { icon: 'pi pi-home', to: '/homepage' }
-    items = [
-        { label: 'Sản phẩm', to: '/seller' },
-        { label: 'Category name', to: '/seller' },
-        { label: 'Item name' }
-    ]
+    items: any[] = []
     Properties = [
-        { name: 'Năm', value: '1010' },
-        { name: 'Cân nặng', value: '12kg' },
-        { name: 'Màu sắc', value: 'Đen' },
-        { name: 'Nguồn gốc', value: 'Thần rùa' },
-        { name: 'Chất liệu', value: 'Thép đen nguyên khối' }
+        { label: 'Năm', value: '1010' },
+        { label: 'Cân nặng', value: '12kg' },
+        { label: 'Màu sắc', value: 'Đen' },
+        { label: 'Nguồn gốc', value: 'Thần rùa' },
+        { label: 'Chất liệu', value: 'Thép đen nguyên khối' }
     ]
     bids = [
-        { id: 1, name: 'Lương Thị Kiểm Định Viên Thị Kiểm Định Viên', time: '2023-11-23T17:56', price: 1200000 },
-        { id: 2, name: 'Lương Tiến Anh', time: '2023-11-23T16:45', price: 1500000 },
-        { id: 3, name: 'Lương Tiến Anh', time: '2023-11-23T16:34', price: 1200000 },
-        { id: 4, name: 'Lương Tiến Anh', time: '2023-11-23T16:23', price: 120000 },
-        { id: 5, name: 'Lương Tiến Anh', time: '2023-11-23T16:11', price: 12000 }
+        // { id: 1, name: 'Lương Thị Kiểm Định Viên Thị Kiểm Định Viên', time: '2023-11-23T17:56', price: 1200000 },
+        // { id: 2, name: 'Lương Tiến Anh', time: '2023-11-23T16:45', price: 1500000 },
+        // { id: 3, name: 'Lương Tiến Anh', time: '2023-11-23T16:34', price: 1200000 },
+        // { id: 4, name: 'Lương Tiến Anh', time: '2023-11-23T16:23', price: 120000 },
+        // { id: 5, name: 'Lương Tiến Anh', time: '2023-11-23T16:11', price: 12000 }
     ]
     disableButton: boolean = false
-    @nsStoreAuction.Action
-    actGetAuctionById!: (params: any) => Promise<any>
+    @nsStoreItem.Action
+    actGetItem!: (params: any) => Promise<any>
+    @nsStoreItem.Action
+    actGetItemBids!: (params: any) => Promise<any>
+    @nsStoreItem.Action
+    actAddItemBids!: (params: any) => Promise<any>
 
-    @nsStoreAuction.Action
-    actUpdateAuction!: (params: any) => Promise<any>
-
+    created() {
+        this.itemId = this.$route?.params?.id
+    }
     async mounted() {
-        const itemId = this.$route?.params?.id
-        console.log('LTA: ', itemId)
+        await this.fetchData();
+        console.log(this.itemId)
+        this.items = [
+            { label: 'Danh sách Sản phẩm', to: '/item' },
+            { label: this.item.category.name, to: '/seller' },
+            { label: this.item.name }
+        ]
+    }
+    async fetchData() {
+        const params = {
+            itemId: this.itemId
+        }
+        const response = await this.actGetItem(params)
+        console.log('LTA: ', response)
+        this.item = {
+            id: response.id,
+            name: response.name,
+            thumbnailId: response.thumbnailId,
+            reservePrice: response.reservePrice,
+            itemProperties: response.itemProperties,
+            images: response.images,
+            description: response.description,
+            category: response.category,
+        }
+        for (const imgId of response.images) {
+            const result2 = await this.getImageUrl(this.itemId, imgId)
+            const imageInfo = { itemImageSrc: result2, alt: "result2.name", index: imgId.index };
+            this.images.push(imageInfo);
+        }
+        this.Properties = response.itemProperties
+        this.formatTimeLeft(response.auctionSessions[0].endDate);
+    }
+    getImageUrl(itemId: any, imgId: any) {
+        try {
+            if (itemId == null || imgId == null) {
+                return ''
+            }
+            const params = {
+                itemId: itemId,
+                imgId: imgId,
+            }
+            return process.env.BE_API_URL + '/api/Item/' + itemId + '/Images/' + imgId
+        } catch (error) {
+            this.$store.commit('commons/store-error/setError', "Error fetching or converting image")
+            console.error("Error fetching or converting image:", error);
+            return null;
+        }
     }
     displayFullScreen(index: any) {
         // this.activeIndex = index;
         this.displayBasic2 = true;
     }
-
     hidePreview(event: Event) {
         // this.previewImage = null;
         // this.display = false;
@@ -222,17 +213,14 @@ class EditAuctionList extends Vue {
     zoomIn() {
         this.zoom += 0.1;
     }
-
     zoomOut() {
         if (this.zoom > 0.1) {
             this.zoom -= 0.1;
         }
     }
-
     rotate() {
         this.rotation += 90;
     }
-
     nextImage() {
         // Implement logic to move to the next image in the gallery
     }
@@ -260,11 +248,59 @@ class EditAuctionList extends Vue {
             return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
         }
     }
+    formatTimeLeft(timeEnd: any) {
+        const updateInterval = 1000;
+        const targetTime: any = new Date(timeEnd);
+        const updateTimer = () => {
+            this.countdownText = "Thời gian còn lại: " + this.calculateRemainingTime(targetTime);
+        }
+        // Initial update
+        updateTimer();
+        // Set up interval for periodic updates
+        const intervalId = setInterval(() => {
+            updateTimer();
+        }, updateInterval);
+    }
+    calculateRemainingTime(targetTime: any): string {
+        const currentTime: any = new Date();
+        const diffInMs = targetTime - currentTime;
+        const diffInSeconds = Math.floor(diffInMs / 1000);
+        const diffInMinutes = Math.floor(diffInSeconds / 60);
+        const diffInHours = Math.floor(diffInMinutes / 60);
+        const diffInDays = Math.floor(diffInHours / 24);
+        const remainingHours = diffInHours % 24;
+        const remainingMinutes = diffInMinutes % 60;
+        const remainingSeconds = diffInSeconds % 60;
+
+        let timeLeft = "";
+        if (diffInDays > 0) {
+            timeLeft += `${diffInDays} ngày `;
+        }
+        if (remainingHours > 0) {
+            timeLeft += `${remainingHours} giờ `;
+        }
+        if (remainingMinutes > 0) {
+            timeLeft += `${remainingMinutes} phút `;
+        }
+        timeLeft += `${remainingSeconds} giây`;
+
+        return timeLeft;
+    }
 }
 export default EditAuctionList
 </script>
   
 <style lang="sass">
+  .p-galleria-thumbnail-item-content
+    height:auto
+    max-height:100%
+    overflow: hidden
+  .p-galleria-thumbnail-items
+    height:100px
+  .viewImage
+    .p-galleria-item
+      width: 100%
+      height: 30rem
   .edit-auction-page
     height: calc(100vh - 100px)
   

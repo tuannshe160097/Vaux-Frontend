@@ -1,12 +1,14 @@
 <template>
   <section class="surface-0 flex align-items-center justify-content-center p-2">
     <div class="item-page-container flex flex-column w-full">
-      <DataView :value="products" :layout="layout" :paginator="false" :rows="pPageSize" :sortOrder="sortOrder" :sortField="sortField">
+      <DataView :value="products" :layout="layout" :paginator="false" :rows="pPageSize" :sortOrder="sortOrder"
+        :sortField="sortField">
         <template #header>
           <div class="grid grid-nogutter">
             <div class="col-9 flex" style="text-align: left">
               <InputText class="flex-1" v-model="searchText" placeholder="Nhập tên"></InputText>
-              <Dropdown class="w-3 ml-2" v-model="sortCategoryKey" :options="sortOptions" dataKey="id" optionValue="id" optionLabel="name" placeholder="Category"/>
+              <Dropdown class="w-3 ml-2" v-model="sortCategoryKey" :options="sortOptions" dataKey="id" optionValue="id"
+                optionLabel="name" placeholder="Category" />
               <Button class="w-2 ml-2" label="Tìm kiếm" @click="getItem" />
             </div>
             <div class="col-3" style="text-align: right">
@@ -17,18 +19,19 @@
 
         <template #list="slotProps">
           <div class="col-12">
-            <div class="product-list-item">
+            <div class="product-list-item" @click="viewItem(slotProps.data.id)">
               <ImagePreview :src="slotProps.data.thumbnailId || require('~/assets/images/default.jpg')" alt="Image"
                 imageClass="w-max-100" imageStyle="object-fit: contain" />
               <div class="product-list-detail">
-                <div class="product-name">{{slotProps.data.name}}</div>
-                <div class="product-description">{{slotProps.data.description}}</div>
-                <i class="pi pi-tag product-category-icon"></i><span class="product-category">{{slotProps.data.category.name}}</span>
+                <div class="product-name">{{ slotProps.data.name }}</div>
+                <div class="product-description">{{ slotProps.data.description }}</div>
+                <i class="pi pi-tag product-category-icon"></i><span
+                  class="product-category">{{ slotProps.data.category.name }}</span>
               </div>
               <div class="product-list-action">
-                <span class="product-price">${{slotProps.data.reservePrice}}</span>
+                <span class="product-price">${{ slotProps.data.reservePrice }}</span>
                 <Button class="mb-2" icon="pi pi-shopping-cart" label="Add to Cart"></Button>
-                <span class="product-badge-status">{{slotProps.data.statusString}}</span>
+                <span class="product-badge-status">{{ slotProps.data.statusString }}</span>
               </div>
             </div>
           </div>
@@ -36,37 +39,32 @@
 
         <template #grid="slotProps">
           <div class="col-12 md:col-4 lg:col-3">
-            <div class="product-grid-item card">
+            <div class="product-grid-item card"  @click="viewItem(slotProps.data.id)">
               <div class="product-grid-item-top">
                 <div>
                   <i class="pi pi-tag product-category-icon"></i>
-                  <span class="product-category">{{slotProps.data.category.name}}</span>
+                  <span class="product-category">{{ slotProps.data.category.name }}</span>
                 </div>
-                <span class="product-badge-status">{{slotProps.data.statusString}}</span>
+                <span class="product-badge-status">{{ slotProps.data.statusString }}</span>
               </div>
               <div class="product-grid-item-content">
                 <ImagePreview :src="slotProps.data.thumbnailId || require('~/assets/images/default.jpg')" alt="Image"
                   imageClass="w-max-100" imageStyle="object-fit: contain" />
-                <div class="product-name">{{slotProps.data.name}}</div>
-                <div class="product-description">{{slotProps.data.description}}</div>
+                <div class="product-name">{{ slotProps.data.name }}</div>
+                <div class="product-description">{{ slotProps.data.description }}</div>
               </div>
               <div class="product-grid-item-bottom">
-                <span class="product-price">${{slotProps.data.reservePrice}}</span>
+                <span class="product-price">${{ slotProps.data.reservePrice }}</span>
                 <Button icon="pi pi-shopping-cart"></Button>
               </div>
             </div>
           </div>
         </template>
         <template #footer="">
-          <Paginator
-            class="p-0"
-            :rows="pPageSize"
-            :totalRecords="totalRecords"
-            @page="onPage($event)"
-          >
+          <Paginator class="p-0" :rows="pPageSize" :totalRecords="totalRecords" @page="onPage($event)">
           </Paginator>
         </template>
-    </DataView>
+      </DataView>
     </div>
   </section>
 </template>
@@ -77,17 +75,17 @@ const nsStoreItem = namespace('item/store-public-item')
 const nsStoreCategory = namespace('category/store-category')
 
 @Component({
-    middleware: ['authenticate'],
-    layout: 'public'
+  middleware: ['authenticate'],
+  layout: 'public'
 })
 class ItemList extends Vue {
 
   products: any = null
-  layout : any = 'grid'
-  sortOrder : any = null
-  sortField : any = null
+  layout: any = 'grid'
+  sortOrder: any = null
+  sortField: any = null
   searchText: string = ''
-  sortCategoryKey : any = null
+  sortCategoryKey: any = null
   sortOptions: any = [{ id: '', name: '--------------' }]
   pPageNum: number = 1
   pPageSize: number = 12
@@ -107,7 +105,7 @@ class ItemList extends Vue {
 
   async getItem() {
     const param = {
-      pageNum:  this.pPageNum,
+      pageNum: this.pPageNum,
       pageSize: this.pPageSize,
       search: this.searchText || '',
       category: this.sortCategoryKey || '',
@@ -136,6 +134,9 @@ class ItemList extends Vue {
   onPage(event: any) {
     this.pPageNum = event.page + 1
     this.getItem()
+  }
+  viewItem( id: any) {
+    this.$router.push("/p/item/" + id)
   }
 
 }

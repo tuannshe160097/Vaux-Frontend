@@ -29,13 +29,17 @@ class ApiWrapper {
     const response: AxiosResponse<R> = await this.$axios.delete(url, config)
     return response.data
   }
-  
+
   public async patch<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
     const response: AxiosResponse<R> = await this.$axios.patch(url, data, config)
     return response.data
   }
   public async put_response<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
     const response: any = await this.$axios.put(url, data, config)
+    return response
+  }
+  public async post_response<T = any, R = AxiosResponse<T>>(url: string, data?: any, config?: AxiosRequestConfig): Promise<R> {
+    const response: any = await this.$axios.post(url, data, config)
     return response
   }
 

@@ -14,7 +14,7 @@ export default class StoreItem extends VuexModule {
     POST_ITEM_COMMENT: '/Item/:itemId/Comments',
     GET_ITEM_IMAGE: '/Item/:itemId/Images/:imageId',
     GET_ITEM_BIDS: '/Item/:itemId/Bids',
-    POST_ITEM_BID: '/Item/:itemId/Bids',
+    POST_ITEM_BID: '/Item/:itemId/Bid',
   }
   
   @Action({ rawError: true })
@@ -65,7 +65,7 @@ export default class StoreItem extends VuexModule {
   async actAddItemBids(params: any): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreItem.STATE_URL.POST_ITEM_BID, { itemId: params?.itemId })
-      return await $api.post(url, params)
+      return await $api.post_response(url, params.real)
     } catch (error) { }
   }
   @Action({ rawError: true })

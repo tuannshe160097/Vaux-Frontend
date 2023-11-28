@@ -18,146 +18,62 @@
           <div class="grid formgrid">
             <div class="col-3 field">
               <label>Tên sản phẩm</label>
-              <InputText
-                class="w-full"
-                type="text"
-                placeholder="Tìm kiếm"
-                v-model="search"
-              ></InputText>
+              <InputText class="w-full" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
             </div>
             <div class="col-3 field">
               <label>Hạng mục</label>
-              <Dropdown
-                class="w-100 line-height-1"
-                v-model="categoryId"
-                :options="categories"
-                optionLabel="name"
-                optionValue="id"
-              />
+              <Dropdown class="w-100 line-height-1" v-model="categoryId" :options="categories" optionLabel="name"
+                optionValue="id" />
             </div>
             <div class="col field justify-content-end flex pt-5">
-              <Button
-                class="mr-2"
-                label="Tìm kiếm"
-                style="height: 36px"
-                @click="getItem()"
-              />
+              <Button class="mr-2" label="Tìm kiếm" style="height: 36px" @click="getItem()" />
             </div>
           </div>
         </div>
       </div>
       <div class="row flex-1 relative">
         <div class="col-12 md:col-12">
-          <DataTable
-            class="w-full airtag-datatable h-full flex flex-column"
-            v-if="items"
-            :value="items"
-            responsiveLayout="scroll"
-            dataKey="id"
-            :resizableColumns="true"
-            :rows="10"
-            :scrollable="false"
-            stripedRows
-          >
+          <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="items" :value="items"
+            responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="10" :scrollable="false" stripedRows>
             <Column field="id" header="STT" sortable="sortable">
               <template #body="slotProps">
                 <span class="">{{ slotProps.index + 1 }}</span>
               </template>
             </Column>
-            <Column
-              field="name"
-              className="font-semibold"
-              header="Tên"
-              sortable="sortable"
-            ></Column>
-            <Column
-              field="category.name"
-              className="font-semibold"
-              header="Hạng mục"
-              sortable="sortable"
-            ></Column>
-            <Column
-              field="seller.name"
-              className="font-semibold"
-              header="Người bán"
-              sortable="sortable"
-            ></Column>
-            <Column
-              field="description"
-              header="Mô tả"
-              sortable="sortable"
-              className="overflow-ellipsis"
-            >
+            <Column field="name" className="font-semibold" header="Tên" sortable="sortable"></Column>
+            <Column field="category.name" className="font-semibold" header="Hạng mục" sortable="sortable"></Column>
+            <Column field="seller.name" className="font-semibold" header="Người bán" sortable="sortable"></Column>
+            <Column field="description" header="Mô tả" sortable="sortable" className="overflow-ellipsis">
               <template #body="{ data }">
                 <p class="element">{{ data.description }}</p>
               </template>
             </Column>
-            <Column
-              field="created"
-              header="NGÀY TẠO"
-              sortable="sortable"
-              className="p-text-right"
-            >
+            <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
               <template #body="{ data }">{{
                 data.created | dateTimeFomat
               }}</template>
             </Column>
-            <Column
-              field="updated"
-              header="NGÀY CẬP NHẬT"
-              sortable="sortable"
-              className="p-text-right"
-            >
+            <Column field="updated" header="NGÀY CẬP NHẬT" sortable="sortable" className="p-text-right">
               <template #body="{ data }">{{
                 data.updated | dateTimeFomat
               }}</template>
             </Column>
-            <Column
-              field="status"
-              header="TRẠNG THÁI"
-              sortable="sortable"
-              className="p-text-right"
-            >
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
                 <div>
-                  <Tag
-                    class="px-2 bg-danger-100"
-                    v-if="data.status == 3"
-                    severity="danger"
-                    ><span class="font-bold text-400 font-size-small"
-                      >Từ chối</span
-                    ></Tag
-                  >
-                  <Tag
-                    class="px-2 surface-200"
-                    v-else-if="data.status == 1"
-                    severity="danger"
-                    ><span class="font-bold text-700 font-size-small"
-                      >Chờ duyệt</span
-                    ></Tag
-                  >
-                  <Tag
-                    class="px-2 surface-200 bg-green-100"
-                    v-else
-                    severity="danger"
-                    ><span class="font-bold text-green-400 font-size-small"
-                      >Đồng ý</span
-                    ></Tag
-                  >
+                  <Tag class="px-2 bg-danger-100" v-if="data.status == 3" severity="danger"><span
+                      class="font-bold text-400 font-size-small">Từ chối</span></Tag>
+                  <Tag class="px-2 surface-200" v-else-if="data.status == 1" severity="danger"><span
+                      class="font-bold text-700 font-size-small">Chờ duyệt</span></Tag>
+                  <Tag class="px-2 surface-200 bg-green-100" v-else severity="danger"><span
+                      class="font-bold text-green-400 font-size-small">Đồng ý</span></Tag>
                 </div>
               </template>
             </Column>
-            <Column
-              :exportable="false"
-              header="Hoạt động"
-              sortable="sortable"
-              className="p-text-right"
-            >
+            <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
-                <Button
-                  class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
-                  @click="onDetailItem(data)"
-                >
+                <Button class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
+                  @click="onDetailItem(data.id)">
                   <div class="icon--small icon-file"></div>
                 </Button>
               </template>
@@ -165,33 +81,25 @@
             <template #footer="">
               <div>
                 <div class="flex align-items-center">
-                  <div
-                    class="icon--large icon-footer-paginator surface-400"
-                  ></div>
-                  <span class="ml-3 text-400 font-size-small"
-                    >Showing
+                  <div class="icon--large icon-footer-paginator surface-400"></div>
+                  <span class="ml-3 text-400 font-size-small">Showing
                     {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
                     - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
-                    {{ totalRecords }}</span
-                  >
+                    {{ totalRecords }}</span>
                 </div>
               </div>
               <div v-if="totalRecords > 0">
-                <Paginator
-                  class="p-0"
-                  :rows="pPageSize"
-                  :totalRecords="totalRecords"
+                <Paginator class="p-0" :rows="pPageSize" :totalRecords="totalRecords"
                   template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
-                  @page="onPage($event)"
-                >
+                  @page="onPage($event)">
                 </Paginator>
               </div>
             </template>
             <template #empty>
               <div class="justify-content-center flex font-italic">
                 Không có dữ liệu
-              </div></template
-            >
+              </div>
+            </template>
           </DataTable>
         </div>
       </div>
@@ -256,8 +164,8 @@ class ItemList extends Vue {
     this.getItem()
   }
 
-  onDetailItem(row?: any){
-    
+  onDetailItem(id: any) {
+    this.$router.push("/admin/item/view?itemId=" + id)
   }
 }
 export default ItemList

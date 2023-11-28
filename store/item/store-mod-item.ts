@@ -8,11 +8,11 @@ import { $api, PathBind } from '~/utils'
 export default class StoreItemApplication extends VuexModule {
   private static readonly STATE_URL = {
     GET_ITEMAPPLICATION_LIST: '/Mod/Item?pageNum=:pageNum&pageSize=:pageSize&search=:search&category=:category',
-    UPDATE_ITEMAPPLICATION: '/Mod/ItemApplication/:itemId',
-    CHANGE_STATUS_ITEMAPPLICATION: '/Mod/ItemApplication/:itemId/ChangeStatus',
-    ADD_ITEMAPPLICATION_IMAGE: '/Mod/ItemApplication/:itemId/Images',
-    DELETE_ITEMAPPLICATION_IMAGE: '/Mod/ItemApplication/:itemId/Images',
-    UNASSIGN_ITEMAPPLICATION: '/Mod/ItemApplication/:itemId/Unassign',
+    UPDATE_ITEMAPPLICATION: '/Mod/Item/:itemId',
+    CHANGE_STATUS_ITEMAPPLICATION: '/Mod/Item/:itemId/ChangeStatus',
+    ADD_ITEMAPPLICATION_IMAGE: '/Mod/Item/:itemId/Images',
+    DELETE_ITEMAPPLICATION_IMAGE: '/Mod/Item/:itemId/Images',
+    UNASSIGN_ITEMAPPLICATION: '/Mod/Item/:itemId/Unassign',
   }
 
   @Action({ rawError: true })
