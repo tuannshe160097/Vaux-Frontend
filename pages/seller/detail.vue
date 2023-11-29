@@ -207,15 +207,17 @@ class DetailItem extends Vue {
     @nsStoreItem.Action
     actAddItemApplicationThumbnail!: (params: any) => Promise<any>
 
+    async created() {
+        this.itemId = Array.isArray(this.$route.query.itemId)
+            ? this.$route.query.itemId[0]
+            : this.$route.query.itemId
+    }
     async mounted() {
         const response = await this.actGetAllCategory()
         this.oCategories = response.records
         this.fetchData()
     }
     async fetchData() {
-        this.itemId = Array.isArray(this.$route.query.itemId)
-            ? this.$route.query.itemId[0]
-            : this.$route.query.itemId
         if (this.itemId) {
             const params = {
                 itemId: this.itemId || '',

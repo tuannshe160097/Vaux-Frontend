@@ -93,6 +93,7 @@ class Chat extends Vue {
     if (!roomname)
       return;
     try {
+      console.log('log: ', roomname)
       await this.connection.invoke("JoinRoom", roomname, this.curItemId);
       console.log("Room Joined " + roomname)
     } catch (error) {
