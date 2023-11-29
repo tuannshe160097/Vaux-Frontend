@@ -106,7 +106,7 @@
                 </div>
                 <div class="grid formgrid">
                     <div class="field col-12 flex justify-content-center">
-                        <div v-if="getShowAssign()">
+                        <div v-if="showAssign">
                             <Button class="mx-2 btn-success border-10 p-3" label="Tiếp nhận" @click="onAssign()" />
                         </div>
                         <div v-if="showUnassign">
@@ -125,7 +125,7 @@
                 </div>
             </div>
             <ConfirmDialog></ConfirmDialog>
-            <Chat :labelHeader="'Trao đổi với người bán'" :curUserId="user?.id" :curItemId="itemId"></Chat>
+            <Chat v-if="showUnassign" :labelHeader="'Trao đổi với người bán'" :curUserId="user?.id" :curItemId="itemId"></Chat>
         </div>
     </div>
 </template>

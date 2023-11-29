@@ -11,7 +11,7 @@ declare module 'vue/types/vue' {
 const auth: Plugin = ({ app, $auth, store }) => {
   const axiosInstance = axios.create()
 
-  axiosInstance.interceptors.request.use((config:any) => {
+  axiosInstance.interceptors.request.use((config: any) => {
     const token = app.$cookies.get('auth._token')
 
     if ($auth.loggedIn && token) {
@@ -23,7 +23,7 @@ const auth: Plugin = ({ app, $auth, store }) => {
     } else {
       if (config?.isThirdPartyAPI) {
         config.headers = null
-        config.url = '/api' + config.url
+        config.url = config.url
       }
       else { config.url = process.env.BE_API_URL + '/api' + config.url }
     }

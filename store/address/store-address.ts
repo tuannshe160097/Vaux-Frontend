@@ -12,7 +12,7 @@ interface CustomAxiosRequestConfig extends AxiosRequestConfig {
 
 export default class StoreCategory extends VuexModule {
     private static readonly STATE_URL = {
-        BASE_URL_PROV: 'https://provinces.open-api.vn',
+        BASE_URL_PROV: 'https://provinces.open-api.vn/api',
         GET_PROVINCE: '/p/',
         GET_DISTRICT: '/p/:cityId?depth=2',
         GET_STREET: '/d/:districtId?depth=2',
