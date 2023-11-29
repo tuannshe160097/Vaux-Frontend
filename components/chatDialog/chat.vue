@@ -66,9 +66,10 @@ class Chat extends Vue {
     const param = {
       itemId: this.curItemId,
     }
+    console.log('this.curItemId', this.curItemId)
     const result = await this.actGetChatHistory(param)
     await result.records.forEach((record: any) => {
-      this.generate_message(record.content, record.imageId, 15, record.sender, record.created);
+      this.generate_message(record.content, record.imageId, record.senderId, record.sender, record.created);
     });
     this.scrollToBottom();
     console.log(result)
@@ -94,7 +95,7 @@ class Chat extends Vue {
       return;
     try {
       console.log('log: ', roomname)
-      await this.connection.invoke("JoinRoom", roomname, this.curItemId);
+      await this.connection.invoke("JoinRoom", roomname, parseInt(this.curItemId));
       console.log("Room Joined " + roomname)
     } catch (error) {
       console.log(error);
@@ -103,8 +104,8 @@ class Chat extends Vue {
   async receiveMessage() {
     try {
       await this.connection.on("VauxItemMessage", (user: any, message: any) => {
-        console.log(user);
-        console.log(message);
+        console.log('sser',user);
+        console.log('mess',message);
         this.generate_message(message.content, message.imageId, 15, message.sender, message.created);
       })
     } catch (error) {
