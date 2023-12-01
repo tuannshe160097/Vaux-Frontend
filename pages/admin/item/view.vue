@@ -36,9 +36,6 @@
                                     class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
                                     <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
                                         imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
-                                    <div class="small font-italic text-muted mb-2">
-                                        JPG or PNG no larger than 1 MB
-                                    </div>
                                     <input type="file" @change="onUploadThumbnail($event)" accept=".png, .jpg, .jpeg" />
                                 </div>
                             </div>
@@ -85,8 +82,13 @@
                             <Column field="index" header="STT">
                                 <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
                             </Column>
-                            <Column v-for="col of columns" :field="col.field" :header="col.header"
-                                :styles="{ width: '50%' }" :key="col.field">
+                            <Column field="label" header="Tên" :styles="{ width: '50%' }">
+                                <template #editor="slotProps">
+                                    <InputText :class="{ 'p-invalid': (!slotProps.data[slotProps.column.field]) }"
+                                        class="w-full" v-model="slotProps.data[slotProps.column.field]" autofocus />
+                                </template>
+                            </Column>
+                            <Column field="value" header="Giá trị" :styles="{ width: '50%' }">
                                 <template #editor="slotProps">
                                     <InputText :class="{ 'p-invalid': (!slotProps.data[slotProps.column.field]) }"
                                         class="w-full" v-model="slotProps.data[slotProps.column.field]" autofocus />
@@ -118,7 +120,6 @@
     
 <script lang="ts" >
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-import { GENDER_OPTION } from '~/utils'
 import { User } from '~/models/User'
 import { confirm } from '~/utils/commons/helper'
 const nsAdmItem = namespace('item/store-mod-item')
@@ -132,8 +133,8 @@ const nsUser = namespace('user-auth/store-user')
 class DetailItem extends Vue {
     // -- [ Statement Properties ] ------------------------------------------------
 
-    @nsUser.State('user')
-    user!: User.Model | null
+    // @nsUser.State('user')
+    // user!: User.Model | null
 
     // -- [ Properties ] ----------------------------------------------------------
     itemId: any | null
@@ -151,10 +152,6 @@ class DetailItem extends Vue {
     images: any[] = []
 
     properties: any[] = []
-    columns = [
-        { field: 'label', header: 'Tên' },
-        { field: 'value', header: 'Giá trị' }
-    ];
 
     deleteThumbnailOnSv: boolean = false
     deleteImgOnSv: number[] = []
@@ -171,7 +168,7 @@ class DetailItem extends Vue {
     @nsCategory.Action
     actGetAllCategory!: () => Promise<any>
     @nsAdmItem.Action
-    actGetItemApplication!: (params: any) => Promise<any>
+    actGetItem!: (params: any) => Promise<any>
     @nsAdmItem.Action
     actGetItemApplicationImage!: (params: any) => Promise<any>
     @nsAdmItem.Action
@@ -183,21 +180,22 @@ class DetailItem extends Vue {
     @nsAdmItem.Action
     actAddItemApplicationThumbnail!: (params: any) => Promise<any>
 
-    async mounted() {
-        const response = await this.actGetAllCategory()
-        this.oCategories = response.records
-        // this.fetchData()
-    }
-    async fetchData() {
+    created() {
         this.itemId = Array.isArray(this.$route.query.itemId)
             ? this.$route.query.itemId[0]
             : this.$route.query.itemId
+    }
+    async mounted() {
+        const response = await this.actGetAllCategory()
+        this.oCategories = response.records
+        this.fetchData()
+    }
+    async fetchData() {
         if (this.itemId) {
             const params = {
                 itemId: this.itemId || '',
             }
-            const result = await this.actGetItemApplication(params)
-            console.log(result)
+            const result = await this.actGetItem(params)
             this.name = result.name
             this.categoryId = result.categoryId
             this.description = result.description
@@ -213,7 +211,7 @@ class DetailItem extends Vue {
                 const imageInfo = { objectURL: result2, name: "result2.name", imgId: imgId };
                 this.images.push(imageInfo);
             }
-            //console.log(this.images.length + " ??? " + this.files.length)
+            console.log(this.images.length + " ??? " + this.files.length)
         }
         else {
             this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin Item Id")

@@ -40,14 +40,9 @@
                 <span class="">{{ slotProps.index + 1 }}</span>
               </template>
             </Column>
-            <Column field="name" className="font-semibold" header="Tên" sortable="sortable"></Column>
+            <Column field="name" className="font-semibold max-w-30rem overflow-ellipsis text-overflow-ellipsis" header="Tên" sortable="sortable" bodyStyle="max-wi"></Column>
             <Column field="category.name" className="font-semibold" header="Hạng mục" sortable="sortable"></Column>
-            <Column field="seller.name" className="font-semibold" header="Người bán" sortable="sortable"></Column>
-            <Column field="description" header="Mô tả" sortable="sortable" className="overflow-ellipsis">
-              <template #body="{ data }">
-                <p class="element">{{ data.description }}</p>
-              </template>
-            </Column>
+            <Column field="seller.name" className="" header="Người bán" sortable="sortable"></Column>
             <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
               <template #body="{ data }">{{
                 data.created | dateTimeFomat

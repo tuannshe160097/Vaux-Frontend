@@ -15,11 +15,13 @@
         </div>
         <div class="grid formgrid">
           <h4 class="text-brown font-bold col-12">1. Thông tin cơ bản</h4>
-          <div class="field col-12">
+          <div class="field md:col-8 col-12 ">
             <!-- <h4 class="font-bold">Tên sản phẩm</h4> -->
 
             <label>Tên sản phẩm</label>
-            <InputText class="w-100" type="text" v-model="name" />
+            <!-- <InputText class="w-100" type="text" v-model="name" /> -->
+            <Textarea class="text-left w-full" :autoResize="true" v-model="name" rows="5"
+              placeholder="Sử dụng phần này để thêm thông tin mô tả." />
             <!-- <input
               class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
               type="text" v-model="name" placeholder="Nhập tên sản phẩm" /> -->
