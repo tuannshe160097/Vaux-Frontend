@@ -1,48 +1,53 @@
 <template>
     <section class="surface-0 flex align-items-center justify-content-center p-2">
         <div class="box-page-container flex flex-column container w-full">
-            <Breadcrumb :home="home" :model="breads" />
             <div class="card-body my-3">
                 <div class="grid">
                     <div class="field col-12">
-                        <h2 class="font-bold text-brown mb-0">Danh sách sản phẩm chờ thanh toán</h2>
+                        <h4 class="font-bold text-brown mb-0">Địa chỉ nhận hàng</h4>
                     </div>
-                    <div class="col-5">
-                        <div class="grid">
-                            <div class="align-self-center col-4 field">
-                                <label class="md:m-0">Thành phố</label>
-                            </div>
-                            <div class="col-8 field">
-                                <Dropdown class="w-100 line-height-1" v-model="selectedCity" :options="oCitys"
-                                    :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                                    placeholder="-Chọn Thành phố-" @change="onSelectCity()" />
-                            </div>
-                            <div class="align-self-center col-4 field">
-                                <label class="md:m-0">Quận/ Huyện</label>
-                            </div>
-                            <div class="col-8 field">
-                                <Dropdown class="w-100 line-height-1" v-model="selectedDistrict" :options="oDistricts"
-                                    :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                                    placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
-                            </div>
-                            <div class="align-self-center col-4 field">
-                                <label class="md:m-0">Phố/ Phường</label>
-                            </div>
-                            <div class="col-8 field">
-                                <Dropdown class="w-100 line-height-1" v-model="street" :options="oStreets" :filter="true"
-                                    filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="-Chọn Phố/Phường-"
-                                    optionValue="value" />
-                            </div>
-                            <div class="align-self-center col-4 field">
-                                <label class="md:m-0">Địa chỉ cụ thể</label>
-                            </div>
-                            <div class="col-8 field">
-                                <Textarea class="text-left w-full" :autoResize="true" v-model="houseNumber" rows="1"
-                                    placeholder="Sử dụng phần này để thêm thông tin lý do." />
+                    <div class="col-12">
+                        <div class="border-1 border-solid surface-border ">
+                            <div class="envelope"></div>
+                            <div class="col-12 grid p-3">
+                                <div class="align-self-center col-6 field mb-0">
+                                    <label class="">Họ và tên người nhận</label>
+                                    <InputText class="w-100 line-height-1" v-model="name" />
+                                </div>
+                                <div class="align-self-center col-6 field mb-0">
+                                    <label class="">Số điện thoại người nhận</label>
+                                    <InputText class="w-100 line-height-1" v-model="phone" />
+                                </div>
+                                <div class="align-self-center col-4 field mb-0">
+                                    <label class="">Thành phố</label>
+                                    <Dropdown class="w-100 line-height-1" v-model="selectedCity" :options="oCitys"
+                                        :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                                        placeholder="-Chọn Thành phố-" @change="onSelectCity()" />
+                                </div>
+                                <div class="align-self-center col-4 field mb-0">
+                                    <label class="">Quận/ Huyện</label>
+                                    <Dropdown class="w-100 line-height-1" v-model="selectedDistrict" :options="oDistricts"
+                                        :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                                        placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
+                                </div>
+                                <div class="align-self-center col-4 field mb-0">
+                                    <label class="">Phố/ Phường</label>
+                                    <Dropdown class="w-100 line-height-1" v-model="street" :options="oStreets"
+                                        :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                                        placeholder="-Chọn Phố/Phường-" optionValue="value" />
+                                </div>
+                                <div class="align-self-center col-12 field mb-0">
+                                    <label class="">Địa chỉ cụ thể</label>
+                                    <Textarea class="text-left w-full" :autoResize="true" v-model="houseNumber" rows="1"
+                                        placeholder="Sử dụng phần này để thêm thông tin lý do." />
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="field col-7">
+                    <div class="field col-12">
+                        <h4 class="font-bold text-brown mb-0">Danh sách sản phẩm</h4>
+                    </div>
+                    <div class="field col-12">
                         <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="items" :value="items"
                             responsiveLayout="scroll" dataKey="id" :rows="10" :scrollable="false" stripedRows>
                             <Column field="id" header="STT">
@@ -57,16 +62,23 @@
                                 </template>
                             </Column>
                             <Column field="name" className="" header="Tên" bodyStyle="width:100%">
-                                <template #body="slotProps">
+                                <!-- <template #body="slotProps">
                                     <div class="w-10 white-space-nowrap overflow-hidden text-overflow-ellipsis">
                                         {{ slotProps.data.name }}
                                     </div>
-                                </template>
+                                </template> -->
                             </Column>
-                            <Column field="price" className="" header="Hạng mục">
+                            <Column field="price" className="" header="Giá">
                                 <template #body="slotProps">
                                     <span class="overflow-ellipsis text-overflow-ellipsis">
                                         {{ formatNumber(slotProps.data.price) }}
+                                    </span>
+                                </template>
+                            </Column>
+                            <Column field="price" className="" header="Phí ship">
+                                <template #body="slotProps">
+                                    <span class="overflow-ellipsis text-overflow-ellipsis">
+                                        {{ formatNumber(slotProps.data.shipFee ? slotProps.data.shipFee : 10000) }}
                                     </span>
                                 </template>
                             </Column>
@@ -94,7 +106,7 @@ const nsStoreCategory = namespace('category/store-category')
 
 @Component({
     middleware: ['authenticate'],
-    layout: 'public'
+    layout: 'payment'
 })
 class ItemList extends Vue {
     totalRecords: number = 0
@@ -136,7 +148,8 @@ class ItemList extends Vue {
     city: string = ''
     district: string = ''
     street: string = ''
-
+    name : string = ''
+    phone : string = ''
     @nsStoreUser.Action
     actGetUserDetail!: () => Promise<string>
     @nsStoreItem.Action
@@ -163,6 +176,8 @@ class ItemList extends Vue {
         this.city = this.user?.city
         this.district = this.user?.district
         this.street = this.user?.street
+        this.name = this.user?.name
+        this.phone = this.user?.phone
         await this.GetCity();
         await this.getDistrict();
         await this.getStreet();
@@ -241,6 +256,11 @@ export default ItemList
 </script>
   
 <style lang="sass">
-  
+.envelope    
+    height: 3px
+    width: 100%
+    background-position-x: -30px
+    background-size: 116px 3px
+    background-image: repeating-linear-gradient(45deg,#6fa6d6,#6fa6d6 33px,transparent 0,transparent 41px,#f18d9b 0,#f18d9b 74px,transparent 0,transparent 82px)
   </style>
   
