@@ -90,6 +90,7 @@
 					<ul class="drop-menu2 absolute">
 						<li><a href="/account/profile">Cá nhân</a></li>
 						<li><a href="/account/items">Sản phẩm</a></li>
+						<li><a href="/account/orders">Đơn hàng</a></li>
 						<li><a @click="logout()">Đăng xuất</a></li>
 					</ul>
 				</div>

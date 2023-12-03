@@ -1,76 +1,65 @@
 <template>
     <section class="surface-0 flex align-items-center justify-content-center p-2">
-        <div class="item-page-container flex flex-column w-full">
-            <DataView :value="products" :layout="layout" :paginator="false" :rows="pPageSize" :sortOrder="sortOrder"
-                :sortField="sortField">
-                <template #header>
-                    <div class="grid grid-nogutter">
-                        <div class="col-9 flex" style="text-align: left">
-                            <InputText class="flex-1" v-model="searchText" placeholder="Nhập tên"></InputText>
-                            <Dropdown class="w-3 ml-2" v-model="sortCategoryKey" :options="sortOptions" dataKey="id"
-                                optionValue="id" optionLabel="name" placeholder="Category" />
-                            <Button class="w-2 ml-2" label="Tìm kiếm" @click="getItem" />
-                        </div>
-                        <div class="col-3" style="text-align: right">
-                            <DataViewLayoutOptions v-model="layout" />
-                        </div>
-                    </div>
-                </template>
+        <div class="box-page-container flex flex-column container w-full">
+            <Breadcrumb :home="home" :model="breads" />
+            <div class="card-body my-3">
 
-                <template #list="slotProps">
-                    <div class="col-12">
-                        <div class="product-list-item" @click="viewItem(slotProps.data.id)">
-                            <ImagePreview :src="slotProps.data.thumbnailId || require('~/assets/images/default.jpg')"
-                                alt="Image" imageClass="w-max-100" imageStyle="object-fit: contain" />
-                            <div class="product-list-detail">
-                                <div class="product-name">{{ slotProps.data.name }}</div>
-                                <div class="product-description">{{ slotProps.data.description }}</div>
-                                <i class="pi pi-tag product-category-icon"></i><span class="product-category">{{
-                                    slotProps.data.category.name }}</span>
-                            </div>
-                            <div class="product-list-action">
-                                <span class="product-price">${{ slotProps.data.reservePrice }}</span>
-                                <Button class="mb-2" icon="pi pi-shopping-cart" label="Add to Cart"></Button>
-                                <span class="product-badge-status">{{ slotProps.data.statusString }}</span>
-                            </div>
-                        </div>
+                <div class="grid">
+                    <div class="field col-12">
+                        <h2 class="font-bold text-brown mb-0">Danh sách sản phẩm chờ thanh toán</h2>
                     </div>
-                </template>
-
-                <template #grid="slotProps">
-                    <div class="col-12 md:col-4 lg:col-3">
-                        <div class="product-grid-item card" @click="viewItem(slotProps.data.id)">
-                            <div class="product-grid-item-top">
-                                <div>
-                                    <i class="pi pi-tag product-category-icon"></i>
-                                    <span class="product-category">{{ slotProps.data.category.name }}</span>
+                    <div class="field col-12">
+                        <div class="col-12 " v-for="item in items" :key="item.id" :item="item" style="height: 230px;">
+                            <div class="grid item p-2 border-10" @click="onChangeCheckedItem(item)"
+                                :class="item.selected ? 'surface-400' : ''" style="height: 100%;">
+                                <div class="col-fixed align-items-center flex">
+                                    <input type="checkbox" id="vehicle3" name="vehicle3" :checked="item.selected">
                                 </div>
-                                <span class="product-badge-status">{{ slotProps.data.statusString }}</span>
-                            </div>
-                            <div class="product-grid-item-content">
-                                <ImagePreview :src="slotProps.data.thumbnailId || require('~/assets/images/default.jpg')"
-                                    alt="Image" imageClass="w-max-100" imageStyle="object-fit: contain" />
-                                <div class="product-name">{{ slotProps.data.name }}</div>
-                                <div class="product-description">{{ slotProps.data.description }}</div>
-                            </div>
-                            <div class="product-grid-item-bottom">
-                                <span class="product-price">${{ slotProps.data.reservePrice }}</span>
-                                <Button icon="pi pi-shopping-cart"></Button>
+                                <div class="col-5 surface-200" style="height: 100%; background-color: azure;">
+                                    <img src="https://localhost:6565/api/Item/2/Images/29" alt="Image"
+                                        style="object-fit: contain; width: 100%; height: 100%;" />
+                                </div>
+                                <div class="col flex flex-column justify-content-between">
+                                    <div class="infomation">
+                                        <h3 class=" m-0 ">{{ item.item.name }}</h3>
+                                        <span class=" mt-2 font-bold ">{{ item.item.catName }}</span>
+                                        <div class="product-description">{{ item.item.description }}</div>
+                                    </div>
+                                    <div class="flex-end">
+                                        <span class="font-bold">GIÁ MUA:</span>
+                                        <h4 class=" m-0  text-brown">{{ formatNumber(item.item.price) }}
+                                        </h4>
+                                        <!-- <Button class="mb-2" icon="pi pi-shopping-cart" label="Add to Cart"></Button> -->
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </template>
-                <template #footer="">
-                    <Paginator class="p-0" :rows="pPageSize" :totalRecords="totalRecords" @page="onPage($event)">
-                    </Paginator>
-                </template>
-            </DataView>
+                    <div class="field col-12 sticky bottom-0 surface-0 py-4" style="sha">
+                        <div class="flex justify-content-between align-items-center">
+                            <div class="select-all">
+                                <input type="checkbox" id="vehicle3" name="vehicle3" @change="takeAll()"
+                                    :checked="selectAll">
+                                <span>Chọn tất cả(5)</span>
+                            </div>
+                            <div class="total-money ">
+                                <span class="vertical-align-middle">Tổng thanh toán: </span>
+                                <h2 class=" ml-2 inline text-brown"> {{ formatNumber(2000000000) }} </h2>
+                            </div>
+                            <div class="action">
+                                <button class="btn-primary p-3 px-5 border-10"> Tạo đơn hàng </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </section>
 </template>
   
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
+const nsStoreOrder = namespace('order/store-order')
 const nsStoreItem = namespace('item/store-public-item')
 const nsStoreCategory = namespace('category/store-category')
 
@@ -90,8 +79,49 @@ class ItemList extends Vue {
     pPageNum: number = 1
     pPageSize: number = 12
     totalRecords: number = 0
-
-
+    //---------------------------------------
+    home = { icon: 'pi pi-home', to: '/homepage' }
+    breads = [
+        { label: 'Giỏ hàng' }
+    ]
+    items: any[] = [
+        {
+            item: {
+                id: 1, name: 'Đồ cổ thời khỳ trung đông, đồ ăn đã thất truyền và thiu qua nhiều thế hệ',
+                catName: 'Đồ ăn', price: 12000000, imgId: 1, date: '2023-12-01T20:00:00'
+            },
+            selected: false
+        },
+        {
+            item: {
+                id: 1, name: 'Đồ cổ thời khỳ trung đông, đồ ăn đã thất truyền và thiu qua nhiều thế hệ',
+                catName: 'Đồ ăn', price: 12000000, imgId: 1, date: '2023-12-01T20:00:00'
+            },
+            selected: false
+        },
+        {
+            item: {
+                id: 1, name: 'Đồ cổ thời khỳ trung đông, đồ ăn đã thất truyền và thiu qua nhiều thế hệ',
+                catName: 'Đồ ăn', price: 12000000, imgId: 1, date: '2023-12-01T20:00:00'
+            },
+            selected: false
+        },
+        {
+            item: {
+                id: 1, name: 'Đồ cổ thời khỳ trung đông, đồ ăn đã thất truyền và thiu qua nhiều thế hệ',
+                catName: 'Đồ ăn', price: 12000000, imgId: 1, date: '2023-12-01T20:00:00'
+            },
+            selected: false
+        },
+        {
+            item: {
+                id: 1, name: 'Đồ cổ thời khỳ trung đông, đồ ăn đã thất truyền và thiu qua nhiều thế hệ',
+                catName: 'Đồ ăn', price: 12000000, imgId: 1, date: '2023-12-01T20:00:00'
+            },
+            selected: false
+        },
+    ]
+    selectAll: boolean = false
     @nsStoreItem.Action
     actGetItem!: (param: any) => Promise<any>
 
@@ -138,109 +168,30 @@ class ItemList extends Vue {
     viewItem(id: any) {
         this.$router.push("/p/item/" + id)
     }
+    formatNumber(number: any) {
+        const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return formattedNumber + " vnđ";
+    }
+    takeAll() {
+        // Đảo ngược giá trị của selectAll
+        this.selectAll = !this.selectAll;
+        // Duyệt qua mảng items và gán giá trị selected tương ứng
+        for (const item of this.items) {
+            item.selected = this.selectAll;
+        }
+    }
+    onChangeCheckedItem(item: any) {
+        // Đảo ngược giá trị của selected của item được truyền vào
+        item.selected = !item.selected;
+        // Kiểm tra xem tất cả các item có được chọn hay không
+        this.selectAll = this.items.every(item => item.selected);
+    }
 
 }
 export default ItemList
 </script>
   
 <style lang="sass">
-  .item-page-container
-    .p-dataview-content
   
-      .product-grid-item
-        margin: 0.5rem
-        border: 1px solid #dee2e6
-  
-        .product-grid-item-top, .product-grid-item-bottom
-          display: flex
-          align-items: center
-          justify-content: space-between
-        
-        .product-grid-item-top
-          .product-badge-status
-            background: #c8e6c9
-            color: #256029
-            border-radius: 2px
-            padding: 0.25em 0.5rem
-            text-transform: uppercase
-            font-weight: 700
-            font-size: 12px
-            letter-spacing: .3px
-            box-sizing: border-box
-  
-        .product-grid-item-bottom
-          .product-price
-            font-size: 1.5rem
-            font-weight: 600
-        
-        .product-grid-item-content
-          text-align: center
-  
-          img
-            width: 75%
-            box-shadow: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23)
-            margin: 1.5rem 0
-  
-          .product-name
-            font-size: 1.5rem
-            font-weight: 700
-          
-          .product-description
-            margin: 0 0 1rem 0
-  
-      .card
-        background: var(--surface-card)
-        padding: 1rem
-        border-radius: 10px
-  
-      .product-list-item
-        display: flex
-        align-items: center
-        padding: 1rem
-        width: 100%
-  
-        img
-          width: 150px
-          box-shadow: 0 3px 6px rgba(0,0,0,.16), 0 3px 6px rgba(0,0,0,.23)
-          margin-right: 2rem
-  
-        .product-list-detail
-          flex: 1 1 0
-  
-          .product-name
-            font-size: 1.5rem
-            font-weight: 700
-  
-          .product-description
-            margin: 0 0 1rem 0
-  
-          .product-category-icon
-            vertical-align: middle
-            margin-right: 0.5rem
-  
-        .product-list-action
-          display: flex
-          flex-direction: column
-  
-          .product-price
-            font-size: 1.5rem
-            font-weight: 600
-            margin-bottom: 0.5rem
-            -ms-flex-item-align: end
-            align-self: flex-end
-  
-          .product-badge-status
-            background: #c8e6c9
-            color: #256029
-            border-radius: 2px
-            padding: 0.25em 0.5rem
-            text-transform: uppercase
-            font-weight: 700
-            font-size: 12px
-            letter-spacing: .3px
-            box-sizing: border-box
-  
-    .p-dataview-footer
-      background: unset !important
   </style>
   
