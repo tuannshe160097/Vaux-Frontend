@@ -14,6 +14,7 @@ export const PAGE_MENU = [
   { id: 9,  icon: 'auction', label: 'Phiên đấu giá' },
   { id: 10, to: '/admin/auction', icon: 'regulatory', label: 'Danh sách', parentId: 9 },
   { id: 11, to: '/admin/auction/create', icon: 'new-page', label: 'Tạo mới', parentId: 9 },
+  { id: 12, to: '/admin/order', icon: 'regulatory', label: 'Đơn hàng', hideToggled: true },
 ]
 
 export const PAGE_MENU_ADMIN = [
