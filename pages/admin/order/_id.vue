@@ -55,7 +55,9 @@
             </Column>
             <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right overflow-visible">
               <template #body="{ data }">
-                <Dropdown v-model="data.status" :options="shipmentStatus" optionLabel="name" @change="onChangeStatusShipment(data)"/>
+                <select name="shipmentStatus" id="shipmentStatus" v-model="data.status" @change="onChangeStatusShipment(data)">
+                  <option v-for="item in shipmentStatus" :key="item.code" :value="item.code">{{ item.name }}</option>
+                </select>
               </template>
             </Column>
             <template #empty>
@@ -83,9 +85,9 @@ class OrderDetail extends Vue {
   shipments: any = []
   orderInfo: any = null
   SHIPMENT_STATUS_MAP = new Map<number, string>([
-  [1, 'PENDING'],
-  [2, 'SHIPPING'],
-  [3, 'SHIPPED']
+  [1, 'Đang chờ duyệt'],
+  [2, 'Đang vận chuyển'],
+  [3, 'Đã vận chuyển']
 ])
 
   shipmentStatus = [
@@ -108,15 +110,7 @@ class OrderDetail extends Vue {
       const response = await this.actGetOrderById({ id: orderId })
       if (response) {
         this.orderInfo = response
-        this.shipments = response?.shipment?.map((shipment: any) => {
-          return {
-            ...shipment,
-            status: {
-              code: shipment.status,
-              name: this.SHIPMENT_STATUS_MAP.get(shipment.status)
-            }
-          }
-        })
+        this.shipments = response?.shipment
       }
     }
   }
@@ -124,7 +118,7 @@ class OrderDetail extends Vue {
   async onChangeStatusShipment(shipment: any) {
     const response = await this.actChangeShipmentStatus({
       id: shipment?.id,
-      status: shipment?.status?.code
+      status: shipment?.status
     })
     if (response) {
       this.$toast.add({
