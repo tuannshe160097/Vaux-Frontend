@@ -225,8 +225,8 @@ class EditAuctionList extends Vue {
         // Implement logic to move to the next image in the gallery
     }
     formatNumber(number: any) {
-        const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return formattedNumber + " vnđ";
+        const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return "₫" + formattedNumber;
     }
     formatDistanceToNow(timeString: any) {
         const currentTime: any = new Date();

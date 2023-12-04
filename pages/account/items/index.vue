@@ -127,7 +127,10 @@ class ItemList extends Vue {
             })
         } else {
             const response = await this.actPostOrder({ orderIdList: items })
-            console.log(response)
+            if (response) {
+                console.log(response)
+                this.$router.push("/account/items/checkout?id=" + response.id)
+            }
         }
     }
     getImageUrl(itemId: any, imgId: any) {
@@ -147,8 +150,8 @@ class ItemList extends Vue {
         }
     }
     formatNumber(number: any) {
-        const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return formattedNumber + " vnđ";
+        const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return "₫" + formattedNumber;
     }
     takeAll() {
         // Đảo ngược giá trị của selectAll

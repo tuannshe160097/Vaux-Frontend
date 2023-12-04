@@ -159,8 +159,8 @@ class CreateItem extends Vue {
         }
     }
     formatNumber(number: any) {
-        const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return formattedNumber + " vnđ";
+        const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return "₫" + formattedNumber;
     }
     onPage(event: any) {
         this.Search(event.page + 1)

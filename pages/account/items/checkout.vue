@@ -4,7 +4,11 @@
             <div class="card-body my-3">
                 <div class="grid">
                     <div class="field col-12">
-                        <h4 class="font-bold text-brown mb-0">Địa chỉ nhận hàng</h4>
+                        <h4 class="font-bold text-brown mb-0">
+                            <span class="material-icons vertical-align-bottom mr-2">
+                                location_on
+                            </span>Địa chỉ nhận hàng
+                        </h4>
                     </div>
                     <div class="col-12">
                         <div class="border-1 border-solid surface-border ">
@@ -48,45 +52,89 @@
                         <h4 class="font-bold text-brown mb-0">Danh sách sản phẩm</h4>
                     </div>
                     <div class="field col-12">
-                        <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="items" :value="items"
-                            responsiveLayout="scroll" dataKey="id" :rows="10" :scrollable="false" stripedRows>
-                            <Column field="id" header="STT">
-                                <template #body="slotProps">
-                                    <span class="">{{ slotProps.index + 1 }}</span>
-                                </template>
-                            </Column>
-                            <Column className="max-w-10rem" header="Image" width="50px" height="50px">
-                                <template #body="slotProps">
-                                    <img :src="getImageUrl(slotProps.data.id, slotProps.data.itemId)"
-                                        :alt="slotProps.data.image" class="product-image w-full h-full" />
-                                </template>
-                            </Column>
-                            <Column field="name" className="" header="Tên" bodyStyle="width:100%">
-                                <!-- <template #body="slotProps">
-                                    <div class="w-10 white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                                        {{ slotProps.data.name }}
-                                    </div>
-                                </template> -->
-                            </Column>
-                            <Column field="price" className="" header="Giá">
-                                <template #body="slotProps">
-                                    <span class="overflow-ellipsis text-overflow-ellipsis">
-                                        {{ formatNumber(slotProps.data.price) }}
+                        <div class="grid nested-grid" v-for="shipment in shipments" :key="shipment.id" :item="shipment">
+                            <div class="col-12" style="border-bottom: 1px dashed rgba(0,0,0,.09)">
+                                <span class="text-brown">
+                                    <span class="material-icons vertical-align-bottom mr-2">person</span>
+                                    {{ shipment.sellerName }}
+                                </span>
+                            </div>
+                            <div class="grid nested-grid item p-2 border-10 w-full" v-for="item in shipment.items"
+                                :key="item.id" :item="item">
+                                <div
+                                    class="col-6 flex align-items-center white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                                    <img :src="getImageUrl(item.id, item.thumbnailId)" alt="image"
+                                        style="object-fit: contain; width: 50px; height: 50px;" />
+                                    <span
+                                        class="ml-2 white-space-nowrap overflow-hidden text-overflow-ellipsis font-medium">
+                                        <span class="">{{ item.name }}</span>
                                     </span>
-                                </template>
-                            </Column>
-                            <Column field="price" className="" header="Phí ship">
-                                <template #body="slotProps">
-                                    <span class="overflow-ellipsis text-overflow-ellipsis">
-                                        {{ formatNumber(slotProps.data.shipFee ? slotProps.data.shipFee : 10000) }}
-                                    </span>
-                                </template>
-                            </Column>
-                        </DataTable>
+                                </div>
+                                <div class="col-3 flex align-items-center font-light">
+                                    <span class="">{{ item.catName }}</span>
+                                </div>
+                                <div class="col-3 flex align-items-center justify-content-end">
+                                    <span class="">{{ formatNumber(item.price) }}</span>
+                                </div>
+                            </div>
+                            <div class="grid nested-grid item p-2 border-10 w-full"
+                                style="border-top: 1px dashed rgba(0,0,0,.09)">
+                                <div class="col-3 col-offset-6">
+                                    Phí vận chuyển:
+                                </div>
+                                <div class="col-3 flex align-items-center justify-content-end">
+                                    <span class="">{{ formatNumber(shipment.shippingCost) }}</span>
+                                </div>
+                            </div>
+                            <div class="grid nested-grid item p-2 border-10 w-full">
+                                <div class="col-3 col-offset-6">
+                                    Tổng số tiền:
+                                </div>
+                                <div class="col-3 flex align-items-center justify-content-end text-brown">
+                                    <h5 class="">{{ formatNumber(shipment.itemCost + shipment.shippingCost) }}</h5>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="field col-12 surface-0" style="">
-                        <div class="flex justify-content-center align-items-center">
-                            <button class="btn-primary p-2 px-5 border-10 "> Thanh toán</button>
+                    <div class="field col-12">
+                        <h4 class="font-bold text-brown mb-0">Tổng thanh toán</h4>
+                    </div>
+                    <div class="field col-12" style="">
+                        <div class="grid nested-grid justify-content-end">
+                            <div class="col-fixed surface-100">
+                                <div class="col-12">
+                                    <div class="col-12">
+                                        <table>
+                                            <tr>
+                                                <td class="px-3">Tổng tiền hàng </td>
+                                                <td class="text-right">{{ formatNumber(totalItemCost) }} </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-3">Phí vận chuyển </td>
+                                                <td class="text-right">{{ formatNumber(totalShipCost) }} </td>
+                                            </tr>
+                                            <tr>
+                                                <td class="px-3">Tổng thanh toán </td>
+                                                <td class="text-right">
+                                                    <h3 class="text-brown m-0">{{ formatNumber(totalCost) }} </h3>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-12 flex justify-content-end">
+                                        <Button @click="createPayment()" class="btn-primary border-10"><span
+                                                class="material-icons vertical-align-bottom mr-2">
+                                                check
+                                            </span> Thanh toán</Button>
+                                    </div>
+                                </div>
+                                <!-- <div class="col-fixed"></div>
+                                    <div class="col-6">1200000 </div>
+                                    <div class="col-6">Tổng tiền Ship </div>
+                                    <div class="col-6">10000 </div>
+                                    <div class="col-6">Tổng thanh toán </div>
+                                    <div class="col-6">1000000000 </div> -->
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -109,35 +157,17 @@ const nsStoreCategory = namespace('category/store-category')
     layout: 'payment'
 })
 class ItemList extends Vue {
-    totalRecords: number = 0
+    orderId: any
     //---------------------------------------
     home = { icon: 'pi pi-home', to: '/homepage' }
     breads = [
         { label: 'Giỏ hàng' }
     ]
     user: any = null
-    items: any[] = [
-        {
-            id: 1, name: 'Đồ cổ thời khỳ trung đông, đồ ăn đã thất truyền và thiu qua nhiều thế hệ',
-            catName: 'Đồ ăn', price: 12000000, imgId: 1, date: '2023-12-01T20:00:00'
-        },
-        {
-            id: 1, name: 'Đồ cổ thời khỳ trung đông, đồ ăn đã thất truyền và thiu qua nhiều thế hệ',
-            catName: 'Đồ ăn', price: 12000000, imgId: 1, date: '2023-12-01T20:00:00'
-        },
-        {
-            id: 1, name: 'Đồ cổ thời khỳ trung đông, đồ ăn đã thất truyền và thiu qua nhiều thế hệ',
-            catName: 'Đồ ăn', price: 12000000, imgId: 1, date: '2023-12-01T20:00:00'
-        },
-        {
-            id: 1, name: 'Đồ cổ thời khỳ trung đông, đồ ăn đã thất truyền và thiu qua nhiều thế hệ',
-            catName: 'Đồ ăn', price: 12000000, imgId: 1, date: '2023-12-01T20:00:00'
-        },
-        {
-            id: 1, name: 'Đồ cổ thời khỳ trung đông, đồ ăn đã thất truyền và thiu qua nhiều thế hệ',
-            catName: 'Đồ ăn', price: 12000000, imgId: 1, date: '2023-12-01T20:00:00'
-        },
-    ]
+    shipments: any[] = []
+    totalCost: any = 0
+    totalItemCost: any = 0
+    totalShipCost: any = 0
     selectedCity: Option.Option | null = null
     selectedDistrict: Option.Option | null = null
     selectedStreet: Option.Option | null = null
@@ -148,21 +178,27 @@ class ItemList extends Vue {
     city: string = ''
     district: string = ''
     street: string = ''
-    name : string = ''
-    phone : string = ''
+    name: string = ''
+    phone: string = ''
     @nsStoreUser.Action
     actGetUserDetail!: () => Promise<string>
-    @nsStoreItem.Action
-    actGetItem!: (param: any) => Promise<any>
-    @nsStoreCategory.Action
-    actGetCategory!: (params: any) => Promise<any>
     @nsStoreAddress.Action
     actGetCity!: () => Promise<string>
     @nsStoreAddress.Action
     actGetDistrict!: (params: any) => Promise<string>
     @nsStoreAddress.Action
     actGetStreet!: (params: any) => Promise<string>
+    @nsStoreOrder.Action
+    actGetOrderById!: (params: any) => Promise<any>
+    @nsStoreOrder.Action
+    actPostOrderPaymentLink!: (params: any) => Promise<any>
 
+    async created() {
+        this.orderId = Array.isArray(this.$route.query.id)
+            ? this.$route.query.id[0]
+            : this.$route.query.id
+        console.log(this.orderId)
+    }
     async mounted() {
         this.user = await this.actGetUserDetail()
         if (this.user == null) {
@@ -181,14 +217,54 @@ class ItemList extends Vue {
         await this.GetCity();
         await this.getDistrict();
         await this.getStreet();
+        await this.getOrder()
     }
 
-    async getItem() {
+    async getOrder() {
+        const response = await this.actGetOrderById({ orderId: this.orderId })
+        console.log(response)
+        if (!response) {
+            return
+        }
+        if (response.shipment.length <= 0) {
+            return
+        }
+        for (let i = 0; i < response.shipment.length; i++) {
+            if (response.shipment[i].items.length <= 0) {
+                continue
+            }
+            let shipment: any = {
+                id: response.shipment[i].id,
+                sellerName: response.shipment[i].seller.name,
+                itemCost: response.shipment[i].itemCost,
+                shippingCost: response.shipment[i].shippingCost,
+                items: [],
+            }
+            for (let j = 0; j < response.shipment[i].items.length; j++) {
+                shipment.items.push({
+                    id: response.shipment[i].items[j].id,
+                    name: response.shipment[i].items[j].name,
+                    catName: response.shipment[i].items[j].category.name,
+                    price: response.shipment[i].items[j].highestBid.amount,
+                    imgId: response.shipment[i].items[j].thumbnailId,
+                })
+            }
+            this.totalShipCost += response.shipment[i].shippingCost
+            this.totalItemCost += response.shipment[i].itemCost
+            this.shipments.push(shipment)
+        }
+        this.totalCost = response.totalCost
     }
-
-    async getCategory() {
+    async createPayment() {
+        const param = {
+            orderId: this.orderId,
+            receiverName: this.name,
+            receiverPhone: this.phone,
+            address: this.getAddress()
+        }
+        const response = await this.actPostOrderPaymentLink(param)
+        console.log(response)
     }
-
     getImageUrl(itemId: any, imgId: any) {
         try {
             return 'https://localhost:6565/api/Item/2/Images/29'
@@ -206,12 +282,12 @@ class ItemList extends Vue {
             return undefined;
         }
     }
-    viewItem(id: any) {
-        this.$router.push("/p/item/" + id)
+    getAddress() {
+        return this.houseNumber + ', ' + this.selectedStreet?.name + ', ' + this.selectedDistrict?.name + ', ' + this.selectedCity?.name
     }
     formatNumber(number: any) {
-        const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return formattedNumber + "vnđ";
+        const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return "₫" + formattedNumber;
     }
     async GetCity() {
         const response: any = await this.actGetCity()

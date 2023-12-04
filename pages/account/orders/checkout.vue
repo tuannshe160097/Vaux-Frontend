@@ -195,8 +195,8 @@ class ItemList extends Vue {
         this.$router.push("/p/item/" + id)
     }
     formatNumber(number: any) {
-        const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        return formattedNumber + "vnđ";
+        const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        return "₫" + formattedNumber;
     }
     async GetCity() {
         const response: any = await this.actGetCity()

@@ -18,6 +18,10 @@ export default {
         type: 'text/css'
       },
       {
+        href: 'https://fonts.googleapis.com/icon?family=Material+Icons',
+        rel:  'stylesheet'
+      },
+      {
         rel: 'icon',
         type: 'image/x-icon',
         href: 'https://s.yimg.com/rz/l/favicon.ico'

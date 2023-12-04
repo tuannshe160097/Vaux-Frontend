@@ -196,8 +196,8 @@ class BidDialog extends Vue {
     this.postBids()
   }
   formatNumber(number: any) {
-    const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    return formattedNumber + " vnđ";
+    const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return "₫" + formattedNumber;
   }
   formatDistanceToNow(timeString: any) {
     const currentTime: any = new Date();
@@ -216,7 +216,7 @@ class BidDialog extends Vue {
     } else if (minutes > 0) {
       return `${minutes} phút trước`;
     } else {
-      return `${seconds>10 ? seconds : 'vài'} giây trước`;
+      return `${seconds > 10 ? seconds : 'vài'} giây trước`;
     }
   }
 }

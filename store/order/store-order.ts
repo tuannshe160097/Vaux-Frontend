@@ -11,7 +11,7 @@ export default class StoreItem extends VuexModule {
         GET_ORDER: '/Order?completed=:completed',
         GET_ORDER_BY_ID: '/Order/:orderId',
         POST_ORDER: '/Order',
-        GET_ORDER_PAYMENT_LINK: '/Order/:orderId/Pay',
+        POST_ORDER_PAYMENT_LINK: '/Order/:orderId/Pay',
         PATCH_CONFIRM_PAYMENT: '/Order/:orderId/ConfirmPayment',
     }
 
@@ -44,10 +44,10 @@ export default class StoreItem extends VuexModule {
         } catch (error) { }
     }
     @Action({ rawError: true })
-    async actGetOrderPaymentLink(params: any): Promise<string | undefined> {
+    async actPostOrderPaymentLink(params: any): Promise<string | undefined> {
         try {
-            const url = PathBind.transform(this.context, StoreItem.STATE_URL.GET_ORDER_PAYMENT_LINK, { orderId: params.orderId })
-            return await $api.get(url)
+            const url = PathBind.transform(this.context, StoreItem.STATE_URL.POST_ORDER_PAYMENT_LINK, { orderId: params.orderId })
+            return await $api.post(url, params)
         } catch (error) { }
     }
     @Action({ rawError: true })
