@@ -28,3 +28,21 @@ Vue.filter('fancyTimeFormat', (duration: number) => {
 
   return ret;
 })
+
+Vue.filter('addressFomat', (addressObj: any)=> {
+  
+  let address = "";
+  if (addressObj?.houseNumber) {
+    address += addressObj.houseNumber
+  }
+  if (addressObj?.street) {
+    address +=  "-" + addressObj.street
+  }
+  if (addressObj?.district) {
+    address += "-" + addressObj.district
+  }
+  if (addressObj?.city) {
+    address += "-" + addressObj.city
+  }
+  return address
+})
