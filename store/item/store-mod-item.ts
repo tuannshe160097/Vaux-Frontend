@@ -8,6 +8,7 @@ import { $api, PathBind } from '~/utils'
 export default class StoreItemApplication extends VuexModule {
   private static readonly STATE_URL = {
     GET_ITEMAPPLICATION_LIST: '/Mod/Item?pageNum=:pageNum&pageSize=:pageSize&search=:search&category=:category',
+    GET_ITEMAPPLICATION: '/Mod/Item/:itemId',
     UPDATE_ITEMAPPLICATION: '/Mod/Item/:itemId',
     CHANGE_STATUS_ITEMAPPLICATION: '/Mod/Item/:itemId/ChangeStatus',
     ADD_ITEMAPPLICATION_IMAGE: '/Mod/Item/:itemId/Images',
@@ -20,8 +21,18 @@ export default class StoreItemApplication extends VuexModule {
     try {
       const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.GET_ITEMAPPLICATION_LIST, params)
       return await $api.get(url)
-    } catch (error) {console.log(error);
-     }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  @Action({ rawError: true })
+  async actGetItem(params: any): Promise<string | undefined> {
+    try {
+      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.GET_ITEMAPPLICATION, { itemId : params.itemId })
+      return await $api.get(url)
+    } catch (error) {
+      console.log(error);
+    }
   }
   @Action({ rawError: true })
   async actUpdateItemApplication(params: any): Promise<string | undefined> {

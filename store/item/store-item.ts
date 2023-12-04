@@ -15,6 +15,7 @@ export default class StoreItem extends VuexModule {
     GET_ITEM_IMAGE: '/Item/:itemId/Images/:imageId',
     GET_ITEM_BIDS: '/Item/:itemId/Bids',
     POST_ITEM_BID: '/Item/:itemId/Bid',
+    GET_ITEMS_WON: '/Item/WonItems',
   }
   
   @Action({ rawError: true })
@@ -75,6 +76,12 @@ export default class StoreItem extends VuexModule {
       return await $api.get(url, { responseType: 'blob' })
     } catch (error) { }
   }
-
+  @Action({ rawError: true })
+  async actGetItemsWon(): Promise<string | undefined> {
+    try {
+      const url = PathBind.transform(this.context, StoreItem.STATE_URL.GET_ITEMS_WON)
+      return await $api.get(url)
+    } catch (error) { }
+  }
 }
 

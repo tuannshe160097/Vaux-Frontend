@@ -1,36 +1,45 @@
 <template>
-  <div>
+  <section>
     <h1 class="text-center">WELCOME!</h1>
-    <button v-on:click="logout()">logout</button>
-  </div>
+    <button @click="logout()">logout</button>
+  </section>
 </template>
 
-<script>
-import { Component, Vue } from 'nuxt-property-decorator'
+<script lang="ts">
+import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import { User } from '~/models/User'
+const nsUser = namespace('user-auth/store-user')
+const nsStoreItem = namespace('item/store-seller-item')
+const nsCategory = namespace('category/store-category')
 
-export default {
+@Component({
+  layout: 'public',
+  meta: { isPublic: true },
+})
+class Index extends Vue {
+  @nsUser.State('user')
+  user!: User.Model | null
+  async redirect() {
+    if (!this.user) {
+      this.$router.push('/homepage')
+    } else if (this.user.role.id == 1 || this.user.role.id == 2 || this.user.role.id == 5) {
+      this.$router.push('/admin/dashboard')
+    } else {
+      this.$router.push('/homepage')
+    }
+  }
   created() {
     // Gọi API khi component được tạo
     this.redirect()
-  },
-  methods: {
-    async redirect() {
-      const role = this.$cookies.get('auth.role')
-      if (role == 1 || role == 2 || role == 5) {
-        this.$router.push('/admin/dashboard')
-      } else if (role == 3 || role == 4) {
-        this.$router.push('/homepage')
-      } else {
-        this.$router.push('/authen/login')
-      }
-    },
-    logout() {
-      this.$cookies.remove('auth._token')
-      this.$auth.logout()
-      this.$router.push('/authen/login')
-    },
-  },
+  }
+  logout() {
+    this.$cookies.remove('auth._token')
+    this.$auth.logout()
+    this.$router.push('/authen/login')
+  }
 }
+export default Index
+
 </script>
 <style lang='sass' scoped>
 </style>

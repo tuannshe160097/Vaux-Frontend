@@ -48,7 +48,7 @@
       <div class="text-brown mb-1">Lịch sử đấu giá</div>
       <table class="w-full" style="  border-collapse: collapse;  border-spacing: 0;">
         <tr v-for="bid in bids" :key="bid.id">
-          <td class="p-0 pe-2">{{ bid.name }}</td>
+          <td class="p-0 pe-2"> Người tham gia {{ bid.userId }}</td>
           <td class="px-2">{{ formatDistanceToNow(bid.time) }}</td>
           <td class="text-right ps-2">{{ formatNumber(bid.price) }}</td>
         </tr>
@@ -216,7 +216,7 @@ class BidDialog extends Vue {
     } else if (minutes > 0) {
       return `${minutes} phút trước`;
     } else {
-      return `${seconds ? seconds : 'vài'} giây trước`;
+      return `${seconds>10 ? seconds : 'vài'} giây trước`;
     }
   }
 }

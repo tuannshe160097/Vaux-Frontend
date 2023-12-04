@@ -83,7 +83,7 @@ class Chat extends Vue {
     }
   }
   async joinChatRoom() {
-    const roomname = "ItemApplication_" + this.curItemId;
+    const roomname = "ItemApplication_id" + this.curItemId;
     if (roomname) {
       sessionStorage.setItem('room', roomname);
       // here user will join the chat
@@ -106,7 +106,7 @@ class Chat extends Vue {
       await this.connection.on("VauxItemMessage", (user: any, message: any) => {
         console.log('sser',user);
         console.log('mess',message);
-        this.generate_message(message.content, message.imageId, 15, message.sender, message.created);
+        this.generate_message(message.content, message.imageId, message.senderId, message.sender, message.created);
       })
     } catch (error) {
       console.log(error);
