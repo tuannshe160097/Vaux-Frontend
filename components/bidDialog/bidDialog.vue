@@ -181,8 +181,10 @@ class BidDialog extends Vue {
         amount: this.priceBid
       }
     }
+    console.log('hi: ')
     const response = await this.actAddItemBids(params)
-    if (response.status == 200) {
+    console.log('heello: ',response)
+    if (response && response.status == 200) {
       this.$toast.add({
         severity: 'success',
         summary: 'Thành công',

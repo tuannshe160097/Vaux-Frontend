@@ -84,12 +84,22 @@
                 <div :class="{ 'input-invalid': errors.fileCitizenId }"
                   class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
                   <ImagePreview :src="citizenIdUrl || require('~/assets/images/default.jpg')
-                  " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
+                    " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
                   <div class="small font-italic text-muted mb-2">
                     JPG or PNG no larger than 3 MB
                   </div>
                   <input type="file" @change="onUploadFile($event, 'CitizenId')" accept="image/*" />
                 </div>
+              </div>
+              <div class="field col-6">
+                <label>Ngân hàng</label>
+                <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': errors.city }" v-model="selectedBank"
+                  :options="oBanks" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                  placeholder="-Chọn Ngân hàng-" @change="onSelectBank()" />
+              </div>
+              <div class="field col-6">
+                <label>Số tài khoản</label>
+                <InputText class="w-100"  type="text" v-model="bankAccountNum" />
               </div>
               <div class="field col-12">
                 <label>{{ fieldLabels.content }}</label>
@@ -116,6 +126,7 @@ import { GENDER_OPTION } from '~/utils'
 import { User } from '~/models/User'
 import { Option } from '~/models/Option'
 const nsStoreAddress = namespace('address/store-address')
+const nsStoreBank = namespace('bank/store-bank')
 const nsStoreSeller = namespace('seller/store-seller')
 const nsStoreUser = namespace('user-auth/store-user')
 
@@ -136,6 +147,9 @@ class requestSeller extends Vue {
   houseNumber: string = ''
   filePortrait: any = null
   fileCitizenId: any = null
+  bankAccountNum: string = ''
+  bankCode: string = ''
+  bankName: string = ''
   content: string = ''
 
   //private
@@ -180,10 +194,12 @@ class requestSeller extends Vue {
   selectedCity: Option.Option | null = null
   selectedDistrict: Option.Option | null = null
   selectedStreet: Option.Option | null = null
+  selectedBank:any| null = null
   option: Option.Option | undefined
   oCitys: Option.Option[] = GENDER_OPTION
   oDistricts: Option.Option[] = GENDER_OPTION
   oStreets: Option.Option[] = GENDER_OPTION
+  oBanks: any[] = []
 
   @nsStoreSeller.Action
   actCreateSeller!: (params: any) => Promise<any>
@@ -197,6 +213,8 @@ class requestSeller extends Vue {
   actGetDistrict!: (params: any) => Promise<string>
   @nsStoreAddress.Action
   actGetStreet!: (params: any) => Promise<string>
+  @nsStoreBank.Action
+  actGetBanksList!: () => Promise<string>
   async mounted() {
     this.name = this.user?.name || ''
     this.gender = this.user?.gender || ''
@@ -211,6 +229,7 @@ class requestSeller extends Vue {
     await this.GetCity();
     await this.getDistrict();
     await this.getStreet();
+    await this.GetBank();
   }
   async onSubmit() {
     this.disableButton = true
@@ -297,6 +316,24 @@ class requestSeller extends Vue {
     this.street = ''
     this.oStreets = []
     this.getDistrict()
+  }
+  async GetBank() {
+    const response: any = await this.actGetBanksList()
+    console.log(response)
+    if(response.code == '00'){
+
+    }
+    this.oBanks = response.data.map((bank: any) => ({
+      id: bank.id,
+      name: bank.shortName + ' - ' + bank.name,
+      fullname: bank.name,
+      value: bank.code,
+    }));
+    // this.selectedCity = this.oCitys.find((city) => city.value === this.city) || null;
+  }
+  onSelectBank(){
+    this.bankName = this.selectedBank?.fullname
+    this.bankCode = this.selectedBank?.value
   }
   checkValid() {
     const invalidFields: string[] = this.validateFields(this.requiredFields)

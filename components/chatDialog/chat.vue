@@ -68,11 +68,13 @@ class Chat extends Vue {
     }
     console.log('this.curItemId', this.curItemId)
     const result = await this.actGetChatHistory(param)
-    await result.records.forEach((record: any) => {
-      this.generate_message(record.content, record.imageId, record.senderId, record.sender, record.created);
-    });
-    this.scrollToBottom();
-    console.log(result)
+    if (result) {
+      await result.records.forEach((record: any) => {
+        this.generate_message(record.content, record.imageId, record.senderId, record.sender, record.created);
+      });
+      this.scrollToBottom();
+      console.log(result)
+    }
   }
   async start() {
     try {
@@ -104,8 +106,10 @@ class Chat extends Vue {
   async receiveMessage() {
     try {
       await this.connection.on("VauxItemMessage", (user: any, message: any) => {
-        console.log('sser',user);
-        console.log('mess',message);
+        console.log('sser', user);
+        console.log('mess', message);
+    console.log("check")
+
         this.generate_message(message.content, message.imageId, message.senderId, message.sender, message.created);
       })
     } catch (error) {
@@ -124,6 +128,7 @@ class Chat extends Vue {
       formdata: formData,
       itemId: this.curItemId,
     }
+    console.log("check")
     await this.actSendChat(param)
   }
   async onChatSubmitClick() {

@@ -3,12 +3,11 @@
         <div class="box-page-container flex flex-column container w-full">
             <Breadcrumb :home="home" :model="breads" />
             <div class="card-body my-3">
-
                 <div class="grid">
                     <div class="field col-12">
                         <h2 class="font-bold text-brown mb-0">Danh sách sản phẩm chờ thanh toán</h2>
                     </div>
-                    <div class="field col-12">
+                    <div v-if="items.length > 0" class="field col-12">
                         <div class="col-12 " v-for="item in items" :key="item.id" :item="item" style="height: 230px;">
                             <div class="grid item p-2 border-10" @click="onChangeCheckedItem(item)"
                                 :class="item.selected ? 'surface-400' : ''" style="height: 100%;">
@@ -42,7 +41,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="field col-12 sticky bottom-0 surface-0 py-4" style="sha">
+                    <div v-if="items.length > 0" class="field col-12 sticky bottom-0 surface-0 py-4" style="sha">
                         <div class="flex justify-content-between align-items-center">
                             <div class="select-all">
                                 <input type="checkbox" id="takeAll" name="takeAll" @change="takeAll()" :checked="selectAll">
@@ -57,6 +56,50 @@
                                 <Button label="Tạo đơn hàng" icon="pi pi-plus" @click="createOrder()" class="btn-primary" />
                             </div>
                         </div>
+                    </div>
+                    <div v-if="items.length <= 0">
+                        <div class="col-12">Bạn chưa có sản phẩm nào đấu giá cao nhất</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body my-3">
+                <div class="grid">
+                    <div class="field col-12">
+                        <h2 class="font-bold text-brown mb-0">Danh sách đơn hàng chưa hoàn thiện</h2>
+                    </div>
+                    <div class="field col-12">
+                        <div class="grid nested-grid" v-for="order in orders" :key="order.id" :item="order">
+                            <div class="envelope"></div>
+                            <div class="col-12 flex justify-content-between"
+                                style="border-bottom: 1px dashed rgba(0,0,0,.09)">
+                                <span class="text-brown">
+                                    <span class="material-icons vertical-align-bottom mr-2">person</span>
+                                    {{ order.receiverName + ' - ' + order.receiverPhone + ' - ' + order.address }}
+                                </span>
+                                <a :href="'http://localhost:4000/account/items/checkout?id=' + order.id">Tiếp tục</a>
+                            </div>
+                            <div class="grid nested-grid item p-2 border-10 w-full" v-for="item in order.items"
+                                :key="item.id" :item="item">
+                                <div
+                                    class="col-6 flex align-items-center white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                                    <img :src="getImageUrl(item.id, item.thumbnailId)" alt="image"
+                                        style="object-fit: contain; width: 50px; height: 50px;" />
+                                    <span
+                                        class="ml-2 white-space-nowrap overflow-hidden text-overflow-ellipsis font-medium">
+                                        <span class="">{{ item.name }}</span>
+                                    </span>
+                                </div>
+                                <div class="col-3 flex align-items-center font-light">
+                                    <span class="">{{ item.catName }}</span>
+                                </div>
+                                <div class="col-3 flex align-items-center justify-content-end">
+                                    <span class="">{{ formatNumber(item.price) }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="items.length <= 0">
+                        <div class="col-12">Bạn chưa có sản phẩm nào đấu giá cao nhất</div>
                     </div>
                 </div>
             </div>
@@ -81,14 +124,25 @@ class ItemList extends Vue {
         { label: 'Giỏ hàng' }
     ]
     items: any[] = []
+    orders: any[] = []
     selectAll: boolean = false
     @nsStoreItem.Action
     actGetItemsWon!: () => Promise<any>
     @nsStoreOrder.Action
     actPostOrder!: (params: any) => Promise<any>
+    @nsStoreOrder.Action
+    actGetAllOrder!: (params: any) => Promise<any>
 
+    async created() {
+        console.log('LTA????')
+        const paymentStatus = Array.isArray(this.$route.query.vnp_ResponseCode)
+            ? this.$route.query.vnp_ResponseCode[0]
+            : this.$route.query.vnp_ResponseCode
+        console.log('LTA',paymentStatus)
+    }
     async mounted() {
         this.getItems()
+        this.getOrders()
     }
     async getItems() {
         const response = await this.actGetItemsWon()
@@ -110,6 +164,44 @@ class ItemList extends Vue {
                         },
                         selected: false
                     });
+            }
+        }
+    }
+    async getOrders() {
+        const response = await this.actGetAllOrder({})
+        if (response) {
+            console.log('LTA', response)
+            if (response.records.length <= 0) {
+                return
+            }
+            for (let i = 0; i < response.records.length; i++) {
+                if (response.records[i].shipment.length <= 0) {
+                    continue
+                }
+                let order: any = {
+                    id: response.records[i].id,
+                    receiverName: response.records[i].receiverName,
+                    receiverPhone: response.records[i].receiverPhone,
+                    address: response.records[i].address,
+                    totalCost: response.records[i].totalCost,
+                    items: [],
+                }
+                for (let j = 0; j < response.records[i].shipment.length; j++) {
+                    if (response.records[i].shipment[j].items.length <= 0) {
+                        continue
+                    }
+                    for (let k = 0; k < response.records[i].shipment[j].items.length; k++) {
+
+                        order.items.push({
+                            id: response.records[i].shipment[j].items[k].id,
+                            name: response.records[i].shipment[j].items[k].name,
+                            catName: response.records[i].shipment[j].items[k].category.name,
+                            price: response.records[i].shipment[j].items[k].highestBid.amount,
+                            thumbnailId: response.records[i].shipment[j].items[k].thumbnailId,
+                        })
+                    }
+                }
+                this.orders.push(order)
             }
         }
     }
@@ -183,6 +275,12 @@ export default ItemList
 </script>
   
 <style lang="sass">
-  
+.envelope    
+    height: 3px
+    width: 100%
+    background-position-x: -30px
+    background-size: 116px 3px
+    background-image: repeating-linear-gradient(45deg,#6fa6d6,#6fa6d6 33px,transparent 0,transparent 41px,#f18d9b 0,#f18d9b 74px,transparent 0,transparent 82px)
+
   </style>
   

@@ -67,9 +67,24 @@
                                                         value="Bị từ chối">
                                                     </Tag>
                                                     <Tag class="px-2" v-else-if="data.status == 3" value="Đã Duyệt"
-                                                        severity="Success">
+                                                        severity="warning">
                                                     </Tag>
-                                                    <Tag class="px-2" v-else value="Đang xử lý" severity="warning">
+                                                    <Tag class="px-2" v-else-if="data.status == 4" value="Đang được đấu giá"
+                                                        severity="warning">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 6" value="Đấu giá không thành công"
+                                                        severity="warning">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 7" value="Chờ thanh toán"
+                                                        severity="warning">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 8" value="Chờ lấy hàng"
+                                                        severity="info">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 9" value="Hoàn thành"
+                                                        severity="success">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else :value="data.status" severity="warning">
                                                     </Tag>
                                                 </div>
                                             </template>

@@ -12,7 +12,20 @@ export default class StoreItem extends VuexModule {
         GET_ORDER_BY_ID: '/Order/:orderId',
         POST_ORDER: '/Order',
         POST_ORDER_PAYMENT_LINK: '/Order/:orderId/Pay',
-        PATCH_CONFIRM_PAYMENT: '/Order/:orderId/ConfirmPayment',
+        PATCH_CONFIRM_PAYMENT: '/Order/:orderId/ConfirmPayment?'
+            + 'vnp_Amount=:vnp_Amount'
+            + '&vnp_BankCode=:vnp_BankCode'
+            + '&vnp_BankTranNo=:vnp_BankTranNo'
+            + '&vnp_CardType=:vnp_CardType'
+            + '&vnp_OrderInfo=:vnp_OrderInfo'
+            + '&vnp_PayDate=:vnp_PayDate'
+            + '&vnp_ResponseCode=:vnp_ResponseCode'
+            + '&vnp_TmnCode=:vnp_TmnCode'
+            + '&vnp_TransactionNo=:vnp_TransactionNo'
+            + '&vnp_TransactionStatus=:vnp_TransactionStatus'
+            + '&vnp_SecureHash=:vnp_SecureHash'
+            + '&vnp_TxnRef=:vnp_TxnRef'
+        ,
     }
 
     @Action({ rawError: true })
@@ -53,7 +66,8 @@ export default class StoreItem extends VuexModule {
     @Action({ rawError: true })
     async actConfirmPayment(params: any): Promise<string | undefined> {
         try {
-            const url = PathBind.transform(this.context, StoreItem.STATE_URL.PATCH_CONFIRM_PAYMENT, { orderId: params.orderId })
+            debugger
+            const url = PathBind.transform(this.context, StoreItem.STATE_URL.PATCH_CONFIRM_PAYMENT, params)
             return await $api.patch(url)
         } catch (error) { }
     }

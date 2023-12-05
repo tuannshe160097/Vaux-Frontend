@@ -108,6 +108,7 @@ class OrderDetail extends Vue {
       this.$router.push('/admin/order')
     } else {
       const response = await this.actGetOrderById({ id: orderId })
+      console.log(response)
       if (response) {
         this.orderInfo = response
         this.shipments = response?.shipment

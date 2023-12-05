@@ -246,7 +246,7 @@ class ItemList extends Vue {
                     name: response.shipment[i].items[j].name,
                     catName: response.shipment[i].items[j].category.name,
                     price: response.shipment[i].items[j].highestBid.amount,
-                    imgId: response.shipment[i].items[j].thumbnailId,
+                    thumbnailId: response.shipment[i].items[j].thumbnailId,
                 })
             }
             this.totalShipCost += response.shipment[i].shippingCost
@@ -264,10 +264,11 @@ class ItemList extends Vue {
         }
         const response = await this.actPostOrderPaymentLink(param)
         console.log(response)
+        window.location.href = response;
     }
     getImageUrl(itemId: any, imgId: any) {
+        console.log(itemId, imgId)
         try {
-            return 'https://localhost:6565/api/Item/2/Images/29'
             if (itemId == null || imgId == null) {
                 return ''
             }

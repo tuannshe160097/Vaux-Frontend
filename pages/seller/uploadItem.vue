@@ -20,15 +20,15 @@
 
             <label>Tên sản phẩm</label>
             <!-- <InputText class="w-100" type="text" v-model="name" /> -->
-            <Textarea class="text-left w-full" :autoResize="true" v-model="name" rows="5"
-              placeholder="Sử dụng phần này để thêm thông tin mô tả." />
+            <Textarea class="text-left w-full" :autoResize="true" v-model="name" rows="1"
+              placeholder="Tên sản phẩm" />
             <!-- <input
               class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
               type="text" v-model="name" placeholder="Nhập tên sản phẩm" /> -->
           </div>
           <div class="field md:col-4 col-12">
             <label>Thể loại</label>
-            <Dropdown class="w-100" v-model="categoryId" :options="oCategories" optionLabel="name" optionValue="id"
+            <Dropdown class="w-100 line-height-1" v-model="categoryId" :options="oCategories" optionLabel="name" optionValue="id"
               placeholder="Chọn thể loại" :filter="true" filterPlaceholder="Tìm kiếm" />
           </div>
         </div>

@@ -15,7 +15,7 @@ export default class StoreChatApplication extends VuexModule {
   async actGetChatHistory(params: any): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreChatApplication.STATE_URL.GET_CHAT_HISTORY, { itemId: params?.itemId })
-      return await $api.post(url)
+      return await $api.get(url)
     } catch (error) { }
   }
   @Action({ rawError: true })
