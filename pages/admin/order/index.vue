@@ -18,6 +18,7 @@
         <div class="grid">
           <div class="col grid flex justify-content-between">
             <div class="col">
+              <label>Tên người nhận</label><br/>
               <InputText class="w-21rem h-3rem" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
             </div>
           </div>
@@ -36,12 +37,12 @@
                 <p class="element">{{ data?.user?.name }}</p>
               </template>
             </Column>
-            <Column field="totalCost" className="font-semibold" header="Số tiền" sortable="sortable"></Column>
-            <Column field="addredd" header="Địa chỉ" sortable="sortable" className="p-text-right">
+            <Column field="totalCost" className="font-semibold" header="Số tiền" sortable="sortable">
               <template #body="{ data }">{{
-                data | addressFomat
+                data.totalCost | moneyNumberFomat
               }}</template>
             </Column>
+            <Column field="address" header="Địa chỉ" sortable="sortable" className="p-text-right"></Column>
             <Column field="created" header="Ngày tạo" sortable="sortable" className="p-text-right">
               <template #body="{ data }">{{
                 data.created | dateTimeFomat

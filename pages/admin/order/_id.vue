@@ -21,11 +21,11 @@
             </div>
             <div class="field col-12 md:col-6">
               <label class="font-semibold">Số tiền:</label>
-              <p>{{ orderInfo?.totalCost }}</p>
+              <p>{{ orderInfo?.totalCost | moneyNumberFomat }}</p>
             </div>
             <div class="field col-12 md:col-6">
               <label class="font-semibold">Địa chỉ nhận hàng:</label>
-              <p>{{ orderInfo | addressFomat }}</p>
+              <p>{{ orderInfo?.address }}</p>
             </div>
             <div class="field col-12 md:col-6">
               <label class="font-semibold">Ngày tạo:</label>
@@ -39,20 +39,21 @@
           <DataTable class="w-full airtag-datatable h-full flex flex-column p-datatable-customers"
             v-if="shipments" :value="shipments" responsiveLayout="scroll" dataKey="id"
             :resizableColumns="true" :rows="10" :scrollable="false" stripedRows :rowsPerPageOptions="[10, 25, 50]"
-            :paginator="true">
+            :paginator="true" :expandedRows.sync="expandedRows">
+            <Column :expander="true" :headerStyle="{'width': '3rem'}" />
             <Column field="id" header="ID Đơn vận chuyển" sortable="sortable" className="w-3 font-semibold"></Column>
             <Column field="seller" header="Tên người bán" sortable="sortable" className="w-3">
               <template #body="{ data }">
                 <p class="element">{{ data?.seller?.name }}</p>
               </template>
             </Column>
-            <Column field="itemCost" header="Số tiền" sortable="sortable" className="w-3"></Column>
-            <Column field="shippingCost" header="Phí vận chuyển" sortable="sortable" className="w-3"></Column>
-            <Column field="address" header="Địa chỉ người gửi" sortable="sortable" className="overflow-ellipsis">
-              <template #body="{ data }">
-                <p class="element">{{ data | addressFomat }}</p>
-              </template>
+            <Column field="itemCost" header="Số tiền" sortable="sortable" className="w-3">
+              <template #body="{ data }">{{
+                data.itemCost | moneyNumberFomat
+              }}</template>
             </Column>
+            <Column field="shippingCost" header="Phí vận chuyển" sortable="sortable" className="w-3"></Column>
+            <Column field="address" header="Địa chỉ người gửi" sortable="sortable" className="overflow-ellipsis"></Column>
             <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right overflow-visible">
               <template #body="{ data }">
                 <select name="shipmentStatus" id="shipmentStatus" v-model="data.status" @change="onChangeStatusShipment(data)">
@@ -63,6 +64,25 @@
             <template #empty>
               <div class="justify-content-center flex font-italic">
                 Không có dữ liệu
+              </div>
+            </template>
+            <template #expansion="slotProps">
+              <div class="px-5" v-if="slotProps?.data?.items">
+                <label class="font-semibold">Sản phẩm của {{ slotProps?.data?.seller?.name }}</label>
+                <DataTable class="mt-2" :value="slotProps?.data?.items">
+                  <Column field="id" header="Id" sortable></Column>
+                  <Column field="name" header="Tên sản phẩm" sortable></Column>
+                  <Column field="category" header="Hạng mục" sortable>
+                    <template #body="{ data }">{{
+                      data?.category?.name
+                    }}</template>
+                  </Column>
+                  <Column field="seller" header="Người bán" sortable>
+                    <template #body="{ data }">{{
+                      data?.seller?.name
+                    }}</template>
+                  </Column>
+              </DataTable>
               </div>
             </template>
           </DataTable>
@@ -85,16 +105,16 @@ class OrderDetail extends Vue {
   shipments: any = []
   orderInfo: any = null
   SHIPMENT_STATUS_MAP = new Map<number, string>([
-  [1, 'Đang chờ duyệt'],
-  [2, 'Đang vận chuyển'],
-  [3, 'Đã vận chuyển']
-])
-
+    [1, 'Đang chờ duyệt'],
+    [2, 'Đang vận chuyển'],
+    [3, 'Đã vận chuyển']
+  ])
   shipmentStatus = [
     { code: 1, name: this.SHIPMENT_STATUS_MAP.get(1) },
     { code: 2, name: this.SHIPMENT_STATUS_MAP.get(2) },
     { code: 3, name: this.SHIPMENT_STATUS_MAP.get(3) }
   ]
+  expandedRows: any = []
   
   @nsStoreOrderMod.Action
   actGetOrderById!: (params: any) => Promise<any>
