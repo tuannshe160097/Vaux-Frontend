@@ -15,7 +15,9 @@ export default class StoreShipmentMod extends VuexModule {
   async actChangeShipmentStatus(params?: any): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreShipmentMod.STATE_URL.CHANGE_STATUS, params)
-      return await $api.patch(url, params) 
+      return await $api.patch(url, params?.status, {
+        headers: { 'Content-Type': 'application/json' }
+      }) 
     } catch (error) {}
   }
 }

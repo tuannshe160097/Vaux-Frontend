@@ -105,14 +105,14 @@ class OrderDetail extends Vue {
   shipments: any = []
   orderInfo: any = null
   SHIPMENT_STATUS_MAP = new Map<number, string>([
-    [1, 'Đang chờ duyệt'],
-    [2, 'Đang vận chuyển'],
-    [3, 'Đã vận chuyển']
+    [0, 'Đang chờ duyệt'],
+    [1, 'Đang vận chuyển'],
+    [2, 'Đã vận chuyển']
   ])
   shipmentStatus = [
+    { code: 0, name: this.SHIPMENT_STATUS_MAP.get(0) },
     { code: 1, name: this.SHIPMENT_STATUS_MAP.get(1) },
-    { code: 2, name: this.SHIPMENT_STATUS_MAP.get(2) },
-    { code: 3, name: this.SHIPMENT_STATUS_MAP.get(3) }
+    { code: 2, name: this.SHIPMENT_STATUS_MAP.get(2) }
   ]
   expandedRows: any = []
   
@@ -122,7 +122,11 @@ class OrderDetail extends Vue {
   @nsStoreShipment.Action
   actChangeShipmentStatus!: (params: any) => Promise<any>
 
-  async mounted() {
+  mounted() {
+    this.fetchData()
+  }
+
+  async fetchData() {
     const orderId = this.$route?.params?.id
     if (!orderId) {
       this.$router.push('/admin/order')
@@ -141,6 +145,7 @@ class OrderDetail extends Vue {
       status: shipment?.status
     })
     if (response) {
+      this.fetchData()
       this.$toast.add({
         severity: 'success',
         summary: 'Thông báo thành công',
