@@ -46,3 +46,8 @@ Vue.filter('addressFomat', (addressObj: any)=> {
   }
   return address
 })
+
+Vue.filter('moneyNumberFomat', (number: number)=> {
+  if (!number) return 0
+  return (number).toFixed(1).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+})
