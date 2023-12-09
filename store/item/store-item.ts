@@ -8,7 +8,7 @@ import { $api, PathBind } from '~/utils'
 export default class StoreItem extends VuexModule {
   private static readonly STATE_URL = {
     GET_ITEM: '/Item/:itemId',
-    GET_ITEM_LIST: '/Item?pageNum=:pageNum&pageSize=:pageSize&search=:search&category=:category',
+    GET_ITEM_LIST: '/Item?pageNum=:pageNum&pageSize=:pageSize&search=:search&category=:category&orderBy=:orderBy',
     GET_ITEM_APPROVED: '/Item/Approved',
     GET_ITEM_COMMENT: '/Item/:itemId/Comments?pageNum=:pageNum&pageSize=:pageSize',
     POST_ITEM_COMMENT: '/Item/:itemId/Comments',
@@ -36,7 +36,7 @@ export default class StoreItem extends VuexModule {
   async actGetItemList(params: any): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreItem.STATE_URL.GET_ITEM_LIST,
-        { pageNum: params?.pageNum, pageSize: params?.pageSize, search: params?.search, category: params?.category })
+        { pageNum: params?.pageNum, pageSize: params?.pageSize, search: params?.search, category: params?.category, orderBy: params?.orderBy })
       return await $api.get(url)
     } catch (error) { }
   }

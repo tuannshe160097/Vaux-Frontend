@@ -59,6 +59,7 @@ export default {
       'Button',
       'Breadcrumb',
       'Calendar',
+      'Carousel',
       'Checkbox',
       'Column',
       'ConfirmDialog',
