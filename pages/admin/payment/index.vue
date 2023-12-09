@@ -41,7 +41,7 @@
                     <span class="image-text">{{ slotProps.data.revenue  | moneyNumberFomat }}</span>
                 </template>
             </Column>
-            <Column field="country" header="Kiểu thanh toán">
+            <Column field="country" header="Người nhận">
                 <template #body="slotProps">
                   <span class="image-text">
                     {{ slotProps.data.type === 1 ? 'Chuyên gia' : 'Người bán' }}
