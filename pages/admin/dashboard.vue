@@ -19,16 +19,16 @@
           <AccountItemValue :title="'Tổng số người dùng'" :value="accountObj?.TotalUsers" iconNm="account" sBg="#ee885e" sBgIcon="#ee6e33"/>
         </div>
         <div class="col-2">
-          <AccountItemValue :title="'Người dùng mới'" :value="accountObj?.NewUsers" iconNm="product" sBg="#00a65a" sBgIcon="#008548"/>
+          <AccountItemValue :title="'Người dùng mới'" :value="accountObj?.NewUsers" iconNm="add-friend" sBg="#00a65a" sBgIcon="#008548"/>
         </div>
         <div class="col-2">
-          <AccountItemValue :title="'Người bán'" :value="accountObj?.Sellers" iconNm="account"  sBg="#00c0ef" sBgIcon="#046d8d"/>
+          <AccountItemValue :title="'Người bán'" :value="accountObj?.Sellers" iconNm="seller"  sBg="#00c0ef" sBgIcon="#046d8d"/>
         </div>
         <div class="col-2">
-          <AccountItemValue :title="'Chuyên gia'" :value="accountObj?.Experts" iconNm="account" sBg="#ffc069" sBgIcon="#ffa940"/>
+          <AccountItemValue :title="'Chuyên gia'" :value="accountObj?.Experts" iconNm="review" sBg="#ffc069" sBgIcon="#ffa940"/>
         </div>
         <div class="col-2">
-          <AccountItemValue :title="'Người dùng bị cấm'" :value="accountObj?.BannedUsers" iconNm="account" sBg="#ff7875" sBgIcon="#ff4d4f"/>
+          <AccountItemValue :title="'Người dùng bị cấm'" :value="accountObj?.BannedUsers" iconNm="banned" sBg="#ff7875" sBgIcon="#ff4d4f"/>
         </div>
       </div>
       
