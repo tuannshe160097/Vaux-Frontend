@@ -70,20 +70,22 @@
                 <h1 class="check font-bold text-dark">Các sản phẩm đang được đấu giá</h1>
                 <div v-if="items && items.length > 0" class="grid">
                     <div v-for="item in items" :key="item.id" class="this-is-item col-3" style="">
-                        <div class="product-item-content">
-                            <div class="mb-3 w-full px-2" style="height: 200px;">
-                                <img :src="item.thumbnailUrl" :alt="item.name" class="product-image"
-                                    style="bottom: 0px; height: 100%; object-fit: cover; object-position: center center; width: 100%;" />
+                        <a :href="item.url" style="text-decoration: none;">
+                            <div class="product-item-content" style="color: black;">
+                                <div class="mb-3 w-full px-2" style="height: 200px;">
+                                    <img :src="item.thumbnailUrl" :alt="item.name" class="product-image"
+                                        style="bottom: 0px; height: 100%; object-fit: cover; object-position: center center; width: 100%;" />
+                                </div>
+                                <div class=" px-2">
+                                    <h4 class="mb-1 w-full"
+                                        style=" display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
+                                        {{ item.name }}</h4>
+                                    <h6 class="mt-3 mb-1">GIÁ HIỆN TẠI</h6>
+                                    <h5 class="mt-0 mb-3 font-bold">{{ formatNumber(item.curBid) }}</h5>
+                                    <h6 class="mt-0 mb-3">{{ (item.endDateStr) }}</h6>
+                                </div>
                             </div>
-                            <div class=" px-2">
-                                <h4 class="mb-1 w-full"
-                                    style=" display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">
-                                    {{ item.name }}</h4>
-                                <h6 class="mt-3 mb-1">GIÁ HIỆN TẠI</h6>
-                                <h5 class="mt-0 mb-3 font-bold">{{ (item.curBid) }}</h5>
-                                <h6 class="mt-0 mb-3">{{ (item.endDateStr) }}</h6>
-                            </div>
-                        </div>
+                        </a>
                     </div>
                 </div>
                 <div v-else class="w-full"> Không có sản phẩm nào để hiển thị </div>
@@ -161,7 +163,7 @@ class homepage extends Vue {
             orderBy: 'end',
         }
         const response = await this.actGetItemList(params)
-        console.log(response)
+        console.log('this: ', response)
         if (!response || !response.records) {
             this.$toast.add({
                 severity: 'error',

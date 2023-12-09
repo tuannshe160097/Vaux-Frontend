@@ -99,7 +99,7 @@
               </div>
               <div class="field col-6">
                 <label>Số tài khoản</label>
-                <InputText class="w-100"  type="text" v-model="bankAccountNum" />
+                <InputText class="w-100" type="text" v-model="bankAccountNum" />
               </div>
               <div class="field col-12">
                 <label>{{ fieldLabels.content }}</label>
@@ -194,11 +194,11 @@ class requestSeller extends Vue {
   selectedCity: Option.Option | null = null
   selectedDistrict: Option.Option | null = null
   selectedStreet: Option.Option | null = null
-  selectedBank:any| null = null
+  selectedBank: any | null = null
   option: Option.Option | undefined
-  oCitys: Option.Option[] = GENDER_OPTION
-  oDistricts: Option.Option[] = GENDER_OPTION
-  oStreets: Option.Option[] = GENDER_OPTION
+  oCitys: Option.Option[] = []
+  oDistricts: Option.Option[] = []
+  oStreets: Option.Option[] = []
   oBanks: any[] = []
 
   @nsStoreSeller.Action
@@ -247,8 +247,12 @@ class requestSeller extends Vue {
     formData.append('Street', this.street);
     formData.append('HouseNumber', this.houseNumber);
     formData.append('gender', this.gender);
+    formData.append('BankAccountNum', this.bankAccountNum);
+    formData.append('BankCode', this.bankCode);
+    formData.append('BankName', this.bankName);
     formData.append('DoB', new Date(this.dob).toISOString());
     formData.append('Content', this.content);
+    formData.append('Address', this.houseNumber + ', ' + this.selectedStreet?.name + ', ' + this.selectedDistrict?.name + ', ' + this.selectedCity?.name);
     formData.append('RawPortrait', this.filePortrait, this.filePortrait.name);
     formData.append('RawCitizenIdImage', this.fileCitizenId, this.fileCitizenId.name);
     console.log(formData)
@@ -320,7 +324,7 @@ class requestSeller extends Vue {
   async GetBank() {
     const response: any = await this.actGetBanksList()
     console.log(response)
-    if(response.code == '00'){
+    if (response.code == '00') {
 
     }
     this.oBanks = response.data.map((bank: any) => ({
@@ -331,7 +335,7 @@ class requestSeller extends Vue {
     }));
     // this.selectedCity = this.oCitys.find((city) => city.value === this.city) || null;
   }
-  onSelectBank(){
+  onSelectBank() {
     this.bankName = this.selectedBank?.fullname
     this.bankCode = this.selectedBank?.value
   }
