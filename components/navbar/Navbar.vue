@@ -160,7 +160,7 @@ class MenuNavbar extends Vue {
 			var currentScrollPos = window.pageYOffset;
 			const nav = document.getElementById("navbar");
 			if (nav != null) {
-				if (prevScrollpos > currentScrollPos) {
+				if (window.scrollY === 0 || prevScrollpos > currentScrollPos) {
 					nav.style.top = "0";
 				} else {
 					nav.style.top = "-70px";

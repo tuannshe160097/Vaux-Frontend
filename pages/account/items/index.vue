@@ -76,7 +76,7 @@
                                     <span class="material-icons vertical-align-bottom mr-2">person</span>
                                     {{ order.receiverName + ' - ' + order.receiverPhone + ' - ' + order.address }}
                                 </span>
-                                <a :href="'http://localhost:4000/account/items/checkout?id=' + order.id">Tiếp tục</a>
+                                <a :href="'http://localhost:4000/account/items/checkout/' + order.id">Tiếp tục</a>
                             </div>
                             <div class="grid nested-grid item p-2 border-10 w-full" v-for="item in order.items"
                                 :key="item.id" :item="item">
@@ -221,7 +221,7 @@ class ItemList extends Vue {
             const response = await this.actPostOrder({ orderIdList: items })
             if (response) {
                 console.log(response)
-                this.$router.push("/account/items/checkout?id=" + response.id)
+                this.$router.push("/account/items/checkout/" + response.id)
             }
         }
     }

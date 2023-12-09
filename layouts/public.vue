@@ -1,9 +1,12 @@
 <template>
-  <div class="layout-wrapper.layout-static">
+  <div class="h-screen flex flex-column justify-content-between">
     <MenuNavbar />
-    <div class="main-container">
+    <div class="bg1 main-container flex-grow-1">
       <Nuxt />
       <Toast />
+    </div>
+    <div class="bg-footer ">
+      Footer
     </div>
   </div>
 </template>
@@ -41,6 +44,8 @@ export default Dashboard
 </script>
 
 <style lang="sass" scoped>
+.bg-footer
+  background-color: #cccccc
 .main-container
   margin-top:70px
   height: auto
