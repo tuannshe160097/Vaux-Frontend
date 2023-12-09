@@ -1,6 +1,6 @@
 // View User Detail
 <template>
-  <div class="box-page-container flex flex-column">
+  <div class="view-detail-page-container  flex flex-column">
     <div class="header flex justify-content-between container">
       <div class="col-fixed">
         <h2 class="font-bold m-0 text-uppercase">Đơn xin quyền người bán</h2>
@@ -343,5 +343,8 @@ export default ViewUser
     border-bottom: 1px solid rgba(33, 40, 50, 0.125)
 .rounded-circle
     border-radius: 50% !important
+.view-detail-page-container 
+  height: calc(100vh - 200px)
+
 </style>
             

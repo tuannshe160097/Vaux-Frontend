@@ -52,7 +52,7 @@
               <template #body="{ data }">
                 <Button class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
                   @click="onUpdateOrder(data)">
-                  <div class="icon--small icon-compose"></div>
+                  <div class="icon--small icon-file"></div>
                 </Button>
               </template>
             </Column>
