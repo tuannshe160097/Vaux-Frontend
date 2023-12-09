@@ -292,7 +292,6 @@ export default EditAuctionList
   
 <style lang="sass">
   .p-galleria-thumbnail-item-content
-    height:auto
     max-height:100%
     overflow: hidden
   .p-galleria-thumbnail-items

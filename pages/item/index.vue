@@ -75,8 +75,7 @@ const nsStoreItem = namespace('item/store-public-item')
 const nsStoreCategory = namespace('category/store-category')
 
 @Component({
-  middleware: ['authenticate'],
-  layout: 'public'
+  layout: 'publicNoLogin'
 })
 class ItemList extends Vue {
 
