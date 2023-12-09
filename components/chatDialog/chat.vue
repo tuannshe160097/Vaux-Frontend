@@ -17,15 +17,30 @@
             <span class="msg-avatar">
               <!-- <img src="https://localhost:6565/api/item/5/images/55" /> -->
             </span>
-            <div class="cm-msg-text">{{ message.text }}</div>
+            <div v-if="!message.imgId" class="cm-msg-text">{{ message.text }}</div>
+            <div v-else class="cm-msg-img">
+              <div style="max-height: 200px; width: 100%;">
+                <img :src="message.imgUrl" style="max-height: 200px;max-width: 100%; object-fit: contain" />
+              </div>
+            </div>
           </div>
         </div>
         <!--chat-log -->
       </div>
-      <div class="chat-input">
-        <input v-model="msg" type="text" id="chat-input" @keyup.enter="onChatSubmitClick()"
+      <div class="flex">
+        <input @change="onUploadFile($event)" id="inputFile" type="file" class="hidden" style="display: none;" />
+        <label class="chat-file" for="inputFile" style="z-index: 1000;">
+          <span class="cursor-pointer material-icons">
+            attach_file
+          </span>
+        </label>
+        <input v-model="msg" type="text" class="flex-1" id="chat-input" @keyup.enter="onChatSubmitClick()"
           placeholder="Send a message..." />
-        <button class="chat-submit" @click="onChatSubmitClick()"><i class="material-icons">🗨️</i></button>
+        <!-- <Button class="chat-submit"> -->
+        <span @click="onChatSubmitClick()" class="chat-submit cursor-pointer material-icons">
+          send
+        </span>
+        <!-- </Button> -->
       </div>
     </div>
   </div>
@@ -52,6 +67,8 @@ class Chat extends Vue {
   actSendChat!: (param: any) => Promise<any>
   @nsStoreChat.Action
   actGetChatHistory!: (param: any) => Promise<any>
+  @nsStoreChat.Action
+  actGetImageChat!: (param: any) => Promise<any>
 
   async created() {
     const loginToken = this.$cookies.get('auth._token');
@@ -108,8 +125,7 @@ class Chat extends Vue {
       await this.connection.on("VauxItemMessage", (user: any, message: any) => {
         console.log('sser', user);
         console.log('mess', message);
-    console.log("check")
-
+        console.log("check")
         this.generate_message(message.content, message.imageId, message.senderId, message.sender, message.created);
       })
     } catch (error) {
@@ -131,6 +147,34 @@ class Chat extends Vue {
     console.log("check")
     await this.actSendChat(param)
   }
+  async onUploadFile(event: any) {
+    const inputElement = event.target as HTMLInputElement
+    const files = inputElement.files
+    let file: any
+    let fileUrl: any
+    if (files && files.length > 0) {
+      if (files[0].size / 1024 / 1024 > 20) {
+        this.$store.commit(
+          'commons/store-error/setError',
+          'File tải lên quá lớn'
+        )
+        return
+      }
+      file = files[0]
+      fileUrl = URL.createObjectURL(file)
+    }
+    var formData = new FormData();
+    console.log(this.curUserId);
+    formData.append("SenderId", this.curUserId);
+    formData.append("ItemId", this.curItemId);
+    formData.append("RawImage", file);
+    const param = {
+      formdata: formData,
+      itemId: this.curItemId,
+    }
+    console.log("check")
+    await this.actSendChat(param)
+  }
   async onChatSubmitClick() {
     const msg = this.msg
     if (this.msg.trim() == '') {
@@ -143,16 +187,37 @@ class Chat extends Vue {
   async generate_message(msg: string, imgId: number, senderId: number, senderName: string, sendDate: string) {
     this.INDEX++;
     const type = senderId == this.curUserId ? 'self' : 'user'
+    let imgUrl: any = ''
+    if (imgId) {
+      imgUrl = await this.getImageUrl(imgId)
+    }
     const newMessage = {
       id: this.INDEX,
       text: msg,
       imgId: imgId,
+      imgUrl: imgUrl,
       type: type,
       name: senderName,
       date: sendDate
     };
     await this.messages.push(newMessage);
     this.scrollToBottom();
+  }
+  async getImageUrl(imgId: any): Promise<string | ArrayBuffer | null> {
+    try {
+      const response = await this.actGetImageChat({ itemId: this.curItemId, imageId: imgId });
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(response);
+        reader.onloadend = () => {
+          const base64Image = reader.result;
+          resolve(base64Image);
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching or converting image:", error);
+      return '';
+    }
   }
   async onChatCircleClick() {
     this.isHiddenChat = !this.isHiddenChat
@@ -235,7 +300,7 @@ export default Chat
   padding-top: 10px
   padding-right: 50px
   padding-bottom: 10px
-  padding-left: 15px
+  padding-left: 45px
   border: none
   resize: none
   outline: none
@@ -250,6 +315,17 @@ export default Chat
   position: absolute
   bottom: 3px
   right: 10px
+  background: transparent
+  box-shadow: none
+  border-radius: 50%
+  color: $primary
+  width: 35px
+  height: 35px
+
+.chat-file
+  position: absolute
+  bottom: 3px
+  left: 10px
   background: transparent
   box-shadow: none
   border-radius: 50%
@@ -302,6 +378,13 @@ export default Chat
   position: relative
   margin-bottom: 20px
   border-radius: 30px
+.cm-msg-img
+  background: white
+  max-width: 75%
+  float: left
+  margin-left: 10px
+  position: relative
+  margin-bottom: 20px
 
 .chat-msg
   clear: both
@@ -311,6 +394,9 @@ export default Chat
     margin-right: 10px
     background: $primary
     color: white
-
-
+  &.self > .cm-msg-img
+    float: right
+    margin-right: 10px
+    background: $primary
+    color: white
   </style>
