@@ -91,6 +91,7 @@
               </div>
             </template>
           </DataTable>
+          <ConfirmDialog></ConfirmDialog>
         </div>
       </div>
     </div>
