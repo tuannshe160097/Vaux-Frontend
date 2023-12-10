@@ -85,6 +85,7 @@ export default {
       'Toast',
       'DataView',
       'DataViewLayoutOptions',
+      'Chart',
     ],
     directives: [
       'Tooltip',
