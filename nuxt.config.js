@@ -95,7 +95,7 @@ export default {
 
   axios: {
     // proxy: process.env.NODE_ENV === 'development',
-    baseURL: 'https://localhost:6565'
+    baseURL: process.env.BE_API_URL
   },
 
   auth: {

@@ -94,7 +94,7 @@ class BidDialog extends Vue {
   async created() {
     const loginToken = this.$cookies.get('auth._token');
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl("https://localhost:6565/bidhub", { accessTokenFactory: () => loginToken })
+      .withUrl(process.env.BE_API_URL + "/bidhub", { accessTokenFactory: () => loginToken })
       .build();
     await this.start()
     await this.joinBidRoom();

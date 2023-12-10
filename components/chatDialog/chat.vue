@@ -73,7 +73,7 @@ class Chat extends Vue {
   async created() {
     const loginToken = this.$cookies.get('auth._token');
     this.connection = new signalR.HubConnectionBuilder()
-      .withUrl("https://localhost:6565/vauxchathub", { accessTokenFactory: () => loginToken })
+      .withUrl(process.env.BE_API_URL + "/vauxchathub", { accessTokenFactory: () => loginToken })
       .build();
     await this.start()
     await this.joinChatRoom();
@@ -85,6 +85,7 @@ class Chat extends Vue {
     }
     console.log('this.curItemId', this.curItemId)
     const result = await this.actGetChatHistory(param)
+    console.log(result)
     if (result) {
       await result.records.forEach((record: any) => {
         this.generate_message(record.content, record.imageId, record.senderId, record.sender, record.created);

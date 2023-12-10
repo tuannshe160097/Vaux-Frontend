@@ -11,52 +11,26 @@
               <h2 class="form-title">Đăng ký</h2>
               <form class="signin-form">
                 <div class="form-group mb-3">
-                  <label class="block label" for="inputName">Họ và tên</label>
-                  <InputText
-                    class="form-control w-full"
-                    id="inputName"
-                    type="text"
-                    v-model="name"
-                    placeholder="Họ và tên"
-                  />
+                  <label class="block label" for="inputName">Họ và tên<span class="text-danger">*</span></label>
+                  <InputText class="form-control w-full" id="inputName" type="text" v-model="name"
+                    placeholder="Họ và tên" />
                 </div>
                 <div class="form-group mb-3">
-                  <label class="block label" for="inputSdt"
-                    >Số điện thoại</label
-                  >
-                  <InputMask
-                    mask="9999999999"
-                    class="w-full form-control"
-                    id="inputSdt"
-                    v-model="sdt"
-                    slotChar=" "
-                    placeholder="Số điện thoại"
-                  />
+                  <label class="block label" for="inputSdt">Số điện thoại<span class="text-danger">*</span></label>
+                  <InputText v-model="sdt" type="text" class="w-full form-control" placeholder="Số điện thoại" />
                 </div>
                 <div class="form-group" for="inputPassword">
-                  <Button
-                    class="p-button-outlined form-control btn btn-primary1 px-3"
-                    @click="sendOtp"
-                  >
+                  <Button class="p-button-outlined form-control btn btn-primary1 px-3" @click="sendOtp">
                     Gửi mã OTP
                   </Button>
                 </div>
                 <div class="form-group mb-3">
                   <label class="block label">Nhập mã OTP</label>
-                  <InputText
-                    id="inputPassword"
-                    v-model="otp"
-                    type="text"
-                    class="w-full form-control"
-                    placeholder="Mã OTP"
-                  />
+                  <InputText id="inputPassword" v-model="otp" type="text" class="w-full form-control"
+                    placeholder="Mã OTP" />
                 </div>
                 <div class="form-group">
-                  <Button
-                    type="button"
-                    class="form-control btn btn-primary submit px-3"
-                    @click="callRegister"
-                  >
+                  <Button type="button" class="form-control btn btn-primary submit px-3" @click="callRegister">
                     Đăng ký
                   </Button>
                 </div>
@@ -95,6 +69,14 @@ class Register extends Vue {
 
   async sendOtp() {
     if (this.sdt && this.name) {
+      if (!this.validPhoneNumber(this.sdt)) {
+        this.$store.commit('commons/store-error/setError', 'Số điện thoại không đúng định dạng')
+        return
+      }
+      if (!this.validName(this.name)) {
+        this.$store.commit('commons/store-error/setError', 'Họ và tên dài quá 40 ký tự')
+        return
+      }
       const params = {
         name: this.name,
         phone: this.sdt,
@@ -131,6 +113,13 @@ class Register extends Vue {
       })
       this.$router.push('/authen/login')
     }
+  }
+  validPhoneNumber(phoneNumber: string): boolean {
+    const regex = /^(0|\+84)(9[0-9]|8[0-9]|7[0-9]|5[0-9]|3[0-9]|2[0-9]|6[0-9]|4[0-9]|1[0-9])+([0-9]{7})\b/;
+    return regex.test(phoneNumber);
+  }
+  validName(name: string): boolean {
+    return name.length <= 40;
   }
 }
 export default Register

@@ -308,7 +308,7 @@ class homepage extends Vue {
         return timeLeft;
     }
     viewAll() {
-        this.$router.push('/item')
+        this.$router.push('/p/item')
     }
 }
 export default homepage

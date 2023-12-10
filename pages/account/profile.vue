@@ -112,6 +112,35 @@
                             </div>
                         </div>
                     </TabPanel>
+                    <TabPanel>
+                        <template #header>
+                            <i class="pi pi-user"></i>
+                            <span>Tài khoản ngân hàng</span>
+                        </template>
+                        <div class="grid formgrid">
+                            <div class="field col-12">
+                                <h2 class="font-bold text-brown mb-0">Thông tin tài khoản ngân hàng</h2>
+                            </div>
+                            <div class="field md:col-6 md:col-offset-3 col-12">
+                                <div class="grid">
+                                    <div class="align-self-center col-4 field">
+                                        <label class="md:m-0">Ngân hàng</label>
+                                    </div>
+                                    <div class="col-8 field">
+                                        <Dropdown class="w-100 line-height-1" v-model="bankCode" :options="oBanks"
+                                            :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                                            placeholder="-Chọn Ngân hàng-" @change="onSelectBank()" />
+                                    </div>
+                                    <div class="align-self-center col-4 field">
+                                        <label class="md:m-0">Số tài khoản</label>
+                                    </div>
+                                    <div class="col-8 field">
+                                        <InputText class="w-full" type="text" v-model="bankAccountNum" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </TabPanel>
                     <!-- <TabPanel>
                         <template #header>
                             <i class="pi pi-user"></i>
@@ -167,10 +196,11 @@
 <script lang="ts">
 import { BlobOptions } from 'buffer'
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-const nsStoreUser = namespace('user-auth/store-user')
 import { Option } from '~/models/Option'
-const nsStoreAddress = namespace('address/store-address')
 import { GENDER_OPTION } from '~/utils'
+const nsStoreUser = namespace('user-auth/store-user')
+const nsStoreAddress = namespace('address/store-address')
+const nsStoreBank = namespace('bank/store-bank')
 
 @Component({
     middleware: ['authenticate'],
@@ -189,9 +219,9 @@ class Profile extends Vue {
     city: string = ''
     district: string = ''
     street: string = ''
-    categoryId: number = 0
-    description: string = ''
-    reservePrice: string = ''
+    bankCode: string = ''
+    bankName: string = ''
+    bankAccountNum: string = ''
     userApliId: any
     userApliStatus: any
     user: any = null
@@ -200,10 +230,13 @@ class Profile extends Vue {
     selectedCity: Option.Option | null = null
     selectedDistrict: Option.Option | null = null
     selectedStreet: Option.Option | null = null
+    selectedBank: any | null = null
     option: Option.Option | undefined
-    oCitys: Option.Option[] = GENDER_OPTION
-    oDistricts: Option.Option[] = GENDER_OPTION
-    oStreets: Option.Option[] = GENDER_OPTION
+    oCitys: Option.Option[] = []
+    oDistricts: Option.Option[] = []
+    oStreets: Option.Option[] = []
+    oBanks: any[] = []
+
     //---------------------------------------
     home = { icon: 'pi pi-home', to: '/homepage' }
     items = [
@@ -224,9 +257,12 @@ class Profile extends Vue {
     actGetDistrict!: (params: any) => Promise<string>
     @nsStoreAddress.Action
     actGetStreet!: (params: any) => Promise<string>
+    @nsStoreBank.Action
+    actGetBanksList!: () => Promise<string>
 
     async mounted() {
         this.user = await this.actGetUserDetail()
+        console.log(this.user)
         if (this.user == null) {
             this.$store.commit(
                 'commons/store-error/setError',
@@ -242,10 +278,13 @@ class Profile extends Vue {
         this.city = this.user?.city
         this.district = this.user?.district
         this.street = this.user?.street
+        this.bankCode = this.user?.bankCode
+        this.bankName = this.user?.bankName
         this.doB = this.formatDate(this.user?.doB)
         await this.GetCity();
         await this.getDistrict();
         await this.getStreet();
+        await this.GetBank();
         const result: any = await this.actGetSellerApplication({ userId: this.user?.id });
         if (!result) {
             this.userApliId = null
@@ -309,6 +348,24 @@ class Profile extends Vue {
         this.street = ''
         this.oStreets = []
         this.getDistrict()
+    }
+    async GetBank() {
+        const response: any = await this.actGetBanksList()
+        console.log(response)
+        if (response.code == '00') {
+
+        }
+        this.oBanks = response.data.map((bank: any) => ({
+            id: bank.id,
+            name: bank.shortName + ' - ' + bank.name,
+            fullname: bank.name,
+            value: bank.code,
+        }));
+        // this.selectedCity = this.oCitys.find((city) => city.value === this.city) || null;
+    }
+    onSelectBank() {
+        this.bankName = this.selectedBank?.fullname
+        this.bankCode = this.selectedBank?.value
     }
     onCreateApp() {
         this.$router.push("/account/requestseller")

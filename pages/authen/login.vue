@@ -12,41 +12,23 @@
               <form class="signin-form">
                 <div class="form-group mb-3">
                   <label class="block label">Số điện thoại</label>
-                  <InputMask
-                    v-model="sPhoneNumber"
-                    mask="9999999999"
-                    class="w-full form-control"
-                    slot-char=""
-                    placeholder="Số điện thoại"
-                  />
+                  <InputText v-model="sPhoneNumber" type="text" class="w-full form-control" placeholder="Số điện thoại" />
                 </div>
                 <div class="form-group">
-                  <Button
-                    label="Send OTP"
-                    class="p-button-outlined form-control btn btn-primary1 px-3"
-                    @click="sendOtp"
-                  >
+                  <Button label="Send OTP" class="p-button-outlined form-control btn btn-primary1 px-3" @click="sendOtp">
                     Gửi mã OTP
                   </Button>
                 </div>
                 <div class="form-group mb-3">
                   <label class="block label">Nhập mã OTP</label>
                   <div class="input-wrap">
-                    <InputText
-                      v-model="sOTP"
-                      type="text"
-                      class="w-full form-control"
-                      placeholder="Mã OTP"
-                    />
-                    <small v-if="isCountingDown" class="form-text otp-count ng-binding">{{ countdown | fancyTimeFormat }}</small>
+                    <InputText v-model="sOTP" type="text" class="w-full form-control" placeholder="Mã OTP" />
+                    <small v-if="isCountingDown" class="form-text otp-count ng-binding">{{ countdown | fancyTimeFormat
+                    }}</small>
                   </div>
                 </div>
                 <div class="form-group">
-                  <Button
-                    type="button"
-                    class="form-control btn btn-primary submit px-3"
-                    @click="callLogin"
-                  >
+                  <Button type="button" class="form-control btn btn-primary submit px-3" @click="callLogin">
                     Đăng nhập
                   </Button>
                 </div>
@@ -83,7 +65,12 @@ class Login extends Vue {
   actSendOTPCode!: (phone: string) => Promise<string>
 
   async sendOtp() {
+    this.sPhoneNumber = this.sPhoneNumber.trim()
     if (this.sPhoneNumber) {
+      if (!this.validPhoneNumber(this.sPhoneNumber)) {
+        this.$store.commit('commons/store-error/setError', 'Số điện thoại không đúng định dạng')
+        return
+      }
       if (this.countdown && this.isCountingDown) {
         this.$store.commit('commons/store-error/setError', 'OTP có thể được cấp lại sau ít phút')
         return
@@ -112,12 +99,17 @@ class Login extends Vue {
     try {
       const response: any = await this.$auth.loginWith('local', { params: { phone: this.sPhoneNumber, otp: this.sOTP } })
       if (response?.data) {
-        this.$cookies.set('auth._token', response?.data.jwt, { path: '/', maxAge: 86400 })
-        this.$cookies.set('auth.role', response?.data.role.id, { path: '/', maxAge: 86400 })
+        console.log("login1")
+        this.$cookies.set('auth._token', response?.data.jwt)
+        console.log("login2")
+        this.$cookies.set('auth.role', response?.data.role.id)
+        console.log("login3")
         await this.$auth.setUserToken(response.data.jwt)
+        console.log("login4")
         this.$router.push('/')
       }
     } catch (error) {
+      console.log("loginerror", error)
       this.$store.commit('commons/store-error/setError', 'Vui lòng hoàn thành các bước để đăng nhập')
     }
 
@@ -134,7 +126,12 @@ class Login extends Vue {
       }
     }, 1000);
   }
+  validPhoneNumber(phoneNumber: string): boolean {
+    // Sử dụng regex để kiểm tra số điện thoại ở Việt Nam
+    const regex = /^(0|\+84)(9[0-9]|8[0-9]|7[0-9]|5[0-9]|3[0-9]|2[0-9]|6[0-9]|4[0-9]|1[0-9])+([0-9]{7})\b/;
 
+    return regex.test(phoneNumber);
+  }
 }
 
 export default Login
