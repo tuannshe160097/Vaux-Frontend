@@ -154,7 +154,7 @@
                   v-if="selectedBoxes.length &lt;= 0"
                 >
                   <div
-                    class="icon--large icon-footer-paginator surface-400"
+                    class="icon--large icon-showing surface-400"
                   ></div>
                   <span class="ml-3 text-400 font-size-small"
                     >Showing 01 - 100 of 1280</span

@@ -74,7 +74,7 @@
             <template #footer="">
               <div>
                 <div class="flex align-items-center">
-                  <div class="icon--large icon-footer-paginator surface-400"></div>
+                  <div class="icon--large icon-showing surface-400"></div>
                   <span class="ml-3 text-400 font-size-small">Showing
                     {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
                     - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
