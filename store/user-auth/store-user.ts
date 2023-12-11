@@ -11,7 +11,7 @@ export default class StoreUser extends VuexModule {
     SEND_OTP: '/SendOtp',
     USER_GET: '/Profile',
     REGISTER: '/Register',
-    VERIFY: '/VerifyOtp?phone=:phone&otp=:otp',
+    VERIFY: '/VerifyOtp',
     SELLERAPP: '/Seller/Application/GetByUserId/:userId',
   }
 
@@ -51,8 +51,8 @@ export default class StoreUser extends VuexModule {
   @Action({ rawError: true })
   async actVerify(params: any): Promise<string | undefined> {
     try {
-      const url = PathBind.transform(this.context, StoreUser.STATE_URL.VERIFY, { phone: params?.phone, otp: params?.otp })
-      return await $api.post(url)
+      const url = PathBind.transform(this.context, StoreUser.STATE_URL.VERIFY)
+      return await $api.post(url,params)
     } catch (error) {
 
     }
