@@ -118,7 +118,7 @@ export default {
           autoFetch: false
         },
         endpoints: {
-          login:  { url: '/api/VerifyOtp',  method: 'post' },
+          login:  false, //{ url: '/api/VerifyOtp',  method: 'post' , data: { mediaType: 'form-body' }},
           logout: false, // { url: '/api/auth/logout', method: 'post' },
           user:   false // { url: '/api/auth/user',   method: 'get' }
         }

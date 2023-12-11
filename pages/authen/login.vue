@@ -70,6 +70,8 @@ class Login extends Vue {
 
   @nsStoreUser.Action
   actSendOTPCode!: (param: any) => Promise<string>
+  @nsStoreUser.Action
+  actVerify!: (param: any) => Promise<string>
   async mounted() {
     try {
       await this.$recaptcha.init()
@@ -120,14 +122,17 @@ class Login extends Vue {
     }
 
     try {
-      const response: any = await this.$auth.loginWith('local', { params: { phone: this.sPhoneNumber, otp: this.sOTP } })
-      if (response?.data) {
+      //const response: any = await this.$auth.loginWith('local', { headers: { 'Content-Type': 'multipart/form-body' } }, { data: { phone: this.sPhoneNumber, otp: this.sOTP } })
+
+      const response: any = await this.actVerify({ phone: this.sPhoneNumber, otp: this.sOTP })
+      if (response) {
+        this.$auth.login()
         console.log("login1")
-        this.$cookies.set('auth._token', response?.data.jwt)
+        this.$cookies.set('auth._token', response.jwt)
         console.log("login2")
-        this.$cookies.set('auth.role', response?.data.role.id)
+        this.$cookies.set('auth.role', response.role.id)
         console.log("login3")
-        await this.$auth.setUserToken(response.data.jwt)
+        await this.$auth.setUserToken(response.jwt)
         console.log("login4")
         this.$router.push('/')
       }
