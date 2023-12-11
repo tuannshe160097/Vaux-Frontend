@@ -130,8 +130,6 @@ export default Register
 </script>
 
 <style lang='sass' scoped>
-.signup-content
-
 .signup-form
   padding: 60px 0
   margin-left: 75px

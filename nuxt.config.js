@@ -46,8 +46,14 @@ export default {
     '@nuxtjs/auth-next',
     '@nuxtjs/dotenv',
     '@nuxtjs/proxy',
+    '@nuxtjs/recaptcha',
     '@nuxtjs/style-resources'
   ],
+  recaptcha: {
+    /* reCAPTCHA options */
+    version: 3, 
+    siteKey: '6LegAy0pAAAAADXMe3xWZTYq2IJ0BXjX5c9iOqvr' // for example
+  },
   // PrimeVue Config
   primevue: {
     theme:      'bootstrap4-light-blue',

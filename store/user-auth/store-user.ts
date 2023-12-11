@@ -8,7 +8,7 @@ import { $api, PathBind } from '~/utils'
 
 export default class StoreUser extends VuexModule {
   private static readonly STATE_URL = {
-    SEND_OTP: '/SendOtp?phone=:phone',
+    SEND_OTP: '/SendOtp?phone=:phone&token=:token',
     USER_GET: '/Profile',
     REGISTER: '/Register',
     VERIFY: '/VerifyOtp?phone=:phone&otp=:otp',
@@ -24,9 +24,9 @@ export default class StoreUser extends VuexModule {
 
 
   @Action({ rawError: true })
-  async actSendOTPCode(phone: string): Promise<string | undefined> {
+  async actSendOTPCode(params: any): Promise<string | undefined> {
     try {
-      const url = PathBind.transform(this.context, StoreUser.STATE_URL.SEND_OTP, { phone })
+      const url = PathBind.transform(this.context, StoreUser.STATE_URL.SEND_OTP, { phone : params.phone, token : params.token })
       return await $api.post(url)
     } catch (error) { }
   }

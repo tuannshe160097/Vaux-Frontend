@@ -14,15 +14,18 @@
             <div class="signup-form">
               <h2 class="form-title">Đăng nhập</h2>
               <form class="signin-form">
-                <div class="form-group mb-3">
-                  <label class="block label">Số điện thoại</label>
-                  <InputText v-model="sPhoneNumber" type="text" class="w-full form-control" placeholder="Số điện thoại" />
-                </div>
-                <div class="form-group">
-                  <Button label="Send OTP" class="p-button-outlined form-control btn btn-primary1 px-3" @click="sendOtp">
-                    Gửi mã OTP
-                  </Button>
-                </div>
+                <form @submit.prevent="sendOtp">
+                  <div class="form-group mb-3">
+                    <label class="block label">Số điện thoại</label>
+                    <InputText v-model="sPhoneNumber" type="text" class="w-full form-control"
+                      placeholder="Số điện thoại" />
+                  </div>
+                  <div class="form-group">
+                    <Button type="submit" label="Send OTP" class="p-button-outlined form-control btn btn-primary1 px-3">
+                      Gửi mã OTP
+                    </Button>
+                  </div>
+                </form>
                 <div class="form-group mb-3">
                   <label class="block label">Nhập mã OTP</label>
                   <div class="input-wrap">
@@ -66,9 +69,25 @@ class Login extends Vue {
   countdown: any = OTP_CONFIG.COUNT_DOWN
 
   @nsStoreUser.Action
-  actSendOTPCode!: (phone: string) => Promise<string>
-
+  actSendOTPCode!: (param: any) => Promise<string>
+  async mounted() {
+    try {
+      await this.$recaptcha.init()
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  beforeDestroy() {
+    this.$recaptcha.destroy()
+  }
   async sendOtp() {
+    let token
+    try {
+      token = await this.$recaptcha.execute('login')
+      console.log('ReCaptcha token:', token)
+    } catch (error) {
+      console.log('get recaptcha token error: ', error)
+    }
     this.sPhoneNumber = this.sPhoneNumber.trim()
     if (this.sPhoneNumber) {
       if (!this.validPhoneNumber(this.sPhoneNumber)) {
@@ -79,7 +98,7 @@ class Login extends Vue {
         this.$store.commit('commons/store-error/setError', 'OTP có thể được cấp lại sau ít phút')
         return
       }
-      this.sOTP = await this.actSendOTPCode(this.sPhoneNumber)
+      this.sOTP = await this.actSendOTPCode({ phone: this.sPhoneNumber, token: token })
       if (this.sOTP !== undefined && this.sOTP !== null) {
         setTimeout(() => {
           this.startCountdown();
@@ -142,9 +161,6 @@ export default Login
 </script>
 
 <style lang='sass' scoped>
-
-.signup-content
-
 .signup-form
   padding: 90px 0
   margin-left: 75px
