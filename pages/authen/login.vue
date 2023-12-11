@@ -125,8 +125,8 @@ class Login extends Vue {
       //const response: any = await this.$auth.loginWith('local', { headers: { 'Content-Type': 'multipart/form-body' } }, { data: { phone: this.sPhoneNumber, otp: this.sOTP } })
 
       const response: any = await this.actVerify({ phone: this.sPhoneNumber, otp: this.sOTP })
-      this.$auth.login()
       if (response) {
+        this.$auth.login()
         console.log("login1")
         this.$cookies.set('auth._token', response.jwt)
         console.log("login2")
