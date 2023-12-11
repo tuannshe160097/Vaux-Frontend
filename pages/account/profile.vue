@@ -127,7 +127,7 @@
                                         <label class="md:m-0">Ngân hàng</label>
                                     </div>
                                     <div class="col-8 field">
-                                        <Dropdown class="w-100 line-height-1" v-model="bankCode" :options="oBanks"
+                                        <Dropdown class="w-100 line-height-1" v-model="selectedBank" :options="oBanks"
                                             :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
                                             placeholder="-Chọn Ngân hàng-" @change="onSelectBank()" />
                                     </div>
@@ -280,6 +280,7 @@ class Profile extends Vue {
         this.street = this.user?.street
         this.bankCode = this.user?.bankCode
         this.bankName = this.user?.bankName
+        this.bankAccountNum = this.user?.bankAccountNum
         this.doB = this.formatDate(this.user?.doB)
         await this.GetCity();
         await this.getDistrict();
@@ -311,7 +312,6 @@ class Profile extends Vue {
         if (response.status == 200) this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã cập nhật thông tin', life: 10000 })
         this.disableButton = false;
     }
-
     async GetCity() {
         const response: any = await this.actGetCity()
         this.oCitys = response.map((city: any) => ({
@@ -361,6 +361,7 @@ class Profile extends Vue {
             fullname: bank.name,
             value: bank.code,
         }));
+        this.selectedBank = this.oBanks.find((bank) => bank.value === this.bankCode) || null;
         // this.selectedCity = this.oCitys.find((city) => city.value === this.city) || null;
     }
     onSelectBank() {
