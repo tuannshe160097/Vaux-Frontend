@@ -98,7 +98,7 @@ class Login extends Vue {
         this.$store.commit('commons/store-error/setError', 'OTP có thể được cấp lại sau ít phút')
         return
       }
-      this.sOTP = await this.actSendOTPCode({ phone: this.sPhoneNumber, token: token })
+      this.sOTP = await this.actSendOTPCode({ phone: this.sPhoneNumber, reCaptcha: token })
       if (this.sOTP !== undefined && this.sOTP !== null) {
         setTimeout(() => {
           this.startCountdown();
