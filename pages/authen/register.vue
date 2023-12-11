@@ -7,6 +7,10 @@
         </div>
         <div class="md:col-6 right">
           <div class="signup-content">
+            <a class="no-underline" href="/homepage">
+              <span class="material-icons vertical-align-bottom">
+                arrow_back
+              </span>Trở lại trang chủ</a>
             <div class="signup-form">
               <h2 class="form-title">Đăng ký</h2>
               <form class="signin-form">
@@ -127,9 +131,9 @@ export default Register
 
 <style lang='sass' scoped>
 .signup-content
-  padding: 80px 0
 
 .signup-form
+  padding: 60px 0
   margin-left: 75px
   margin-right: 75px
   padding-left: 34px
