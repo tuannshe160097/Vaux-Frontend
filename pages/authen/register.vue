@@ -107,7 +107,7 @@ class Register extends Vue {
       otp: this.otp,
       phone: this.sdt,
     }
-    let result = await this.actVerify(params)
+    let result: any = await this.actVerify(params)
     if (result !== undefined && result !== null) {
       this.$toast.add({
         severity: 'success',
@@ -115,7 +115,21 @@ class Register extends Vue {
         detail: 'Xác nhận thành công. Vui lòng đăng nhập lại để tiếp tục',
         life: 5000,
       })
-      this.$router.push('/authen/login')
+      try {
+        if (result?.data) {
+          console.log("login1")
+          this.$cookies.set('auth._token', result?.data.jwt)
+          console.log("login2")
+          this.$cookies.set('auth.role', result?.data.role.id)
+          console.log("login3")
+          await this.$auth.setUserToken(result.data.jwt)
+          console.log("login4")
+          this.$router.push('/')
+        }
+      } catch (error) {
+        console.log("loginerror", error)
+        this.$store.commit('commons/store-error/setError', 'Vui lòng hoàn thành các bước để đăng nhập')
+      }
     }
   }
   validPhoneNumber(phoneNumber: string): boolean {
