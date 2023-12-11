@@ -30,7 +30,6 @@
       "@nuxtjs/axios",
       "@nuxtjs/auth-next",
       "@types/node",
-      "@nuxtjs/recaptcha",
       "cookie-universal-nuxt",
     ]
   },
