@@ -143,8 +143,6 @@ export default Login
 
 <style lang='sass' scoped>
 
-.signup-content
-
 .signup-form
   padding: 90px 0
   margin-left: 75px
