@@ -29,7 +29,7 @@
       </div>
       <div class="col-fixed">
         <div class="grid align-content-center">
-        <!-- <div class="col-fixed">
+          <!-- <div class="col-fixed">
             <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="onAddNew()"></Button>
             </div> -->
         </div>
@@ -95,7 +95,15 @@
                   filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="-Chọn Phố/Phường-" optionValue="value" />
               </div>
               <div class="field col-12">
-                <label>Địa chỉ</label>
+                <label>Địa chỉ cụ thể</label>
+                <InputText class="w-100" type="text" v-model="houseNumber" />
+              </div>
+              <div class="field col-6">
+                <label>Ngân hàng</label>
+                <InputText class="w-100" type="text" v-model="houseNumber" />
+              </div>
+              <div class="field col-6">
+                <label>Số tài khoản</label>
                 <InputText class="w-100" type="text" v-model="houseNumber" />
               </div>
 
