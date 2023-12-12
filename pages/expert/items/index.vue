@@ -22,8 +22,9 @@
               <InputText class="w-100" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
             </div>
             <div class="col-3 field">
-              <label>Tình trạng</label>
-              <Dropdown class="w-100" v-model="status" :options="oStatus" optionLabel="name" optionValue="value" />
+              <label>Thể loại</label>
+              <Dropdown class="w-100 line-height-1" v-model="category" :options="categories" optionLabel="name"
+                optionValue="id" />
             </div>
             <div class="col field justify-content-end flex pt-5">
               <Button class="mr-2 border-10" label="Tìm kiếm" style="height: 36px" @click="Search()" />
@@ -113,6 +114,7 @@ import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { User } from '~/models/User'
 const nsExpItem = namespace('item/store-expert-item')
 const nsStoreUser = namespace('user-auth/store-user')
+const nsStoreCategory = namespace('category/store-category')
 
 @Component({
   middleware: ['authenticate'],
@@ -133,11 +135,15 @@ class ItemList extends Vue {
     { name: 'Chưa duyệt', value: 1 },
     { name: 'Đã từ chối', value: 2 }
   ]
+  category: any = ''
+  categories: any = []
   //-----Pagination---------------------------------
   pPagenum: number = 1
   pPageSize: number = 10
   totalRecords: number = 0
   blockedTable: boolean = false
+  @nsStoreCategory.Action
+  actGetCategory!: (params: any) => Promise<any>
   @nsExpItem.Action
   actSearchItemApplication!: (params: any) => Promise<any>
   @nsExpItem.Action
@@ -151,7 +157,33 @@ class ItemList extends Vue {
       status: this.status,
     }
     this.blockedTable = true
-    let response = await this.actSearchItemApplication(params)
+    // let response = await this.actSearchItemApplication(params)
+    // if (response) {
+    //   console.log(response)
+    //   for (let i = 0; i < response.records.length; i++) {
+    //     if (response.records[i].images[0] == undefined || response.records[i].images[0] == null) {
+    //       response.records[i].imgUrl = ''
+    //       continue
+    //     }
+    //     response.records[i].imgUrl = await this.getImageUrl(response.records[i].id, response.records[i].thumbnailId)
+    //   }
+    //   console.log(this.boxData)
+    //   this.totalRecords = response.totalRecords
+    // }
+    // this.boxData = response.records
+    await this.Search()
+    this.getCategory()
+    this.blockedTable = false
+  }
+  async Search(pageNum: number = this.pPagenum) {
+    const params = {
+      pageNum: pageNum || 1,
+      pageSize: this.pPageSize || 10,
+      search: this.search,
+      category: this.category
+    }
+    const response = await this.actSearchItemApplication(params)
+    console.log(response)
     if (response) {
       console.log(response)
       for (let i = 0; i < response.records.length; i++) {
@@ -163,22 +195,27 @@ class ItemList extends Vue {
       }
       console.log(this.boxData)
       this.totalRecords = response.totalRecords
-    }
-    this.boxData = response.records
-    this.blockedTable = false
-  }
-  async Search(pageNum: number = this.pPagenum) {
-    const params = {
-      pageNum: pageNum || 1,
-      pageSize: this.pPageSize || 10,
-      search: this.search,
-      status: this.status,
-    }
-    const response = await this.actSearchItemApplication(params)
-    console.log(response)
-    if (response) {
       this.boxData = response.records
-      this.totalRecords = response.totalRecords
+    }
+  }
+  async getCategory(pageNum: number = this.pPagenum) {
+    const params = {
+      pageNum: pageNum,
+      pageSize: this.pPageSize,
+      search: this.search,
+    }
+    const response = await this.actGetCategory(params)
+    if (response) {
+      this.categories.push({
+        id: '',
+        name: '-----Tất cả-----',
+      })
+      response.records.forEach((cat: any) => {
+        this.categories.push({
+          id: cat.id,
+          name: cat.name,
+        })
+      });
     }
   }
   async getImageUrl(itemId: any, imgId: any) {
