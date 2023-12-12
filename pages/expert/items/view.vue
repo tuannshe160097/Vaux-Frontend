@@ -76,14 +76,17 @@
                             </Column>
                             <Column v-for="col of columns" :field="col.field" :header="col.header"
                                 :styles="{ width: '50%' }" :key="col.field">
-                                <template #editor="slotProps">
+                                <template v-if="showUnassign" #editor="slotProps">
                                     <InputText :class="{ 'p-invalid': (!slotProps.data[slotProps.column.field]) }"
                                         class="w-full" v-model="slotProps.data[slotProps.column.field]" autofocus />
+                                </template>
+                                <template v-else #body="slotProps">
+                                    <p>{{ slotProps.data[slotProps.column.field] }}</p>
                                 </template>
                             </Column>
                             <Column header="">
                                 <template #body="slotProps">
-                                    <Button class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center "
+                                    <Button v-if="showUnassign" class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center "
                                         icon="pi pi-times" @click="onDeleteProperty(slotProps.index)">
                                     </Button>
                                 </template>
