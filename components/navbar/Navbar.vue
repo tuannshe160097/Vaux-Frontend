@@ -1,7 +1,9 @@
 <template>
 	<nav id="navbar" class="left-0 w-full">
 		<div class="wrapper flex align-items-center justify-content-between m-auto px-2">
-			<div class="logo"><a href="/homepage">Logo</a></div>
+			<div class="logo">
+				<a href="/homepage"><img src="~/assets/images/logo1.png" alt="logo" class="mr-1" height="37px" style="margin-bottom: -7px;">VAUX</a>
+			</div>
 			<ul class="nav-links inline-flex mx-2 megaDisplay">
 				<!-- <li>
 					<a href="#" class="desktop-item">Dropdown Menu</a>
@@ -222,9 +224,9 @@ class MenuNavbar extends Vue {
 		})
 		console.log(response)
 		if (response) {
-			this.categories=[{items:[]},{items:[]},{items:[]}]
+			this.categories = [{ items: [] }, { items: [] }, { items: [] }]
 			for (let i = 0; i < response.records.length; i++) {
-				this.categories[i%3].items.push({
+				this.categories[i % 3].items.push({
 					label: response.records[i].name,
 					link: '/p/item?cId=' + response.records[i].id
 				})
@@ -261,7 +263,7 @@ nav
 .wrapper 
 	.logo 
 		a 
-			color: $primary-yellow
+			color: $second-yellow
 			font-size: 30px
 			font-weight: 600
 			text-decoration: none
@@ -271,7 +273,7 @@ nav
 	li 
 		list-style: none
 		a 
-			color: $primary-yellow
+			color: $second-yellow
 			text-decoration: none
 			font-size: 16px
 			font-weight: 500
@@ -302,7 +304,7 @@ nav
 		visibility: visible
 .notiDisplay
 	> a 
-		color: $primary-yellow !important
+		color: $second-yellow !important
 		text-decoration: none
 		font-size: 16px
 		font-weight: 500
@@ -321,7 +323,7 @@ nav
 	li 
 		list-style: none
 	a
-		color: $primary-yellow
+		color: $second-yellow
 		text-decoration: none
 		font-size: 16px
 		font-weight: 500
@@ -398,5 +400,5 @@ nav
 				font-size: 17px
 				display: block
 				&:hover 
-					color: $primary-yellow
+					color: $second-yellow
 </style>

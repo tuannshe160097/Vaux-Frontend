@@ -180,7 +180,7 @@ class homepage extends Vue {
                     id: item.id,
                     thumbnailUrl: this.getImageUrl(item.id, item.thumbnailId),
                     name: item.name,
-                    endDate: '2023-12-20T20:00:00',//item.ongoingSession.endDate,
+                    endDate: item.ongoingSession.endDate,
                     endDateStr: '',
                     url: '/p/item/' + item.id,
                     curBid: curbid
@@ -214,7 +214,7 @@ class homepage extends Vue {
                     id: item.id,
                     thumbnailUrl: this.getImageUrl(item.id, item.thumbnailId),
                     name: item.name,
-                    endDate: '2023-12-20T20:00:00',//item.ongoingSession.endDate,
+                    endDate: item.ongoingSession.endDate,
                     endDateStr: '',
                     url: '/p/item/' + item.id,
                     curBid: curbid
