@@ -20,16 +20,15 @@
 
             <label>Tên sản phẩm</label>
             <!-- <InputText class="w-100" type="text" v-model="name" /> -->
-            <Textarea class="text-left w-full" :autoResize="true" v-model="name" rows="1"
-              placeholder="Tên sản phẩm" />
+            <Textarea class="text-left w-full" :autoResize="true" v-model="name" rows="1" placeholder="Tên sản phẩm" />
             <!-- <input
               class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
               type="text" v-model="name" placeholder="Nhập tên sản phẩm" /> -->
           </div>
           <div class="field md:col-4 col-12">
             <label>Thể loại</label>
-            <Dropdown class="w-100 line-height-1" v-model="categoryId" :options="oCategories" optionLabel="name" optionValue="id"
-              placeholder="Chọn thể loại" :filter="true" filterPlaceholder="Tìm kiếm" />
+            <Dropdown class="w-100 line-height-1" v-model="categoryId" :options="oCategories" optionLabel="name"
+              optionValue="id" placeholder="Chọn thể loại" :filter="true" filterPlaceholder="Tìm kiếm" />
           </div>
         </div>
         <div class="grid formgrid">
@@ -39,6 +38,21 @@
             nhất. Hãy nhớ đưa vào những nội dung khác nhau và đặt bức ảnh đẹp nhất
             của bạn lên hàng đầu.
           </span>
+          <div class="field col-4">
+            <div class="card-header font-medium text-xl">Ảnh bìa</div>
+            <div class="card-body p-5">
+              <div class="field">
+                <div class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
+                  <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
+                    imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
+                  <div class="font-italic text-danger mb-2">
+                    JPG or PNG no larger than 20 MB
+                  </div>
+                  <input type="file" @change="onUploadThumbnail($event)" accept="image/*" />
+                </div>
+              </div>
+            </div>
+          </div>
           <div class="field col-8  text-center">
             <input type="file" @change="onUploadFile($event)" accept="image/*" multiple />
             <div class="grid formgrid">
@@ -53,21 +67,6 @@
                   <div class="product-list-action p-2 w-100 text-right">
                     <Button class="btn" @click="removeImage(index)" label="Xóa" />
                   </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="field col-4">
-            <div class="card-header font-medium text-xl">Ảnh bìa</div>
-            <div class="card-body p-5">
-              <div class="field">
-                <div class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
-                  <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
-                    imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
-                  <div class="font-italic text-danger mb-2">
-                    JPG or PNG no larger than 20 MB
-                  </div>
-                  <input type="file" @change="onUploadThumbnail($event)" accept="image/*" />
                 </div>
               </div>
             </div>
@@ -128,7 +127,11 @@
         <div class="grid formgrid">
           <div class="field col-12 flex justify-content-center">
             <BlockUI :blocked="blockedAddButton">
-              <Button class="mx-2 btn-success" label="Hoàn thành" @click="onSubmit()" />
+              <Button class="mx-2 btn-final" @click="onSubmit()">
+                <span v-if="blockedAddButton"><i class="pi pi-spin pi-spinner mr-2" style="font-size: 2rem"></i> Đang xử
+                  lý</span>
+                <span v-else> Hoàn thành</span>
+              </Button>
             </BlockUI>
           </div>
         </div>
