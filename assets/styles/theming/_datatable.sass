@@ -57,3 +57,24 @@ table .p-datatable-thead
 
 .p-datatable.p-datatable-striped .p-datatable-tbody > tr:nth-child(even):not(.p-highlight)
   background-color: #fbf8f7 !important
+
+.custom-paginator
+  min-height: 65px
+  display: flex
+  align-items: center
+  justify-content: space-between
+  .p-paginator 
+    button
+      border: none
+      color: #151622
+      border-radius: 50% !important
+      background: $transparent
+    .p-paginator-pages > button
+      border: none
+      font-size: $font-size-base
+      border-radius: 50% !important
+      font-weight: 700
+      color: #D2D2E0
+    .p-highlight
+      background: $primary !important
+      color: $white !important

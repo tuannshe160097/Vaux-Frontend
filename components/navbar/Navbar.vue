@@ -21,38 +21,20 @@
 								<img src="https://fadzrinmadu.github.io/hosted-assets/responsive-mega-menu-and-dropdown-menu-using-only-html-and-css/img.jpg"
 									alt="">
 							</div>
-							<div class="row">
-								<header>Design Services</header>
+
+							<div v-for="(category, index) in categories" :key="index" class="row">
 								<ul class="mega-links">
-									<li><a href="#">Graphics</a></li>
-									<li><a href="#">Vectors</a></li>
-									<li><a href="#">Business cards</a></li>
-									<li><a href="#">Custom logo</a></li>
-								</ul>
-							</div>
-							<div class="row">
-								<header>Email Services</header>
-								<ul class="mega-links">
-									<li><a href="#">Personal Email</a></li>
-									<li><a href="#">Business Email</a></li>
-									<li><a href="#">Mobile Email</a></li>
-									<li><a href="#">Web Marketing</a></li>
-								</ul>
-							</div>
-							<div class="row">
-								<header>Security services</header>
-								<ul class="mega-links">
-									<li><a href="#">Site Seal</a></li>
-									<li><a href="#">VPS Hosting</a></li>
-									<li><a href="#">Privacy Seal</a></li>
-									<li><a href="#">Website design</a></li>
+									<li v-for="(item, subIndex) in category.items" :key="subIndex">
+										<a :href="item.link">{{ item.label }}</a>
+									</li>
 								</ul>
 							</div>
 						</div>
 					</div>
 				</li>
 				<li class="flex-grow-1">
-					<InputText type="text" class="w-full px-2" placeholder="Tìm sản phẩm" />
+					<InputText type="text" v-model="search" class="w-full px-2" placeholder="Tìm sản phẩm"
+						@keyup.enter="onSearch()" />
 				</li>
 				<li><a href="/seller" class=" ml-2">Kênh bán</a></li>
 			</ul>
@@ -111,10 +93,11 @@
 import { Component, namespace, ProvideReactive, Vue, Watch } from 'nuxt-property-decorator'
 import { User } from '~/models/User'
 const nsUser = namespace('user-auth/store-user')
-
+const nsStoreCategory = namespace('category/store-category')
 
 @Component
 class MenuNavbar extends Vue {
+	search: any = ''
 	// -- [ Statement Properties ] ------------------------------------------------
 	notiDisplay: boolean = false
 	profileDisplay: boolean = false
@@ -130,10 +113,39 @@ class MenuNavbar extends Vue {
 		{ id: 8, seen: true, content: 'Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu' },
 		{ id: 9, seen: false, content: 'Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu' },
 	]
+	categories: any[] = [
+		{
+			items: [
+				{ label: "Graphics", link: "#" },
+				{ label: "Vectors", link: "#" },
+				{ label: "Business cards", link: "#" },
+				{ label: "Custom logo", link: "#" },
+			],
+		},
+		{
+			items: [
+				{ label: "Personal Email", link: "#" },
+				{ label: "Business Email", link: "#" },
+				{ label: "Mobile Email", link: "#" },
+				{ label: "Web Marketing", link: "#" },
+			],
+		},
+		{
+			items: [
+				{ label: "Site Seal", link: "#" },
+				{ label: "VPS Hosting", link: "#" },
+				{ label: "Privacy Seal", link: "#" },
+				{ label: "Website design", link: "#" },
+			],
+		},
+	]
 	@nsUser.State('user')
 	user!: User.Model | null
 
 	// -- [ Properties ] ----------------------------------------------------------
+	@nsStoreCategory.Action
+	actGetCategory!: (params: any) => Promise<any>
+
 	@ProvideReactive()
 	selectedItem: any = null
 
@@ -169,6 +181,7 @@ class MenuNavbar extends Vue {
 			prevScrollpos = currentScrollPos;
 		};
 		document.body.addEventListener('click', this.handleBodyClick);
+		this.getCategory()
 	}
 
 	beforeDestroy() {
@@ -196,6 +209,26 @@ class MenuNavbar extends Vue {
 		} else if (isProfileElement) {
 			this.notiDisplay = false;
 			this.megaDisplay = false;
+		}
+	}
+	onSearch() {
+		this.$router.push('/p/item?search=' + this.search)
+	}
+	async getCategory() {
+		const response = await this.actGetCategory({
+			pageNum: 1,
+			pageSize: -1,
+			search: '',
+		})
+		console.log(response)
+		if (response) {
+			this.categories=[{items:[]},{items:[]},{items:[]}]
+			for (let i = 0; i < response.records.length; i++) {
+				this.categories[i%3].items.push({
+					label: response.records[i].name,
+					link: '/p/item?cId=' + response.records[i].id
+				})
+			}
 		}
 	}
 }

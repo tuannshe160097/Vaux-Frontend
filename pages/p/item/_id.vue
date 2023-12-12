@@ -155,7 +155,7 @@ class EditAuctionList extends Vue {
         console.log(this.itemId)
         this.items = [
             { label: 'Danh sách Sản phẩm', to: '/item' },
-            { label: this.item.category.name, to: '/seller' },
+            { label: this.item.category.name, to: '/p/item?cId=' + this.item.category.id },
             { label: this.item.name }
         ]
     }
