@@ -19,48 +19,57 @@
                                     class="w-full max-w-6rem" />
                             </div>
                             <div class="field col-12">
-                                <div class=" mt-4 grid nested-grid border-1 border-solid surface-border border-round"
-                                    v-for="shipment in AllShipments" :key="shipment.id" :item="shipment">
-                                    <div class="col-12 flex justify-content-between"
-                                        style="border-bottom: 1px dashed rgba(0,0,0,.09)">
-                                        <span class="text-brown">
-                                            <span class="material-icons vertical-align-bottom mr-2">person</span>
-                                            {{ shipment.sellerName }}
-                                        </span>
-                                        <span v-if="shipment.status == 0" class="text-success">Đơn hàng đang được người bán
-                                            chuẩn bị</span>
-                                        <span v-if="shipment.status == 1" class="text-success">Đơn hàng đang được giao tới
-                                            bạn</span>
-                                        <span v-if="shipment.status == 2" class="text-success">Đơn hàng đã được giao thành
-                                            công</span>
-                                    </div>
-                                    <div class="grid nested-grid item p-2 border-10 w-full" v-for="item in shipment.items"
-                                        :key="item.id" :item="item">
-                                        <div
-                                            class="col flex align-items-center white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                                            <img :src="getImageUrl(item.id, item.thumbnailId)" alt="image"
-                                                style="object-fit: contain; width: 50px; height: 50px;" />
+                                <div v-if="AllShipments.length > 0">
+                                    <div class=" mt-4 grid nested-grid border-1 border-solid surface-border border-round"
+                                        v-for="shipment in AllShipments" :key="shipment.id" :item="shipment">
+                                        <div class="col-12 flex justify-content-between"
+                                            style="border-bottom: 1px dashed rgba(0,0,0,.09)">
+                                            <span class="text-brown">
+                                                <span class="material-icons vertical-align-bottom mr-2">person</span>
+                                                {{ shipment.sellerName }}
+                                            </span>
+                                            <span v-if="shipment.status == 0" class="text-success">Đơn hàng đang được người
+                                                bán
+                                                chuẩn bị</span>
+                                            <span v-if="shipment.status == 1" class="text-success">Đơn hàng đang được giao
+                                                tới
+                                                bạn</span>
+                                            <span v-if="shipment.status == 2" class="text-success">Đơn hàng đã được giao
+                                                thành
+                                                công</span>
+                                        </div>
+                                        <div class="grid nested-grid item p-2 border-10 w-full"
+                                            v-for="item in shipment.items" :key="item.id" :item="item">
                                             <div
-                                                class="ml-2 white-space-nowrap overflow-hidden text-overflow-ellipsis font-medium">
-                                                <span class="">{{ item.name }}</span>
+                                                class="col flex align-items-center white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                                                <img :src="getImageUrl(item.id, item.thumbnailId)" alt="image"
+                                                    style="object-fit: contain; width: 50px; height: 50px;" />
+                                                <div
+                                                    class="ml-2 white-space-nowrap overflow-hidden text-overflow-ellipsis font-medium">
+                                                    <span class="">{{ item.name }}</span>
+                                                </div>
+                                                <br />
+                                                <div class="block">{{ item.catName }}</div>
                                             </div>
-                                            <br />
-                                            <div class="block">{{ item.catName }}</div>
+                                            <div class="col-fixed flex align-items-center justify-content-end">
+                                                <span class="">{{ formatNumber(item.price) }}</span>
+                                            </div>
                                         </div>
-                                        <div class="col-fixed flex align-items-center justify-content-end">
-                                            <span class="">{{ formatNumber(item.price) }}</span>
+                                        <div class="grid nested-grid item p-2 border-10 w-full justify-content-end"
+                                            style="border-top: 1px dashed rgba(0,0,0,.09)">
+                                            <div class="col-fixed ">
+                                                Thành tiền:
+                                            </div>
+                                            <div class="col-fixed flex align-items-center justify-content-end text-brown">
+                                                <h5 class="m-0">{{ formatNumber(shipment.itemCost + shipment.shippingCost)
+                                                }}
+                                                </h5>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="grid nested-grid item p-2 border-10 w-full justify-content-end"
-                                        style="border-top: 1px dashed rgba(0,0,0,.09)">
-                                        <div class="col-fixed ">
-                                            Thành tiền:
-                                        </div>
-                                        <div class="col-fixed flex align-items-center justify-content-end text-brown">
-                                            <h5 class="m-0">{{ formatNumber(shipment.itemCost + shipment.shippingCost) }}
-                                            </h5>
-                                        </div>
-                                    </div>
+                                </div>
+                                <div v-else>
+                                    Không có đơn hàng nào để hiển thị
                                 </div>
                             </div>
                         </div>
@@ -72,51 +81,55 @@
                         </template>
                         <div class="grid formgrid">
                             <div class="field col-12">
-                            </div>
-                            <div class="field col-12">
-                                <div class="grid nested-grid" v-for="shipment in PendingShipments" :key="shipment.id"
-                                    :item="shipment">
-                                    <div class="col-12" style="border-bottom: 1px dashed rgba(0,0,0,.09)">
-                                        <span class="text-brown">
-                                            <span class="material-icons vertical-align-bottom mr-2">person</span>
-                                            {{ shipment.sellerName }}
-                                        </span>
-                                    </div>
-                                    <div class="grid nested-grid item p-2 border-10 w-full" v-for="item in shipment.items"
-                                        :key="item.id" :item="item">
-                                        <div
-                                            class="col-6 flex align-items-center white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                                            <img :src="getImageUrl(item.id, item.thumbnailId)" alt="image"
-                                                style="object-fit: contain; width: 50px; height: 50px;" />
-                                            <span
-                                                class="ml-2 white-space-nowrap overflow-hidden text-overflow-ellipsis font-medium">
-                                                <span class="">{{ item.name }}</span>
+                                <div v-if="PendingShipments.length > 0">
+                                    <div class="grid nested-grid" v-for="shipment in PendingShipments" :key="shipment.id"
+                                        :item="shipment">
+                                        <div class="col-12" style="border-bottom: 1px dashed rgba(0,0,0,.09)">
+                                            <span class="text-brown">
+                                                <span class="material-icons vertical-align-bottom mr-2">person</span>
+                                                {{ shipment.sellerName }}
                                             </span>
                                         </div>
-                                        <div class="col-3 flex align-items-center font-light">
-                                            <span class="">{{ item.catName }}</span>
+                                        <div class="grid nested-grid item p-2 border-10 w-full"
+                                            v-for="item in shipment.items" :key="item.id" :item="item">
+                                            <div
+                                                class="col-6 flex align-items-center white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                                                <img :src="getImageUrl(item.id, item.thumbnailId)" alt="image"
+                                                    style="object-fit: contain; width: 50px; height: 50px;" />
+                                                <span
+                                                    class="ml-2 white-space-nowrap overflow-hidden text-overflow-ellipsis font-medium">
+                                                    <span class="">{{ item.name }}</span>
+                                                </span>
+                                            </div>
+                                            <div class="col-3 flex align-items-center font-light">
+                                                <span class="">{{ item.catName }}</span>
+                                            </div>
+                                            <div class="col-3 flex align-items-center justify-content-end">
+                                                <span class="">{{ formatNumber(item.price) }}</span>
+                                            </div>
                                         </div>
-                                        <div class="col-3 flex align-items-center justify-content-end">
-                                            <span class="">{{ formatNumber(item.price) }}</span>
+                                        <div class="grid nested-grid item p-2 border-10 w-full"
+                                            style="border-top: 1px dashed rgba(0,0,0,.09)">
+                                            <div class="col-3 col-offset-6">
+                                                Phí vận chuyển:
+                                            </div>
+                                            <div class="col-3 flex align-items-center justify-content-end">
+                                                <span class="">{{ formatNumber(shipment.shippingCost) }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="grid nested-grid item p-2 border-10 w-full">
+                                            <div class="col-3 col-offset-6">
+                                                Tổng số tiền:
+                                            </div>
+                                            <div class="col-3 flex align-items-center justify-content-end text-brown">
+                                                <h5 class="">{{ formatNumber(shipment.itemCost + shipment.shippingCost) }}
+                                                </h5>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="grid nested-grid item p-2 border-10 w-full"
-                                        style="border-top: 1px dashed rgba(0,0,0,.09)">
-                                        <div class="col-3 col-offset-6">
-                                            Phí vận chuyển:
-                                        </div>
-                                        <div class="col-3 flex align-items-center justify-content-end">
-                                            <span class="">{{ formatNumber(shipment.shippingCost) }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="grid nested-grid item p-2 border-10 w-full">
-                                        <div class="col-3 col-offset-6">
-                                            Tổng số tiền:
-                                        </div>
-                                        <div class="col-3 flex align-items-center justify-content-end text-brown">
-                                            <h5 class="">{{ formatNumber(shipment.itemCost + shipment.shippingCost) }}</h5>
-                                        </div>
-                                    </div>
+                                </div>
+                                <div v-else>
+                                    Không có đơn hàng nào để hiển thị
                                 </div>
                             </div>
                         </div>
@@ -128,51 +141,55 @@
                         </template>
                         <div class="grid formgrid">
                             <div class="field col-12">
-                            </div>
-                            <div class="field col-12">
-                                <div class="grid nested-grid" v-for="shipment in ShippingShipments" :key="shipment.id"
-                                    :item="shipment">
-                                    <div class="col-12" style="border-bottom: 1px dashed rgba(0,0,0,.09)">
-                                        <span class="text-brown">
-                                            <span class="material-icons vertical-align-bottom mr-2">person</span>
-                                            {{ shipment.sellerName }}
-                                        </span>
-                                    </div>
-                                    <div class="grid nested-grid item p-2 border-10 w-full" v-for="item in shipment.items"
-                                        :key="item.id" :item="item">
-                                        <div
-                                            class="col-6 flex align-items-center white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                                            <img :src="getImageUrl(item.id, item.thumbnailId)" alt="image"
-                                                style="object-fit: contain; width: 50px; height: 50px;" />
-                                            <span
-                                                class="ml-2 white-space-nowrap overflow-hidden text-overflow-ellipsis font-medium">
-                                                <span class="">{{ item.name }}</span>
+                                <div v-if="ShippingShipments.length > 0">
+                                    <div class="grid nested-grid" v-for="shipment in ShippingShipments" :key="shipment.id"
+                                        :item="shipment">
+                                        <div class="col-12" style="border-bottom: 1px dashed rgba(0,0,0,.09)">
+                                            <span class="text-brown">
+                                                <span class="material-icons vertical-align-bottom mr-2">person</span>
+                                                {{ shipment.sellerName }}
                                             </span>
                                         </div>
-                                        <div class="col-3 flex align-items-center font-light">
-                                            <span class="">{{ item.catName }}</span>
+                                        <div class="grid nested-grid item p-2 border-10 w-full"
+                                            v-for="item in shipment.items" :key="item.id" :item="item">
+                                            <div
+                                                class="col-6 flex align-items-center white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                                                <img :src="getImageUrl(item.id, item.thumbnailId)" alt="image"
+                                                    style="object-fit: contain; width: 50px; height: 50px;" />
+                                                <span
+                                                    class="ml-2 white-space-nowrap overflow-hidden text-overflow-ellipsis font-medium">
+                                                    <span class="">{{ item.name }}</span>
+                                                </span>
+                                            </div>
+                                            <div class="col-3 flex align-items-center font-light">
+                                                <span class="">{{ item.catName }}</span>
+                                            </div>
+                                            <div class="col-3 flex align-items-center justify-content-end">
+                                                <span class="">{{ formatNumber(item.price) }}</span>
+                                            </div>
                                         </div>
-                                        <div class="col-3 flex align-items-center justify-content-end">
-                                            <span class="">{{ formatNumber(item.price) }}</span>
+                                        <div class="grid nested-grid item p-2 border-10 w-full"
+                                            style="border-top: 1px dashed rgba(0,0,0,.09)">
+                                            <div class="col-3 col-offset-6">
+                                                Phí vận chuyển:
+                                            </div>
+                                            <div class="col-3 flex align-items-center justify-content-end">
+                                                <span class="">{{ formatNumber(shipment.shippingCost) }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="grid nested-grid item p-2 border-10 w-full">
+                                            <div class="col-3 col-offset-6">
+                                                Tổng số tiền:
+                                            </div>
+                                            <div class="col-3 flex align-items-center justify-content-end text-brown">
+                                                <h5 class="">{{ formatNumber(shipment.itemCost + shipment.shippingCost) }}
+                                                </h5>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="grid nested-grid item p-2 border-10 w-full"
-                                        style="border-top: 1px dashed rgba(0,0,0,.09)">
-                                        <div class="col-3 col-offset-6">
-                                            Phí vận chuyển:
-                                        </div>
-                                        <div class="col-3 flex align-items-center justify-content-end">
-                                            <span class="">{{ formatNumber(shipment.shippingCost) }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="grid nested-grid item p-2 border-10 w-full">
-                                        <div class="col-3 col-offset-6">
-                                            Tổng số tiền:
-                                        </div>
-                                        <div class="col-3 flex align-items-center justify-content-end text-brown">
-                                            <h5 class="">{{ formatNumber(shipment.itemCost + shipment.shippingCost) }}</h5>
-                                        </div>
-                                    </div>
+                                </div>
+                                <div v-else>
+                                    Không có đơn hàng nào để hiển thị
                                 </div>
                             </div>
                         </div>
@@ -184,51 +201,55 @@
                         </template>
                         <div class="grid formgrid">
                             <div class="field col-12">
-                            </div>
-                            <div class="field col-12">
-                                <div class="grid nested-grid" v-for="shipment in ShippedShipments" :key="shipment.id"
-                                    :item="shipment">
-                                    <div class="col-12" style="border-bottom: 1px dashed rgba(0,0,0,.09)">
-                                        <span class="text-brown">
-                                            <span class="material-icons vertical-align-bottom mr-2">person</span>
-                                            {{ shipment.sellerName }}
-                                        </span>
-                                    </div>
-                                    <div class="grid nested-grid item p-2 border-10 w-full" v-for="item in shipment.items"
-                                        :key="item.id" :item="item">
-                                        <div
-                                            class="col-6 flex align-items-center white-space-nowrap overflow-hidden text-overflow-ellipsis">
-                                            <img :src="getImageUrl(item.id, item.thumbnailId)" alt="image"
-                                                style="object-fit: contain; width: 50px; height: 50px;" />
-                                            <span
-                                                class="ml-2 white-space-nowrap overflow-hidden text-overflow-ellipsis font-medium">
-                                                <span class="">{{ item.name }}</span>
+                                <div v-if="ShippedShipments.length > 0">
+                                    <div class="grid nested-grid" v-for="shipment in ShippedShipments" :key="shipment.id"
+                                        :item="shipment">
+                                        <div class="col-12" style="border-bottom: 1px dashed rgba(0,0,0,.09)">
+                                            <span class="text-brown">
+                                                <span class="material-icons vertical-align-bottom mr-2">person</span>
+                                                {{ shipment.sellerName }}
                                             </span>
                                         </div>
-                                        <div class="col-3 flex align-items-center font-light">
-                                            <span class="">{{ item.catName }}</span>
+                                        <div class="grid nested-grid item p-2 border-10 w-full"
+                                            v-for="item in shipment.items" :key="item.id" :item="item">
+                                            <div
+                                                class="col-6 flex align-items-center white-space-nowrap overflow-hidden text-overflow-ellipsis">
+                                                <img :src="getImageUrl(item.id, item.thumbnailId)" alt="image"
+                                                    style="object-fit: contain; width: 50px; height: 50px;" />
+                                                <span
+                                                    class="ml-2 white-space-nowrap overflow-hidden text-overflow-ellipsis font-medium">
+                                                    <span class="">{{ item.name }}</span>
+                                                </span>
+                                            </div>
+                                            <div class="col-3 flex align-items-center font-light">
+                                                <span class="">{{ item.catName }}</span>
+                                            </div>
+                                            <div class="col-3 flex align-items-center justify-content-end">
+                                                <span class="">{{ formatNumber(item.price) }}</span>
+                                            </div>
                                         </div>
-                                        <div class="col-3 flex align-items-center justify-content-end">
-                                            <span class="">{{ formatNumber(item.price) }}</span>
+                                        <div class="grid nested-grid item p-2 border-10 w-full"
+                                            style="border-top: 1px dashed rgba(0,0,0,.09)">
+                                            <div class="col-3 col-offset-6">
+                                                Phí vận chuyển:
+                                            </div>
+                                            <div class="col-3 flex align-items-center justify-content-end">
+                                                <span class="">{{ formatNumber(shipment.shippingCost) }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="grid nested-grid item p-2 border-10 w-full">
+                                            <div class="col-3 col-offset-6">
+                                                Tổng số tiền:
+                                            </div>
+                                            <div class="col-3 flex align-items-center justify-content-end text-brown">
+                                                <h5 class="">{{ formatNumber(shipment.itemCost + shipment.shippingCost) }}
+                                                </h5>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="grid nested-grid item p-2 border-10 w-full"
-                                        style="border-top: 1px dashed rgba(0,0,0,.09)">
-                                        <div class="col-3 col-offset-6">
-                                            Phí vận chuyển:
-                                        </div>
-                                        <div class="col-3 flex align-items-center justify-content-end">
-                                            <span class="">{{ formatNumber(shipment.shippingCost) }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="grid nested-grid item p-2 border-10 w-full">
-                                        <div class="col-3 col-offset-6">
-                                            Tổng số tiền:
-                                        </div>
-                                        <div class="col-3 flex align-items-center justify-content-end text-brown">
-                                            <h5 class="">{{ formatNumber(shipment.itemCost + shipment.shippingCost) }}</h5>
-                                        </div>
-                                    </div>
+                                </div>
+                                <div v-else>
+                                    Không có đơn hàng nào để hiển thị
                                 </div>
                             </div>
                         </div>
@@ -355,7 +376,7 @@ class CreateItem extends Vue {
         }
         const response = await this.actGetShipments(params)
         console.log(response)
-        if (response && response.records.length > 0) {
+        if (response) {
             this.AllShipments = []
             for (let i = 0; i < response.records.length; i++) {
                 if (response.records[i].items.length <= 0) {

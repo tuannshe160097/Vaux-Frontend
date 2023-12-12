@@ -384,6 +384,7 @@ class ItemList extends Vue {
                 detail: 'Đã thanh toán thành công',
                 life: 3000,
             })
+            this.$router.push("/account/orders")
         }
     }
 
