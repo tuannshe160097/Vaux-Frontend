@@ -18,7 +18,7 @@
         <div class="col-fixed">
           <div class="grid formgrid">
             <div class="col-3 field">
-              <label>Tên, mail, sđt</label>
+              <label>Tên sản phẩm</label>
               <InputText class="w-100" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
             </div>
             <div class="col-3 field">
@@ -26,8 +26,8 @@
               <Dropdown class="w-100 line-height-1" v-model="category" :options="categories" optionLabel="name"
                 optionValue="id" />
             </div>
-            <div class="col field justify-content-end flex pt-5">
-              <Button class="mr-2 border-10" label="Tìm kiếm" style="height: 36px" @click="Search()" />
+            <div class="col-fixed field pt-5">
+              <Button class="mr-2 border-10 btn-primary" label="Tìm kiếm"  @click="Search()" />
             </div>
           </div>
         </div>

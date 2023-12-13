@@ -39,10 +39,12 @@
       <div v-if="notifications != undefined && notifications != null && notifications.length > 0">
         <div v-for="item in notifications" class="border-bottom-1 border-200 " :key="item.id" :item="item">
           <div class="p-2 hover:surface-300 border-10 cursor-pointer" style="text-indent: 10px;">
-            <Badge v-if="!item.seen" value="" class="mr-2"></Badge>
-            <span v-badge.danger v-badge="2">
-              {{ item.content }}
-            </span>
+            <a :href="item.redirect" style="text-decoration: none; color:black">
+              <Badge v-if="!item.seen" value="" class="mr-2"></Badge>
+              <span v-badge.danger v-badge="2">
+                {{ item.content }}
+              </span>
+            </a>
           </div>
         </div>
       </div>

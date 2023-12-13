@@ -28,7 +28,7 @@ export default class StoreItemApplication extends VuexModule {
   @Action({ rawError: true })
   async actGetItem(params: any): Promise<string | undefined> {
     try {
-      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.GET_ITEMAPPLICATION, { itemId : params.itemId })
+      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.GET_ITEMAPPLICATION, { itemId: params.itemId })
       return await $api.get(url)
     } catch (error) {
       console.log(error);
@@ -45,7 +45,7 @@ export default class StoreItemApplication extends VuexModule {
   @Action({ rawError: true })
   async actChangeStatusItemApplication(params: any): Promise<string | undefined> {
     try {
-      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.UPDATE_ITEMAPPLICATION, { itemId: params?.itemId })
+      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.CHANGE_STATUS_ITEMAPPLICATION, { itemId: params?.itemId })
       return await $api.patch(url, params)
     } catch (error) { }
   }
@@ -53,8 +53,9 @@ export default class StoreItemApplication extends VuexModule {
   @Action({ rawError: true })
   async actAddItemApplicationImage(params: any): Promise<string | undefined> {
     try {
-      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.UPDATE_ITEMAPPLICATION, { itemId: params?.itemId })
-      return await $api.post(url, params, {
+      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.ADD_ITEMAPPLICATION_IMAGE, { itemId: params?.itemId })
+      debugger
+      return await $api.post(url, params.formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       })
     } catch (error) { }
@@ -63,8 +64,11 @@ export default class StoreItemApplication extends VuexModule {
   @Action({ rawError: true })
   async actDeleteItemApplicationImage(params: any): Promise<string | undefined> {
     try {
-      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.UPDATE_ITEMAPPLICATION, { itemId: params?.itemId })
-      return await $api.delete(url, params.imgIds)
+      const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.DELETE_ITEMAPPLICATION_IMAGE, { itemId: params?.itemId })
+      return await $api.delete(url, {
+        data: params?.images,
+        headers: { 'Content-Type': 'application/json' }
+      })
     } catch (error) { }
   }
 

@@ -91,7 +91,7 @@
                                                     <Tag class="px-2 " v-if="data.status == 1" severity="warning"
                                                         value="Đang xử lý">
                                                     </Tag>
-                                                    <Tag class="px-2 " v-if="data.status == 2" severity="danger"
+                                                    <Tag class="px-2 " v-else-if="data.status == 2" severity="danger"
                                                         value="Bị từ chối">
                                                     </Tag>
                                                     <Tag class="px-2" v-else-if="data.status == 3" value="Đã Duyệt"
@@ -101,7 +101,7 @@
                                                         severity="warning">
                                                     </Tag>
                                                     <Tag class="px-2" v-else-if="data.status == 6"
-                                                        value="Đấu giá không thành công" severity="warning">
+                                                        value="Đấu giá không thành công" severity="danger">
                                                     </Tag>
                                                     <Tag class="px-2" v-else-if="data.status == 7" value="Chờ thanh toán"
                                                         severity="warning">

@@ -108,8 +108,17 @@
                     </span>
                 </div>
                 <div class="grid formgrid">
-                    <div class="col-12">
-
+                    <h4 class="col-12 font-bold text-brown">6. Phản hồi từ người kiểm duyệt</h4>
+                    <span class="col-12">
+                    </span>
+                    <div class="field col-12">
+                        <Textarea class="text-left w-full" :autoResize="true" v-model="reason" rows="5"
+                            placeholder="Sử dụng phần này để thêm thông tin lý do." style="height: 3rem;" />
+                    </div>
+                </div>
+                <div class="grid formgrid">
+                    <div class="field col-12 flex justify-content-center">
+                        <Button class="mx-2 btn-info border-10 p-3" label="Cập nhật" @click="onUpdate()" />
                     </div>
                 </div>
             </div>
@@ -137,19 +146,21 @@ class DetailItem extends Vue {
     // user!: User.Model | null
 
     // -- [ Properties ] ----------------------------------------------------------
-    itemId: any | null
+    itemId: string | null = ''
     name: string = ''
     categoryId: number = 0
+    files: File[] = []
+    images: any[] = []
     description: string = ''
     reservePrice: string = ''
-    status: any
+    reason: string = ''
+    thumbnailUrl: any = ''
+    expertId: number | undefined | null = null
+    status: number | null = null
 
     fileThumbnail: any = null
-    thumbnailUrl: any = ''
 
     thumbnailId: number | null = null
-    files: any[] = []
-    images: any[] = []
 
     properties: any[] = []
 
@@ -211,7 +222,6 @@ class DetailItem extends Vue {
                 const imageInfo = { objectURL: result2, name: "result2.name", imgId: imgId };
                 this.images.push(imageInfo);
             }
-            console.log(this.images.length + " ??? " + this.files.length)
         }
         else {
             this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin Item Id")
@@ -224,22 +234,7 @@ class DetailItem extends Vue {
                 itemId: itemId,
                 imgId: imgId,
             }
-            //const response = await this.actGetItemApplicationImage(params)
-            //custom
-            if (!isThumbnail) {
-                //this.files.push(process.env.BE_API_URL + '/api/item/' + itemId + '/images/' + imgId)
-            }
-            //
-
             return process.env.BE_API_URL + '/api/item/' + itemId + '/images/' + imgId
-            // return new Promise((resolve) => {
-            //     const reader = new FileReader();
-            //     reader.readAsDataURL(response);
-            //     reader.onloadend = () => {
-            //         const base64Image = reader.result;
-            //         resolve(base64Image);
-            //     };
-            // });
         } catch (error) {
             this.$store.commit('commons/store-error/setError', "Có lỗi khi đọc dữ liệu ảnh: " + imgId)
             console.error("Có lỗi khi đọc dữ liệu ảnh: " + imgId, error);
@@ -269,10 +264,8 @@ class DetailItem extends Vue {
                 const objectURL = URL.createObjectURL(file);
                 const imageInfo = { objectURL, name: file.name, size: file.size, imgId: null, fileContent: file };
                 this.images.push(imageInfo);
-                //this.files.push(file);
             }
         }
-        //console.log(this.images.length + " ??? " + this.files.length)
     }
     onUploadThumbnail(event: Event) {
         const inputElement = event.target as HTMLInputElement
@@ -306,18 +299,12 @@ class DetailItem extends Vue {
         }
         console.log(this.deleteImgOnSv)
         this.$delete(this.images, index);
-        //this.$delete(this.files, index);
-        //console.log(this.images.length + " ??? " + this.files.length)
     }
     async onUpdate() {
         this.blockedAddButton = true
         this.$toast.add({ severity: 'warn', summary: 'Thông báo', detail: 'Đang cập nhật. Vui lòng đợi trong giây lát', life: 3000 })
 
         let newFileList: File[] = []
-        // if (this.images.length != this.files.length) {
-        //     this.$toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Lỗi điều kiện', life: 10000 })
-        //     return
-        // }
         for (let i = 0; i < this.images.length; i++) {
             if (this.images[i].imgId == null) {
                 this.images[i].imgId = 0
@@ -334,13 +321,15 @@ class DetailItem extends Vue {
         }
         await this.actUpdateItemApplication(params)
         if (this.deleteImgOnSv.length > 0) {
-            console.log(this.deleteImgOnSv)
+            console.log('deleteImgOnSv ', this.deleteImgOnSv)
             await this.actDeleteItemApplicationImage({ itemId: this.itemId, images: this.deleteImgOnSv })
         }
         if (this.deleteThumbnailOnSv) {
+            console.log('deleteThumbnailOnSv ', this.deleteThumbnailOnSv)
             await this.AddImage(this.itemId, this.fileThumbnail)
         }
         if (newFileList.length > 0) {
+            console.log('newFileList ', newFileList)
             await this.AddMultiImage(this.itemId, newFileList)
         }
         this.$toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã cập nhật sản phẩm', life: 10000 })
@@ -377,16 +366,12 @@ class DetailItem extends Vue {
                 }
                 break;
         }
-        // console.log(this.properties)
     }
     onAddProperty() {
         this.properties.push({ label: null, value: null })
     }
     onDeleteProperty(index: any) {
         this.properties.splice(index, 1)
-    }
-    isDisplayButton() {
-        return !(this.status > 1)
     }
 }
 export default DetailItem

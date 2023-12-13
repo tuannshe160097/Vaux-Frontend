@@ -2,7 +2,8 @@
 	<nav id="navbar" class="left-0 w-full">
 		<div class="wrapper flex align-items-center justify-content-between m-auto px-2">
 			<div class="logo">
-				<a href="/homepage"><img src="~/assets/images/logo1.png" alt="logo" class="mr-1" height="37px" style="margin-bottom: -7px;">VAUX</a>
+				<a href="/homepage"><img src="~/assets/images/logo1.png" alt="logo" class="mr-1" height="37px"
+						style="margin-bottom: -7px;">VAUX</a>
 			</div>
 			<ul class="nav-links inline-flex mx-2 megaDisplay">
 				<!-- <li>
@@ -48,7 +49,7 @@
 					<ul class="drop-menu absolute surface border-10" style="max-height: 80vh; overflow-y: auto;">
 						<li v-for="item in notifications" :key="item.id" :item="item"
 							class="p-2 hover:surface-300 cursor-pointer border-bottom-1 border-200">
-							<a href="#" class="border-10" style="line-height: 1.6;">
+							<a :href="item.redirect" class="border-10" style="line-height: 1.6;">
 								<div class="flex align-content-center ">
 									<div class="notiContent vertical-align-middle pr-2">
 										{{ item.content }}
@@ -104,43 +105,8 @@ class MenuNavbar extends Vue {
 	notiDisplay: boolean = false
 	profileDisplay: boolean = false
 	megaDisplay: boolean = false
-	notifications: any[] = [
-		{ id: 1, seen: true, content: 'Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu.Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu' },
-		{ id: 2, seen: false, content: 'Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu. Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu' },
-		{ id: 3, seen: true, content: 'Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu' },
-		{ id: 4, seen: false, content: 'Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu' },
-		{ id: 5, seen: false, content: 'Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu' },
-		{ id: 6, seen: false, content: 'Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu' },
-		{ id: 7, seen: false, content: 'Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu' },
-		{ id: 8, seen: true, content: 'Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu' },
-		{ id: 9, seen: false, content: 'Đây là 1 chiếc thông báo nhỏ nhỏ cho bạn nhỏ vừa bỏ người yêu' },
-	]
-	categories: any[] = [
-		{
-			items: [
-				{ label: "Graphics", link: "#" },
-				{ label: "Vectors", link: "#" },
-				{ label: "Business cards", link: "#" },
-				{ label: "Custom logo", link: "#" },
-			],
-		},
-		{
-			items: [
-				{ label: "Personal Email", link: "#" },
-				{ label: "Business Email", link: "#" },
-				{ label: "Mobile Email", link: "#" },
-				{ label: "Web Marketing", link: "#" },
-			],
-		},
-		{
-			items: [
-				{ label: "Site Seal", link: "#" },
-				{ label: "VPS Hosting", link: "#" },
-				{ label: "Privacy Seal", link: "#" },
-				{ label: "Website design", link: "#" },
-			],
-		},
-	]
+	notifications: any[] = []
+	categories: any[] = [{ items: [], }, { items: [], }, { items: [], }]
 	@nsUser.State('user')
 	user!: User.Model | null
 
@@ -184,6 +150,7 @@ class MenuNavbar extends Vue {
 		};
 		document.body.addEventListener('click', this.handleBodyClick);
 		this.getCategory()
+		this.notifications = this.user ? this.user.notifications : []
 	}
 
 	beforeDestroy() {

@@ -19,7 +19,7 @@
                         <!-- <h4 class="font-bold">Tên sản phẩm</h4> -->
 
                         <label>Tên sản phẩm</label>
-                        <InputText class="w-100" type="text" v-model="name" />
+                        <InputText class="w-100" type="text" v-model="name" :disabled="status != 1" />
                         <!-- <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text" v-model="name" placeholder="Nhập tên sản phẩm" /> -->
@@ -27,7 +27,8 @@
                     <div class="field md:col-4 col-12">
                         <label>Thể loại</label>
                         <Dropdown class="w-100" v-model="categoryId" :options="oCategories" optionLabel="name"
-                            optionValue="id" placeholder="Chọn thể loại" :filter="true" filterPlaceholder="Tìm kiếm" />
+                            optionValue="id" placeholder="Chọn thể loại" :filter="true" filterPlaceholder="Tìm kiếm"
+                            :disabled="status != 1" />
                     </div>
                 </div>
                 <div class="grid formgrid">
@@ -45,16 +46,18 @@
                                     class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
                                     <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
                                         imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
-                                    <div class="small font-italic text-muted mb-2">
+                                    <div class="small font-italic text-muted mb-2" v-if="status == 1">
                                         JPG or PNG no larger than 1 MB
                                     </div>
-                                    <input type="file" @change="onUploadThumbnail($event)" accept=".png, .jpg, .jpeg" />
+                                    <input v-if="status == 1" type="file" @change="onUploadThumbnail($event)"
+                                        accept=".png, .jpg, .jpeg" />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="field col-8  text-center">
-                        <input type="file" @change="onUploadFile($event)" accept=".png, .jpg, .jpeg" multiple />
+                        <input v-if="status == 1" type="file" @change="onUploadFile($event)" accept=".png, .jpg, .jpeg"
+                            multiple />
                         <div class="grid formgrid">
                             <div v-for="(image, index) in images" :key="index" class="image-item col-3">
                                 <div id="image-container"
@@ -63,7 +66,7 @@
                                         :style="{ backgroundImage: 'url(' + image.objectURL + ')' }"
                                         style="padding-bottom: 100%;">
                                     </div>
-                                    <div class="product-list-action p-2 w-100 text-center">
+                                    <div v-if="status == 1" class="product-list-action p-2 w-100 text-center">
                                         <Button class="btn" @click="removeImage(index)" label="Xóa" />
                                     </div>
                                 </div>
@@ -79,7 +82,8 @@
                     </span>
                     <div class="field col-12">
                         <Textarea class="text-left w-full" :autoResize="true" v-model="description" rows="5"
-                            placeholder="Sử dụng phần này để thêm thông tin mô tả." style="height: 3rem;" />
+                            placeholder="Sử dụng phần này để thêm thông tin mô tả." style="height: 3rem;"
+                            :disabled="status != 1" />
                     </div>
                 </div>
                 <div class="grid formgrid">
@@ -87,7 +91,8 @@
                     <span class="col-12">
                     </span>
                     <div class="field col-12 md:col-4">
-                        <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reservePrice" />
+                        <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reservePrice"
+                            :disabled="status != 1" />
                     </div>
                 </div>
                 <div class="grid formgrid">
@@ -100,33 +105,34 @@
                             </Column>
                             <Column v-for="col of columns" :field="col.field" :header="col.header"
                                 :styles="{ width: '50%' }" :key="col.field">
-                                <template #editor="slotProps">
+                                <template v-if="status == 1" #editor="slotProps">
                                     <InputText :class="{ 'p-invalid': (!slotProps.data[slotProps.column.field]) }"
                                         class="w-full" v-model="slotProps.data[slotProps.column.field]" autofocus />
+                                </template>
+                                <template v-else #body="slotProps">
+                                    <p>{{ slotProps.data[slotProps.column.field] }}</p>
                                 </template>
                             </Column>
                             <Column header="">
                                 <template #body="slotProps">
-                                    <Button class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center "
-                                        icon="pi pi-times" @click="onDeleteProperty(slotProps.index)">
+                                    <Button v-if="status == 1"
+                                        class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center " icon="pi pi-times"
+                                        @click="onDeleteProperty(slotProps.index)">
                                     </Button>
                                 </template>
                             </Column>
                         </DataTable>
                     </div>
                     <span class="col-12 field">
-                        <Button icon="pi pi-plus" label="Thêm dòng" @click="onAddProperty()" />
+                        <Button v-if="status == 1" icon="pi pi-plus" label="Thêm dòng" @click="onAddProperty()" />
                     </span>
                 </div>
                 <div class="grid formgrid">
-                    <div class="col-12">
-
-                    </div>
-                </div>
-                <div class="grid formgrid">
-                    <div v-if="isDisplayButton()" class="field col-12 flex justify-content-center">
-                        <Button class="mx-2 btn-primary border-10" :disabled="blockedAddButton ? 'disabled' : false"
-                            label="Cập nhật" @click="onUpdate()" />
+                    <div class="field col-12 flex justify-content-center">
+                        <Button v-if="isDisplayButton()" class="mx-2 btn-primary border-10"
+                            :disabled="blockedAddButton ? 'disabled' : false" label="Cập nhật" @click="onUpdate()" />
+                        <Button v-if="isDisplayREAButton" icon="pi pi-sync" class="btn-warning" label="Tái đấu giá"
+                            @click="onReAuction()" />
                     </div>
                     <Chat :labelHeader="'Trao đổi với chuyên gia'" :curUserId="user?.id" :curItemId="itemId"></Chat>
                 </div>
@@ -192,6 +198,8 @@ class DetailItem extends Vue {
     //----------------------------------------
     oCategories: Array<any> | null = null
 
+    isDisplayREAButton: boolean = false
+
     @nsCategory.Action
     actGetAllCategory!: () => Promise<any>
     @nsStoreItem.Action
@@ -206,6 +214,8 @@ class DetailItem extends Vue {
     actAddItemApplicationImage!: (params: any) => Promise<any>
     @nsStoreItem.Action
     actAddItemApplicationThumbnail!: (params: any) => Promise<any>
+    @nsStoreItem.Action
+    actPatchItemApplicationReAuction!: (params: any) => Promise<any>
 
     async created() {
         this.itemId = Array.isArray(this.$route.query.itemId)
@@ -239,7 +249,7 @@ class DetailItem extends Vue {
                 const imageInfo = { objectURL: result2, name: "result2.name", imgId: imgId };
                 this.images.push(imageInfo);
             }
-            //console.log(this.images.length + " ??? " + this.files.length)
+            this.getBtn()
         }
         else {
             this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin Item Id")
@@ -252,22 +262,7 @@ class DetailItem extends Vue {
                 itemId: itemId,
                 imgId: imgId,
             }
-            //const response = await this.actGetItemApplicationImage(params)
-            //custom
-            if (!isThumbnail) {
-                //this.files.push(process.env.BE_API_URL + '/api/item/' + itemId + '/images/' + imgId)
-            }
-            //
-
             return process.env.BE_API_URL + '/api/item/' + itemId + '/images/' + imgId
-            // return new Promise((resolve) => {
-            //     const reader = new FileReader();
-            //     reader.readAsDataURL(response);
-            //     reader.onloadend = () => {
-            //         const base64Image = reader.result;
-            //         resolve(base64Image);
-            //     };
-            // });
         } catch (error) {
             this.$store.commit('commons/store-error/setError', "Có lỗi khi đọc dữ liệu ảnh: " + imgId)
             console.error("Có lỗi khi đọc dữ liệu ảnh: " + imgId, error);
@@ -342,10 +337,6 @@ class DetailItem extends Vue {
         this.$toast.add({ severity: 'warn', summary: 'Thông báo', detail: 'Đang cập nhật. Vui lòng đợi trong giây lát', life: 3000 })
 
         let newFileList: File[] = []
-        // if (this.images.length != this.files.length) {
-        //     this.$toast.add({ severity: 'error', summary: 'Lỗi', detail: 'Lỗi điều kiện', life: 10000 })
-        //     return
-        // }
         for (let i = 0; i < this.images.length; i++) {
             if (this.images[i].imgId == null) {
                 this.images[i].imgId = 0
@@ -373,6 +364,15 @@ class DetailItem extends Vue {
         }
         this.$toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã cập nhật sản phẩm', life: 10000 })
         this.blockedAddButton = false
+    }
+    async onReAuction() {
+        const res = await this.actPatchItemApplicationReAuction({ itemId: this.itemId })
+        if (res) {
+            this.status = 3
+            this.$toast.add({ severity: 'success', summary: 'Thành công', detail: 'Sản phẩm của bạn đã sẵn sàng để được thêm vào phiên đấu giá tiếp theo', life: 3000 })
+            this.getBtn()
+            console.log(this.status)
+        }
     }
     async AddMultiImage(itemId: any, fileList: any) {
         const formData = new FormData();
@@ -405,7 +405,6 @@ class DetailItem extends Vue {
                 }
                 break;
         }
-        // console.log(this.properties)
     }
     onAddProperty() {
         this.properties.push({ label: null, value: null })
@@ -415,6 +414,12 @@ class DetailItem extends Vue {
     }
     isDisplayButton() {
         return !(this.status > 1)
+    }
+    getBtn() {
+        this.isDisplayREAButton = false
+        if (this.status == 6) {
+            this.isDisplayREAButton = true
+        }
     }
 }
 export default DetailItem
