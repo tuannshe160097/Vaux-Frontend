@@ -214,7 +214,7 @@ class Profile extends Vue {
     phone: string = ''
     mail: string = ''
     gender: string = ''
-    doB: string = ''
+    doB: Date = new Date()
     houseNumber: string = ''
     city: string = ''
     district: string = ''
@@ -244,7 +244,6 @@ class Profile extends Vue {
     ]
     disableButton: boolean = false
     //----------------------------------------
-
     @nsStoreUser.Action
     actGetUserDetail!: () => Promise<string>
     @nsStoreUser.Action
@@ -281,7 +280,7 @@ class Profile extends Vue {
         this.bankCode = this.user?.bankCode
         this.bankName = this.user?.bankName
         this.bankAccountNum = this.user?.bankAccountNum
-        this.doB = this.formatDate(this.user?.doB)
+        this.doB = this.getDate(this.user?.doB)
         await this.GetCity();
         await this.getDistrict();
         await this.getStreet();
@@ -296,6 +295,8 @@ class Profile extends Vue {
         }
     }
     async onUpdate() {
+
+        // console.log(this.parseDate(this.doB))
         this.disableButton = true;
         const params = {
             name: this.name,
@@ -306,7 +307,7 @@ class Profile extends Vue {
             street: this.street,
             houseNumber: this.houseNumber,
             gender: this.gender,
-            doB: this.doB
+            doB: this.parseDate(this.doB)
         }
         const response: any = await this.actUpdateProfile(params)
         if (response.status == 200) this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã cập nhật thông tin', life: 10000 })
@@ -377,6 +378,24 @@ class Profile extends Vue {
         const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
         const year = date.getFullYear()
         return `${day}-${month}-${year}`
+    }
+    getDate(string: string) {
+        return new Date(string)
+    }
+    parseDate(string: Date) {
+        const date = new Date(string);
+
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        const seconds = date.getSeconds().toString().padStart(2, '0');
+        const milliseconds = date.getMilliseconds().toString().padStart(3, '0');
+
+        const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+        return formattedDate;
     }
 }
 export default Profile

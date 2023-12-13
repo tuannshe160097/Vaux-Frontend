@@ -38,14 +38,18 @@ export default class StoreCategory extends VuexModule {
     async actCreateMod(params: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.CREATE_MOD)
-            return await $api.post(url, params)
+            return await $api.post(url, params, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            })
         } catch (error) { }
     }
     @Action({ rawError: true })
     async actCreateExpert(params: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.CREATE_EXPERT)
-            return await $api.post(url, params)
+            return await $api.post(url, params, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            })
         } catch (error) { }
     }
 
@@ -53,7 +57,9 @@ export default class StoreCategory extends VuexModule {
     async actUpdateUser(params: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.UPDATE_USER, { userId: params?.userId })
-            return await $api.put(url, params)
+            return await $api.put(url, params, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            })
         } catch (error) { }
     }
     @Action({ rawError: true })

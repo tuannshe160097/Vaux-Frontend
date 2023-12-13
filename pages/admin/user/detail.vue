@@ -96,9 +96,9 @@
                 <div class="field col-4">
                   <label>Phường, xã<span class="text-danger">*</span></label>
                   <!-- <InputText class="w-100" type="text" v-model="street" /> -->
-                  <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': fields.street.error }" v-model="selectedStreet"
-                    :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                    placeholder="-Chọn Phố/Phường-" optionValue="value" />
+                  <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': fields.street.error }"
+                    v-model="selectedStreet" :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm"
+                    optionLabel="name" placeholder="-Chọn Phố/Phường-" @change="onSelectStreet()" optionValue="value" />
                 </div>
                 <div class="field col-12">
                   <label>Địa chỉ cụ thể<span class="text-danger">*</span></label>
@@ -210,7 +210,7 @@ class DetailUser extends Vue {
   city: string = ''
   district: string = ''
   street: string = ''
-  dob: string = ''
+  dob: Date = new Date()
   gender: any = 'MALE'
   dateCreated: string = ''
   dateUpdated: string = ''
@@ -316,7 +316,7 @@ class DetailUser extends Vue {
       this.street = result.street
       this.district = result.district
       this.city = result.city
-      this.dob = this.formatDate(result.doB)
+      this.dob = this.getDate(result.doB)
       this.dateCreated = this.formatDate(result.created)
       this.dateUpdated = this.formatDate(result.updated)
       this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
@@ -372,6 +372,11 @@ class DetailUser extends Vue {
     this.oStreets = []
     this.getDistrict()
   }
+  onSelectStreet() {
+    if (this.selectedStreet == undefined || this.selectedStreet == null)
+      return
+    this.street = this.selectedStreet.value
+  }
   async GetBank() {
     const response: any = await this.actGetBanksList()
     if (response.code == '00') {
@@ -402,7 +407,7 @@ class DetailUser extends Vue {
       street: this.street,
       citizenId: this.cccd,
       gender: this.gender,
-      doB: this.dob,
+      doB: this.parseDate(this.dob),
       bankAccountNum: this.bankAccountNum,
       bankCode: this.bankCode,
       bankName: this.bankName,
@@ -445,7 +450,7 @@ class DetailUser extends Vue {
       street: this.street,
       citizenId: this.cccd,
       gender: this.gender,
-      doB: this.dob,
+      doB: this.parseDate(this.dob),
     }
     const result = await this.actUpdateUser(params)
     if (result) {
@@ -506,6 +511,7 @@ class DetailUser extends Vue {
     }
   }
   checkValid() {
+    console.log(this.street)
     this.fetchFormData();
     if (!this.checkNullValue(this.fields)) {
       return false
@@ -536,6 +542,24 @@ class DetailUser extends Vue {
     const month = (date.getMonth() + 1).toString().padStart(2, '0') // Tháng trong JavaScript bắt đầu từ 0
     const year = date.getFullYear()
     return `${day}-${month}-${year}`
+  }
+  getDate(string: string) {
+    return new Date(string)
+  }
+  parseDate(string: Date) {
+    const date = new Date(string);
+
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    const milliseconds = date.getMilliseconds().toString().padStart(3, '0');
+
+    const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+
+    return formattedDate;
   }
   getAddress(houseNumber: any, street: any, district: any, city: any,) {
     let address = ''
