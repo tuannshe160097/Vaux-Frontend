@@ -28,6 +28,7 @@ export const PAGE_MENU_ADMIN = [
   { id: 6, to: '/admin/category', icon: 'category', label: 'Thể loại', hideToggled: true },
   { id: 7, icon: 'category', label: 'Sản phẩm', hideToggled: true },
   { id: 8, to: '/admin/item', icon: 'user', label: 'Danh sách Sản phẩm', parentId: 7 },
+  { id: 9, to: '/admin/shipment', icon: 'fast-delivery', label: 'Vận chuyển', hideToggled: true},
 ]
 
 export const PAGE_MENU_MOD = [
@@ -42,7 +43,8 @@ export const PAGE_MENU_MOD = [
   { id: 9,  icon: 'auction', label: 'Phiên đấu giá' },
   { id: 10, to: '/admin/auction', icon: 'regulatory', label: 'Danh sách', parentId: 9 },
   { id: 11, to: '/admin/auction/create', icon: 'new-page', label: 'Tạo mới', parentId: 9 },
-  { id: 12, to: '/admin/payment', icon: 'credit-card', label: 'Thanh toán', hideToggled: true }
+  { id: 12, to: '/admin/payment', icon: 'credit-card', label: 'Thanh toán', hideToggled: true },
+  { id: 13, to: '/admin/shipment', icon: 'fast-delivery', label: 'Vận chuyển', hideToggled: true},
 ]
 
 export const PAGE_MENU_EXPERT = [
