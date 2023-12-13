@@ -24,11 +24,37 @@
                     <TabPanel>
                         <template #header>
                             <i class="pi pi-calendar"></i>
-                            <span>Chờ duyệt ({{ totalWaiting }})</span>
+                            <span>Tất cả sản phẩm </span>
                         </template>
                         <div class="grid formgrid">
                             <div class="field col-12">
-                                <h2 class="font-bold text-brown mb-0">Danh sách sản phẩm chờ duyệt</h2>
+                                <h2 class="font-bold text-brown mb-0">Danh sách sản phẩm</h2>
+                            </div>
+                            <div class="field col-12">
+                                <div class="grid">
+                                    <div class="col-3">
+                                        <label> Tên sản phẩm </label>
+                                        <InputText v-model="name" type="text" class="w-full form-control"
+                                            placeholder="Tên sản phẩm" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label> Thể loại </label>
+                                        <Dropdown class="w-100 line-height-1" v-model="categoryId" :options="oCategories"
+                                            optionLabel="name" optionValue="id" placeholder="Chọn thể loại" :filter="true"
+                                            filterPlaceholder="Tìm kiếm" />
+                                    </div>
+                                    <div class="col-3">
+                                        <label> Tình trạng </label>
+                                        <Dropdown class="w-100 line-height-1" v-model="statusId" :options="oStatuss"
+                                            optionLabel="name" optionValue="id" placeholder="Chọn thể loại" :filter="true"
+                                            filterPlaceholder="Tìm kiếm" />
+                                    </div>
+                                    <div class="col-fixed">
+                                        <Button class="w-full border-10 btn-primary" @click="Search()"
+                                            style="margin-top: 20px;">Tìm
+                                            kiếm</Button>
+                                    </div>
+                                </div>
                             </div>
                             <div class="field col-12">
                                 <BlockUI :blocked="blockedTable">
@@ -38,8 +64,7 @@
                                         <Column field="id" header="STT">
                                             <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
                                         </Column>
-                                        <Column field="imgUrl" header="Ảnh bìa" sortable="sortable"
-                                            bodyClass="font-semibold">
+                                        <Column field="imgUrl" header="Ảnh bìa" bodyClass="font-semibold">
                                             <template #body="{ data }">
                                                 <img :src="data.imgUrl" class="product-image" style="height:100px" />
                                             </template>
@@ -63,6 +88,9 @@
                                                     </Tag>
                                                 </div>
                                                 <div v-else>
+                                                    <Tag class="px-2 " v-if="data.status == 1" severity="warning"
+                                                        value="Đang xử lý">
+                                                    </Tag>
                                                     <Tag class="px-2 " v-if="data.status == 2" severity="danger"
                                                         value="Bị từ chối">
                                                     </Tag>
@@ -72,8 +100,8 @@
                                                     <Tag class="px-2" v-else-if="data.status == 4" value="Đang được đấu giá"
                                                         severity="warning">
                                                     </Tag>
-                                                    <Tag class="px-2" v-else-if="data.status == 6" value="Đấu giá không thành công"
-                                                        severity="warning">
+                                                    <Tag class="px-2" v-else-if="data.status == 6"
+                                                        value="Đấu giá không thành công" severity="warning">
                                                     </Tag>
                                                     <Tag class="px-2" v-else-if="data.status == 7" value="Chờ thanh toán"
                                                         severity="warning">
@@ -127,14 +155,196 @@
                     <TabPanel>
                         <template #header>
                             <i class="pi pi-user"></i>
-                            <span>Đã từ chối</span>
+                            <span>Chờ lấy hàng</span>
                         </template>
+                        <div class="grid formgrid">
+                            <div class="field col-12">
+                                <h2 class="font-bold text-brown mb-0">Danh sách sản phẩm đấu giá thành công</h2>
+                            </div>
+                            <div class="field col-12">
+                                <BlockUI :blocked="blockedTable">
+                                    <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="soldBoxData"
+                                        :value="soldBoxData" responsiveLayout="scroll" dataKey="id" :resizableColumns="true"
+                                        :rows="20" :scrollable="false" stripedRows>
+                                        <Column field="id" header="STT">
+                                            <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
+                                        </Column>
+                                        <Column field="imgUrl" header="Ảnh bìa" bodyClass="font-semibold">
+                                            <template #body="{ data }">
+                                                <img :src="data.imgUrl" class="product-image" style="height:100px" />
+                                            </template>
+                                        </Column>
+                                        <Column field="name" header="Tên sản phẩm" sortable="sortable"
+                                            bodyClass="font-semibold"></Column>
+                                        <Column field="category.name" header="thể loại" sortable="sortable"
+                                            className="font-semibold"></Column>
+                                        <Column field="created" header="NGÀY TẠO" sortable="sortable"
+                                            className="p-text-right">
+                                            <template #body="{ data }">{{
+                                                data.created | dateTimeFomat
+                                            }}</template>
+                                        </Column>
+                                        <Column field="status" header="TRẠNG THÁI" sortable="sortable"
+                                            className="p-text-right">
+                                            <template #body="{ data }">
+                                                <div v-if="data.expertId == null">
+                                                    <Tag class="px-2 surface-200 bg-100" severity="info"><span
+                                                            class="font-bold text-800 font-size-small">Chưa tiếp nhận</span>
+                                                    </Tag>
+                                                </div>
+                                                <div v-else>
+                                                    <Tag class="px-2 " v-if="data.status == 1" severity="warning"
+                                                        value="Đang xử lý">
+                                                    </Tag>
+                                                    <Tag class="px-2 " v-if="data.status == 2" severity="danger"
+                                                        value="Bị từ chối">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 3" value="Đã Duyệt"
+                                                        severity="warning">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 4" value="Đang được đấu giá"
+                                                        severity="warning">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 6"
+                                                        value="Đấu giá không thành công" severity="warning">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 7" value="Chờ thanh toán"
+                                                        severity="warning">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 8" value="Chờ lấy hàng"
+                                                        severity="info">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 9" value="Hoàn thành"
+                                                        severity="success">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else :value="data.status" severity="warning">
+                                                    </Tag>
+                                                </div>
+                                            </template>
+                                        </Column>
+                                        <Column :exportable="false" header="Hoạt động" className="p-text-right">
+                                            <template #body="{ data }">
+                                                <Button
+                                                    class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
+                                                    @click="viewDetail(data.id)">
+                                                    <div class="icon--small icon-eye"></div>
+                                                </Button>
+                                            </template>
+                                        </Column>
+                                        <template #footer="">
+                                            <div v-if="totalRecords > 0">
+                                                <Paginator class="p-0" :rows="pPageSize" :totalRecords="totalRecords"
+                                                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
+                                                    @page="onPageSold($event)">
+                                                </Paginator>
+                                            </div>
+                                        </template>
+                                        <template #empty>
+                                            <div class="justify-content-center flex font-italic">
+                                                Không có dữ liệu
+                                            </div>
+                                        </template>
+                                    </DataTable>
+                                </BlockUI>
+                            </div>
+                        </div>
                     </TabPanel>
                     <TabPanel>
                         <template #header>
                             <i class="pi pi-user"></i>
-                            <span>Đã duyệt</span>
+                            <span>Hoàn thành</span>
                         </template>
+                        <div class="grid formgrid">
+                            <div class="field col-12">
+                                <h2 class="font-bold text-brown mb-0">Danh sách sản phẩm đã bán thành công</h2>
+                            </div>
+                            <div class="field col-12">
+                                <BlockUI :blocked="blockedTable">
+                                    <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="finishBoxData"
+                                        :value="finishBoxData" responsiveLayout="scroll" dataKey="id" :resizableColumns="true"
+                                        :rows="20" :scrollable="false" stripedRows>
+                                        <Column field="id" header="STT">
+                                            <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
+                                        </Column>
+                                        <Column field="imgUrl" header="Ảnh bìa" bodyClass="font-semibold">
+                                            <template #body="{ data }">
+                                                <img :src="data.imgUrl" class="product-image" style="height:100px" />
+                                            </template>
+                                        </Column>
+                                        <Column field="name" header="Tên sản phẩm" sortable="sortable"
+                                            bodyClass="font-semibold"></Column>
+                                        <Column field="category.name" header="thể loại" sortable="sortable"
+                                            className="font-semibold"></Column>
+                                        <Column field="created" header="NGÀY TẠO" sortable="sortable"
+                                            className="p-text-right">
+                                            <template #body="{ data }">{{
+                                                data.created | dateTimeFomat
+                                            }}</template>
+                                        </Column>
+                                        <Column field="status" header="TRẠNG THÁI" sortable="sortable"
+                                            className="p-text-right">
+                                            <template #body="{ data }">
+                                                <div v-if="data.expertId == null">
+                                                    <Tag class="px-2 surface-200 bg-100" severity="info"><span
+                                                            class="font-bold text-800 font-size-small">Chưa tiếp nhận</span>
+                                                    </Tag>
+                                                </div>
+                                                <div v-else>
+                                                    <Tag class="px-2 " v-if="data.status == 1" severity="warning"
+                                                        value="Đang xử lý">
+                                                    </Tag>
+                                                    <Tag class="px-2 " v-if="data.status == 2" severity="danger"
+                                                        value="Bị từ chối">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 3" value="Đã Duyệt"
+                                                        severity="warning">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 4" value="Đang được đấu giá"
+                                                        severity="warning">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 6"
+                                                        value="Đấu giá không thành công" severity="warning">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 7" value="Chờ thanh toán"
+                                                        severity="warning">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 8" value="Chờ lấy hàng"
+                                                        severity="info">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else-if="data.status == 9" value="Hoàn thành"
+                                                        severity="success">
+                                                    </Tag>
+                                                    <Tag class="px-2" v-else :value="data.status" severity="warning">
+                                                    </Tag>
+                                                </div>
+                                            </template>
+                                        </Column>
+                                        <Column :exportable="false" header="Hoạt động" className="p-text-right">
+                                            <template #body="{ data }">
+                                                <Button
+                                                    class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
+                                                    @click="viewDetail(data.id)">
+                                                    <div class="icon--small icon-eye"></div>
+                                                </Button>
+                                            </template>
+                                        </Column>
+                                        <template #footer="">
+                                            <div v-if="totalRecords > 0">
+                                                <Paginator class="p-0" :rows="pPageSize" :totalRecords="totalRecords"
+                                                    template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
+                                                    @page="onPageFinish($event)">
+                                                </Paginator>
+                                            </div>
+                                        </template>
+                                        <template #empty>
+                                            <div class="justify-content-center flex font-italic">
+                                                Không có dữ liệu
+                                            </div>
+                                        </template>
+                                    </DataTable>
+                                </BlockUI>
+                            </div>
+                        </div>
 
                     </TabPanel>
                 </TabView>
@@ -159,12 +369,16 @@ const nsStoreUser = namespace('user-auth/store-user')
 })
 class CreateItem extends Vue {
     boxData: any[] = []
-
+    soldBoxData: any[] = []
+    finishBoxData: any[] = []
+    name: any = ''
+    categoryId: any = ''
+    statusId: any = 0
     totalWaiting: number = 0
 
     //-----Pagination---------------------------------
     pPagenum: number = 1
-    pPageSize: number = 5
+    pPageSize: number = 10
     totalRecords: number = 0
     blockedTable: boolean = false
 
@@ -176,7 +390,18 @@ class CreateItem extends Vue {
     isSeller: boolean = false
     appId: string | null = null
     //----------------------------------------
-    oCategories: Array<any> | null = null
+    oCategories: any[] = []
+    oStatuss: any[] = [
+        { id: 0, name: '---Tất cả---' },
+        { id: 1, name: 'Chưa tiếp nhận & Đang xử lý' },
+        { id: 2, name: 'Bị từ chối' },
+        { id: 3, name: 'Đã Duyệt' },
+        { id: 4, name: 'Đang được đấu giá' },
+        { id: 6, name: 'Đấu giá không thành công' },
+        { id: 7, name: 'Chờ thanh toán' },
+        { id: 8, name: 'Chờ lấy hàng' },
+        { id: 9, name: 'Hoàn thành' },
+    ]
 
     @nsStoreUser.State('user')
     user!: User.Model | undefined
@@ -204,17 +429,17 @@ class CreateItem extends Vue {
             return
         }
         this.isSeller = true
-        const response1 = await this.actGetAllCategory()
-        this.oCategories = response1.records
+        this.getCategory()
         this.Search()
+        this.SearchSold()
     }
-    async Search(pageNum: number = this.pPagenum) {
+    async Search(pageNum: any = this.pPagenum) {
         const params = {
             pageNum: pageNum,
             pageSize: this.pPageSize || 5,
-            search: '',
-            status: '',
-            category: '',
+            search: this.name,
+            status: this.statusId == 0 ? '' : this.statusId,
+            category: this.categoryId,
         }
         this.blockedTable = true
         let response = await this.actSearchItemApplication(params)
@@ -233,6 +458,73 @@ class CreateItem extends Vue {
         console.log('hẻh')
         this.boxData = response.records
         this.blockedTable = false
+    }
+    async SearchSold(pageNum: any = this.pPagenum) {
+        const params = {
+            pageNum: pageNum,
+            pageSize: this.pPageSize || 5,
+            search: '',
+            status: 8,
+            category: '',
+        }
+        this.blockedTable = true
+        let response = await this.actSearchItemApplication(params)
+        if (response && response.records.length > 0) {
+            for (let i = 0; i < response.records.length; i++) {
+                if (response.records[i].thumbnailId == undefined || response.records[i].thumbnailId == null) {
+                    response.records[i].imgUrl = ''
+                    continue
+                }
+                response.records[i].imgUrl = await this.getImageUrl(response.records[i].id, response.records[i].thumbnailId)
+            }
+            console.log(this.boxData)
+            this.totalRecords = response.totalRecords
+            this.totalWaiting = response.totalRecords
+        }
+        console.log('hẻh')
+        this.soldBoxData = response.records
+        this.blockedTable = false
+    }
+    async SearchFinish(pageNum: any = this.pPagenum) {
+        const params = {
+            pageNum: pageNum,
+            pageSize: this.pPageSize || 10,
+            search: '',
+            status: 9,
+            category: '',
+        }
+        this.blockedTable = true
+        let response = await this.actSearchItemApplication(params)
+        if (response && response.records.length > 0) {
+            for (let i = 0; i < response.records.length; i++) {
+                if (response.records[i].thumbnailId == undefined || response.records[i].thumbnailId == null) {
+                    response.records[i].imgUrl = ''
+                    continue
+                }
+                response.records[i].imgUrl = await this.getImageUrl(response.records[i].id, response.records[i].thumbnailId)
+            }
+            console.log(this.boxData)
+            this.totalRecords = response.totalRecords
+            this.totalWaiting = response.totalRecords
+        }
+        console.log('hẻh')
+        this.finishBoxData = response.records
+        this.blockedTable = false
+    }
+    async getCategory() {
+        const response = await this.actGetAllCategory()
+        if (response) {
+            this.oCategories.push({
+                id: '',
+                name: '-----Tất cả-----',
+            })
+            response.records.forEach((cat: any) => {
+                this.oCategories.push({
+                    id: cat.id,
+                    name: cat.name,
+                })
+            });
+        }
     }
     async getImageUrl(itemId: any, imgId: any) {
         try {
@@ -262,6 +554,12 @@ class CreateItem extends Vue {
     }
     onPage(event: any) {
         this.Search(event.page + 1)
+    }
+    onPageSold(event: any) {
+        this.SearchSold(event.page + 1)
+    }
+    onPageFinish(event: any) {
+        this.SearchFinish(event.page + 1)
     }
     createNewItem() {
         this.$router.push('/seller/uploadItem')
