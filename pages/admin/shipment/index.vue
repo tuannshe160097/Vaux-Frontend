@@ -1,36 +1,34 @@
 <template>
-  <div class="order-detail-page flex flex-column container">
+  <div class="shipment-list-page flex flex-column container">
     <div class="flex justify-content-between header container">
       <div class="col-fixed">
         <h2 class="font-bold m-0 font-size-4xlarge line-height-1">
-          Cập nhật đơn hàng
+          Đơn vận chuyển
         </h2>
+      </div>
+      <div class="col-fixed">
+        <div class="grid align-content-center">
+          <div class="col-fixed">
+          </div>
+        </div>
       </div>
     </div>
     <div class="card-body">
-      <div class="card-function">
-        <div class="grid formgrid">
-          <div class="col p-fluid grid formgrid flex justify-content-between">
-            <div class="field col-12 md:col-6">
-              <label class="font-semibold">ID Đơn hàng:</label>
-              <p>{{ orderInfo?.id }}</p>
+      <div>
+        <div class="grid">
+          <div class="col grid">
+            <div class="col-4">
+              <label>ID</label><br/>
+              <InputText class="w-full" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
             </div>
-            <div class="field col-12 md:col-6">
-              <label class="font-semibold">Tên người nhận:</label>
-              <p>{{ orderInfo?.user?.name }}</p>
+            <div class="col-3">
+              <label>Trạng thái</label>
+              <Dropdown class="w-full line-height-1" v-model="statusSelected" :options="status" optionLabel="name"
+                optionValue="code" />
             </div>
-            <div class="field col-12 md:col-6">
-              <label class="font-semibold">Số tiền:</label>
-              <p>{{ orderInfo?.totalCost | moneyNumberFomat }}</p>
-            </div>
-            <div class="field col-12 md:col-6">
-              <label class="font-semibold">Địa chỉ nhận hàng:</label>
-              <p>{{ orderInfo?.address }}</p>
-            </div>
-            <div class="field col-12 md:col-6">
-              <label class="font-semibold">Ngày tạo:</label>
-              <p>{{ orderInfo?.created | dateTimeFomat }}</p>
-            </div>
+          </div>
+          <div class="col justify-content-end flex">
+            <Button label="Tìm kiếm" style="height: 36px" @click="getShipmentList" class="w-full max-w-6rem" />
           </div>
         </div>
       </div>
@@ -38,8 +36,7 @@
         <div class="col-12 md:col-12">
           <DataTable class="w-full airtag-datatable h-full flex flex-column p-datatable-customers"
             v-if="shipments" :value="shipments" responsiveLayout="scroll" dataKey="id"
-            :resizableColumns="true" :rows="10" :scrollable="false" stripedRows :rowsPerPageOptions="[10, 25, 50]"
-            :paginator="true" :expandedRows.sync="expandedRows">
+            :resizableColumns="true" :rows="10" :scrollable="false" stripedRows :rowsPerPageOptions="[10, 25, 50]" :expandedRows.sync="expandedRows">
             <Column :expander="true" :headerStyle="{'width': '3rem'}" />
             <Column field="id" header="ID Đơn vận chuyển" sortable="sortable" className="w-3 font-semibold"></Column>
             <Column field="seller" header="Tên người bán" sortable="sortable" className="w-3">
@@ -85,8 +82,26 @@
               </DataTable>
               </div>
             </template>
-          </DataTable>
+            <template #footer="">
+              <div>
+                <div class="flex align-items-center">
+                  <div class="icon--large icon-showing surface-400"></div>
+                  <span class="ml-3 text-400 font-size-small">Showing
+                    {{ Math.min((pPagenum - 1) * pPageSize + 1, totalRecords) }}
+                    - {{ Math.min(pPagenum * pPageSize, totalRecords) }} of
+                    {{ totalRecords }}</span>
+                </div>
+              </div>
+              <div v-if="totalRecords > 0">
+                <Paginator class="p-0" :rows="pPageSize" :totalRecords="totalRecords"
+                  template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink JumpToPageInput"
+                  @page="onPage($event)">
+                </Paginator>
+              </div>
+            </template>
+          </DataTable> 
         </div>
+        <ConfirmDialog></ConfirmDialog>
       </div>
     </div>
   </div>
@@ -94,16 +109,19 @@
 
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-const nsStoreOrderMod = namespace('order/store-orderMod')
 const nsStoreShipment = namespace('shipment/store-shipment')
 
 @Component({
   middleware: ['authenticate'],
   layout: 'admin',
 })
-class OrderDetail extends Vue {
-  shipments: any = []
-  orderInfo: any = null
+class ShipmentPage extends Vue {
+  shipments = []
+  search: string = ''
+  pPagenum: number = 1
+  pPageSize: number = 10
+  totalRecords: number = 0
+  expandedRows: any = []
   SHIPMENT_STATUS_MAP = new Map<number, string>([
     [0, 'Đang chờ duyệt'],
     [1, 'Đang vận chuyển'],
@@ -114,28 +132,32 @@ class OrderDetail extends Vue {
     { code: 1, name: this.SHIPMENT_STATUS_MAP.get(1) },
     { code: 2, name: this.SHIPMENT_STATUS_MAP.get(2) }
   ]
-  expandedRows: any = []
-  
-  @nsStoreOrderMod.Action
-  actGetOrderById!: (params: any) => Promise<any>
+  status = [
+    { code: '', name: 'Tất cả' },
+    ...this.shipmentStatus
+  ]
+  statusSelected = ''
+
+  @nsStoreShipment.Action
+  actGetShipment!: (params: any) => Promise<any>
 
   @nsStoreShipment.Action
   actChangeShipmentStatus!: (params: any) => Promise<any>
 
-  mounted() {
-    this.fetchData()
+  async mounted() {
+    this.getShipmentList()
   }
 
-  async fetchData() {
-    const orderId = this.$route?.params?.id
-    if (!orderId) {
-      this.$router.push('/admin/order')
-    } else {
-      const response = await this.actGetOrderById({ id: orderId })
-      if (response) {
-        this.orderInfo = response
-        this.shipments = response?.shipment
-      }
+  async getShipmentList() {
+    const response = await this.actGetShipment({
+      pageSize: this.pPageSize,
+      pageNum: this.pPagenum,
+      search: this.search,
+      status: this.statusSelected
+    })
+    if (response) {
+      this.shipments = response.records
+      this.totalRecords = response.totalRecords
     }
   }
 
@@ -145,7 +167,7 @@ class OrderDetail extends Vue {
       status: shipment?.status
     })
     if (response) {
-      this.fetchData()
+      this.getShipmentList()
       this.$toast.add({
         severity: 'success',
         summary: 'Thông báo thành công',
@@ -155,12 +177,16 @@ class OrderDetail extends Vue {
     }
   }
 
+  onPage(event: any) {
+    this.pPagenum = event.page + 1
+    this.getShipmentList()
+  }
 }
-export default OrderDetail
+export default ShipmentPage
 </script>
 
 <style lang="sass" scoped>
-.order-detail-page
+.shipment-list-page
   height: calc(100vh - 100px)
 
 .element
