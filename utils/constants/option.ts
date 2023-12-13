@@ -6,13 +6,9 @@ export const GENDER_OPTION = [
 export const ROLE_OPTION_ADMIN = [
   { name: 'Quản trị viên', value: 1 },
   { name: 'Kiểm định viên', value: 2 },
-  { name: 'Người bán', value: 3 },
-  { name: 'Người mua', value: 4 },
 ]
 export const ROLE_OPTION_MOD = [
   { name: 'Kiểm định viên', value: 2 },
-  { name: 'Người bán', value: 3 },
-  { name: 'Người mua', value: 4 },
 ]
 export const ROLE_OPTION = [
   { name: 'Quản trị viên', value: 1 },

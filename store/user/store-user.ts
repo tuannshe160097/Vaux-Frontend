@@ -14,9 +14,8 @@ export default class StoreCategory extends VuexModule {
         CREATE_EXPERT: '/Mod/Account/CreateExpert',
         ADMIN_BAN_USER: '/Admin/Account/ChangeAccess/:userId',
         MOD_BAN_USER: '/Mod/Account/ChangeAccess/:userId',
+        GET_IMAGE: '/Mod/Account/:userId/Image/:imageId',
     }
-
-
     @Action({ rawError: true })
     async actSearchUser(params: any): Promise<string | undefined> {
         try {
@@ -25,7 +24,6 @@ export default class StoreCategory extends VuexModule {
             return await $api.get(url)
         } catch (error) { }
     }
-
     @Action({ rawError: true })
     async actGetUser(params: any): Promise<string | undefined> {
         try {
@@ -33,7 +31,6 @@ export default class StoreCategory extends VuexModule {
             return await $api.get(url)
         } catch (error) { }
     }
-
     @Action({ rawError: true })
     async actCreateMod(params: any): Promise<string | undefined> {
         try {
@@ -52,14 +49,11 @@ export default class StoreCategory extends VuexModule {
             })
         } catch (error) { }
     }
-
     @Action({ rawError: true })
     async actUpdateUser(params: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.UPDATE_USER, { userId: params?.userId })
-            return await $api.put(url, params, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            })
+            return await $api.put(url, params)
         } catch (error) { }
     }
     @Action({ rawError: true })
@@ -76,13 +70,11 @@ export default class StoreCategory extends VuexModule {
             return await $api.patch(url)
         } catch (error) { }
     }
-
-
-    //   @Action({ rawError: true })
-    //   async actUpdateCategory(params: any): Promise<string | undefined> {
-    //     try {
-    //       const url = PathBind.transform(this.context, StoreCategory.STATE_URL.UPDATE_CATEGORY, { id: params?.id })
-    //      return await $api.put(url, params) 
-    //     } catch (error) {}
-    //   }
+    @Action({ rawError: true })
+    async actGetUserImage(params: any): Promise<string | undefined> {
+        try {
+            const url = PathBind.transform(this.context, StoreCategory.STATE_URL.GET_IMAGE, { userId: params.userId, imageId: params.imageId })
+            return await $api.get(url, { responseType: 'blob' })
+        } catch (error) { }
+    }
 }

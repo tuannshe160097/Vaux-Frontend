@@ -7,7 +7,7 @@
       </div>
       <div class="col-fixed">
         <div class="grid align-content-center">
-        <!-- <div class="col-fixed">
+          <!-- <div class="col-fixed">
             <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="onAddNew()"></Button>
                     </div> -->
         </div>
@@ -22,6 +22,21 @@
               style="padding: 0.8rem 1.5rem !important">
               <div class="title text-xl flex">
                 <span>Thông tin tài khoản</span>
+              </div>
+              <div class="card-action">
+                <label class="text-normal">Quyền hạn<span class="text-danger">*</span>:</label>
+                <Tag class="px-2 " v-if="curUserRoleId == '1'" severity="warning" value="Quản trị viên">
+                </Tag>
+                <Tag class="px-2 " v-else-if="curUserRoleId == '2'" severity="success" value="Quản lý">
+                </Tag>
+                <Tag class="px-2 " v-else-if="curUserRoleId == '3'" severity="success" value="Kiểm định viên">
+                </Tag>
+                <Tag class="px-2 " v-else-if="curUserRoleId == '4'" severity="warning" value="Người bán">
+                </Tag>
+                <Tag class="px-2 " v-else-if="curUserRoleId == '5'" severity="info" value="Người mua">
+                </Tag>
+                <Tag class="px-2 " v-else severity="info" :value="curUserRoleId">
+                </Tag>
               </div>
             </div>
             <div class="p-4 grid formgrid">
@@ -96,16 +111,18 @@
         </div>
         <div class="col-4">
           <div class="card-control">
-            <div class="card-header font-medium text-xl">Ảnh Đại Diện</div>
+            <div class="card-header font-medium text-xl">Ảnh chân dung</div>
             <div class="p-5 text-center">
-              <ImagePreview src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
+              <ImagePreview
+                :src="portraitUrl || 'https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg'"
                 alt="Image" class="wm-100" preview imageStyle="width: 100%" />
             </div>
           </div>
           <div class="card-control mt-3">
             <div class="card-header font-medium text-xl">Ảnh CCCD</div>
             <div class="p-5 text-center">
-              <ImagePreview src="https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg"
+              <ImagePreview
+                :src="citizenIdUrl || 'https://phutungnhapkhauchinhhang.com/wp-content/uploads/2020/06/default-thumbnail.jpg'"
                 alt="Image" class="wm-100" preview imageStyle="width: 100%" />
             </div>
           </div>
@@ -143,6 +160,8 @@ class ViewUser extends Vue {
   dateDeleted: string = ''
   curUserId: string = ''
   curUserRoleId: any
+  portraitUrl: string = ''
+  citizenIdUrl: string = ''
 
   oGenders = GENDER_OPTION
   oRoles: any = null
@@ -164,6 +183,8 @@ class ViewUser extends Vue {
   actGetDistrict!: (params: any) => Promise<string>
   @nsStoreAddress.Action
   actGetStreet!: (params: any) => Promise<string>
+  @nsStoreUser.Action
+  actGetUserImage!: (params: any) => Promise<any>
 
   async mounted() {
     this.fetchData()
@@ -199,6 +220,24 @@ class ViewUser extends Vue {
       this.dateCreated = this.formatDate(result.created)
       this.dateUpdated = this.formatDate(result.updated)
       this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
+      this.portraitUrl = await this.getImageUrl(result.portraitId)
+      this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId)
+    }
+  }
+  async getImageUrl(imgId: any): Promise<any> {
+    try {
+      const response = await this.actGetUserImage({ imageId: imgId, userId: this.curUserId });
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(response);
+        reader.onloadend = () => {
+          const base64Image = reader.result;
+          resolve(base64Image);
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching or converting image:", error);
+      return null;
     }
   }
   formatDate(dateString: string) {

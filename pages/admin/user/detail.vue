@@ -48,8 +48,24 @@
                 </div>
                 <div class="card-action">
                   <label class="text-normal">Quyền hạn<span class="text-danger">*</span>:</label>
-                  <Dropdown v-model="curSubject" :class="{ 'p-invalid': fields.curSubject.error }" :options="oRoles"
-                    optionLabel="name" optionValue="value" />
+                  <span v-if="curThread === 'ADD'">
+                    <Dropdown v-model="curSubject" :class="{ 'p-invalid': fields.curSubject.error }" :options="oRoles"
+                      optionLabel="name" optionValue="value" />
+                  </span>
+                  <span v-else>
+                    <Tag class="px-2 " v-if="curSubject == '1'" severity="warning" value="Quản trị viên">
+                    </Tag>
+                    <Tag class="px-2 " v-else-if="curSubject == '2'" severity="success" value="Quản lý">
+                    </Tag>
+                    <Tag class="px-2 " v-else-if="curSubject == '3'" severity="success" value="Kiểm định viên">
+                    </Tag>
+                    <Tag class="px-2 " v-else-if="curSubject == '4'" severity="warning" value="Người bán">
+                    </Tag>
+                    <Tag class="px-2 " v-else-if="curSubject == '5'" severity="info" value="Người mua">
+                    </Tag>
+                    <Tag class="px-2 " v-else severity="info" :value="curSubject">
+                    </Tag>
+                  </span>
                 </div>
               </div>
               <div class="p-4 grid formgrid">
@@ -98,7 +114,7 @@
                   <!-- <InputText class="w-100" type="text" v-model="street" /> -->
                   <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': fields.street.error }"
                     v-model="selectedStreet" :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm"
-                    optionLabel="name" placeholder="-Chọn Phố/Phường-" @change="onSelectStreet()" optionValue="value" />
+                    optionLabel="name" placeholder="-Chọn Phố/Phường-" @change="onSelectStreet()" />
                 </div>
                 <div class="field col-12">
                   <label>Địa chỉ cụ thể<span class="text-danger">*</span></label>
@@ -151,7 +167,7 @@
           </div>
           <div class="md:col-4 sm:col">
             <div class="card-control">
-              <div class="card-header font-medium text-xl">Ảnh Đại Diện<span class="text-danger">*</span></div>
+              <div class="card-header font-medium text-xl">Ảnh chân dung<span class="text-danger">*</span></div>
               <div class="p-5 text-center">
 
                 <div :class="{ 'input-invalid': fields.fileCitizenId.error }"
@@ -161,7 +177,9 @@
                     alt="Image" class="w-100" preview imageStyle="width: 100%" />
                   <input ref="portrait" class="hidden" type="file" @change="onUploadFile($event, 'Portrait')"
                     accept="image/*" />
-                  <Button class="btn-primary border-10" @click="openPortraitInput">Chọn ảnh</Button>
+                  <span v-if="curThread === 'ADD'">
+                    <Button class="btn-primary border-10" @click="openPortraitInput">Chọn ảnh</Button>
+                  </span>
                 </div>
               </div>
             </div>
@@ -175,7 +193,9 @@
                     alt="Image" class="w-100" preview imageStyle="width: 100%" />
                   <input class="hidden" ref="citizenid" type="file" @change="onUploadFile($event, 'CitizenId')"
                     accept="image/*" />
-                  <Button class="btn-primary border-10" @click="openCitizenInput">Chọn ảnh</Button>
+                  <span v-if="curThread === 'ADD'">
+                    <Button class="btn-primary border-10" @click="openCitizenInput">Chọn ảnh</Button>
+                  </span>
                 </div>
               </div>
             </div>
@@ -202,6 +222,7 @@ const nsStoreBank = namespace('bank/store-bank')
 })
 class DetailUser extends Vue {
   //data
+  role: string = ''
   name: string = ''
   phone: string = ''
   email: string = ''
@@ -243,7 +264,7 @@ class DetailUser extends Vue {
   portraitUrl: string = ''
   citizenIdUrl: string = ''
   curThread: string = 'ADD'
-  curSubject: string = ''
+  curSubject: any = 0
   curUserId: string = ''
   //option data
   oGenders = GENDER_OPTION
@@ -268,6 +289,8 @@ class DetailUser extends Vue {
   actCreateExpert!: (params: any) => Promise<any>
   @nsStoreUser.Action
   actUpdateUser!: (params: any) => Promise<any>
+  @nsStoreUser.Action
+  actGetUserImage!: (params: any) => Promise<any>
   @nsStoreAddress.Action
   actGetCity!: () => Promise<string>
   @nsStoreAddress.Action
@@ -278,7 +301,7 @@ class DetailUser extends Vue {
   actGetBanksList!: () => Promise<string>
 
   async mounted() {
-    this.fetchData()
+    await this.fetchData()
     const role = this.user?.role.id
     if (role == 1) {
       this.oRoles = ROLE_OPTION_MOD
@@ -308,6 +331,7 @@ class DetailUser extends Vue {
       const result = await this.actGetUser(params)
       console.log(result)
       this.curSubject = result.role.id
+      this.role = result.role.name
       this.name = result.name
       this.phone = result.phone
       this.email = result.email
@@ -323,6 +347,8 @@ class DetailUser extends Vue {
       this.bankCode = result.bankCode
       this.bankName = result.bankName
       this.bankAccountNum = result.bankAccountNum
+      this.portraitUrl = await this.getImageUrl(result.portraitId)
+      this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId)
     } else {
     }
   }
@@ -396,35 +422,33 @@ class DetailUser extends Vue {
     this.bankCode = this.selectedBank?.value
   }
   async createUser() {
-    const params = {
-      subject: this.curSubject,
-      name: this.name,
-      phone: this.phone,
-      email: this.email,
-      houseNumber: this.houseNumber,
-      city: this.city,
-      district: this.district,
-      street: this.street,
-      citizenId: this.cccd,
-      gender: this.gender,
-      doB: this.parseDate(this.dob),
-      bankAccountNum: this.bankAccountNum,
-      bankCode: this.bankCode,
-      bankName: this.bankName,
-      RawCitizenIdImage: this.fileCitizenId,
-      RawPortrait: this.filePortrait,
-      // address: this.getAddress(this.houseNumber, this.selectedStreet?.name, this.selectedDistrict?.name, this.selectedCity?.name)
-      address: this.houseNumber + ', ' + this.selectedStreet?.name + ', ' + this.selectedDistrict?.name + ', ' + this.selectedCity?.name
-    }
+    var formData = new FormData();
+    formData.append("subject", this.curSubject);
+    formData.append("name", this.name);
+    formData.append("phone", this.phone);
+    formData.append("email", this.email);
+    formData.append("houseNumber", this.houseNumber);
+    formData.append("city", this.city);
+    formData.append("district", this.district);
+    formData.append("street", this.street);
+    formData.append("citizenId", this.cccd);
+    formData.append("gender", this.gender);
+    formData.append("doB", this.parseDate(this.dob));
+    formData.append("bankAccountNum", this.bankAccountNum);
+    formData.append("bankCode", this.bankCode);
+    formData.append("bankName", this.bankName);
+    formData.append("RawCitizenIdImage", this.fileCitizenId, this.fileCitizenId.name);
+    formData.append("RawPortrait", this.filePortrait, this.filePortrait.name);
+    formData.append("address", this.houseNumber + ', ' + this.selectedStreet?.name + ', ' + this.selectedDistrict?.name + ', ' + this.selectedCity?.name);
     let result
-    if (this.curSubject === 'MOD') {
-      result = await this.actCreateMod(params)
-    } else if (this.curSubject === 'EXP') {
-      result = await this.actCreateExpert(params)
+    if (this.curSubject == '1') {
+      result = await this.actCreateMod(formData)
+    } else if (this.curSubject == '2') {
+      result = await this.actCreateExpert(formData)
     } else {
       this.$store.commit(
         'commons/store-error/setError',
-        'Chưa chọn loại tài khoản muốn tạo'
+        'Chưa chọn loại tài khoản muốn tạo ' + this.curSubject
       )
     }
     if (result) {
@@ -473,6 +497,22 @@ class DetailUser extends Vue {
       }
     }
   }
+  async getImageUrl(imgId: any): Promise<any> {
+    try {
+      const response = await this.actGetUserImage({ imageId: imgId, userId: this.curUserId });
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(response);
+        reader.onloadend = () => {
+          const base64Image = reader.result;
+          resolve(base64Image);
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching or converting image:", error);
+      return null;
+    }
+  }
   checkNullValue(fields: any) {
     const invalidFields: any[] = []
     for (const fieldName in fields) {
@@ -511,7 +551,6 @@ class DetailUser extends Vue {
     }
   }
   checkValid() {
-    console.log(this.street)
     this.fetchFormData();
     if (!this.checkNullValue(this.fields)) {
       return false
