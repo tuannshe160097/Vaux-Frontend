@@ -14,20 +14,22 @@
             <div class="signup-form">
               <h2 class="form-title">Đăng ký</h2>
               <form class="signin-form">
-                <div class="form-group mb-3">
-                  <label class="block label" for="inputName">Họ và tên<span class="text-danger">*</span></label>
-                  <InputText class="form-control w-full" id="inputName" type="text" v-model="name"
-                    placeholder="Họ và tên" />
-                </div>
-                <div class="form-group mb-3">
-                  <label class="block label" for="inputSdt">Số điện thoại<span class="text-danger">*</span></label>
-                  <InputText v-model="sdt" type="text" class="w-full form-control" placeholder="Số điện thoại" />
-                </div>
-                <div class="form-group" for="inputPassword">
-                  <Button class="p-button-outlined form-control btn btn-primary1 px-3" @click="sendOtp">
-                    Gửi mã OTP
-                  </Button>
-                </div>
+                <form @submit.prevent="sendOtp">
+                  <div class="form-group mb-3">
+                    <label class="block label" for="inputName">Họ và tên<span class="text-danger">*</span></label>
+                    <InputText class="form-control w-full" id="inputName" type="text" v-model="name"
+                      placeholder="Họ và tên" />
+                  </div>
+                  <div class="form-group mb-3">
+                    <label class="block label" for="inputSdt">Số điện thoại<span class="text-danger">*</span></label>
+                    <InputText v-model="sdt" type="text" class="w-full form-control" placeholder="Số điện thoại" />
+                  </div>
+                  <div class="form-group" for="inputPassword">
+                    <Button class="p-button-outlined form-control btn btn-primary1 px-3" type="submit">
+                      Gửi mã OTP
+                    </Button>
+                  </div>
+                </form>
                 <div class="form-group mb-3">
                   <label class="block label">Nhập mã OTP</label>
                   <InputText id="inputPassword" v-model="otp" type="text" class="w-full form-control"
@@ -70,7 +72,16 @@ class Register extends Vue {
 
   @nsStoreUser.Action
   actVerify!: (params: any) => Promise<string>
-
+  async mounted() {
+    try {
+      await this.$recaptcha.init()
+    } catch (e) {
+      console.error(e);
+    }
+  }
+  beforeDestroy() {
+    this.$recaptcha.destroy()
+  }
   async sendOtp() {
     if (this.sdt && this.name) {
       if (!this.validPhoneNumber(this.sdt)) {
@@ -81,9 +92,17 @@ class Register extends Vue {
         this.$store.commit('commons/store-error/setError', 'Họ và tên dài quá 40 ký tự')
         return
       }
+      let token
+      try {
+        token = await this.$recaptcha.execute('register')
+        console.log('ReCaptcha token:', token)
+      } catch (error) {
+        console.log('get recaptcha token error: ', error)
+      }
       const params = {
         name: this.name,
         phone: this.sdt,
+        reCaptcha: token
       }
       const result = await this.actRegister(params)
       if (result !== undefined && result !== null) {
@@ -115,14 +134,15 @@ class Register extends Vue {
         detail: 'Xác nhận thành công. Vui lòng đăng nhập lại để tiếp tục',
         life: 5000,
       })
+      console.log(result)
       try {
-        if (result?.data) {
+        if (result) {
           console.log("login1")
-          this.$cookies.set('auth._token', result?.data.jwt)
+          this.$cookies.set('auth._token', result?.jwt)
           console.log("login2")
-          this.$cookies.set('auth.role', result?.data.role.id)
+          this.$cookies.set('auth.role', result?.role.id)
           console.log("login3")
-          await this.$auth.setUserToken(result.data.jwt)
+          await this.$auth.setUserToken(result.jwt)
           console.log("login4")
           this.$router.push('/')
         }
