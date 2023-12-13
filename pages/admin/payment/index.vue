@@ -25,7 +25,7 @@
       <div class="row flex-1 relative">
         <div class="col-12 md:col-12">
           <DataTable class="w-full airtag-datatable h-full flex flex-column" :value="payments" rowGroupMode="rowspan" groupRowsBy="itemId"
-            sortMode="single" :sortOrder="1" responsiveLayout="scroll">
+            sortMode="single" :sortOrder="1" responsiveLayout="scroll" :rowClass='rowClass'>
             <Column field="itemId" header="ID">
                 <template #body="slotProps">
                     <span class="image-text">{{slotProps.data.id}}</span>
@@ -65,7 +65,13 @@
             </Column>
             <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right overflow-visible">
               <template #body="{ data }">
-                <Button v-if="data.paymentStatus === 1" label="Xác nhận" icon="pi pi-check" class="p-button-sm p-button-outlined" @click="onPaymentUpdate(data)"/>
+                <Button
+                  v-if="data.paymentStatus === 1"
+                  label="Xác nhận" icon="pi pi-check"
+                  class="p-button-sm"
+                  @click="onPaymentUpdate(data)"
+                  :class="data?.type === 1 ? 'p-button-outlined' : ''"
+                />
               </template>
             </Column>
             <template #footer="">
@@ -191,13 +197,20 @@ class PaymentList extends Vue {
         }
       })
   }
+
+  rowClass(data: any) {
+    return data?.type === 2 ? 'table-row-buyer': ''
+  }
 }
 export default PaymentList
 </script>
 
 <style lang="sass" scoped>
-.payment-page-container
+::v-deep.payment-page-container
   height: calc(100vh - 100px)
+
+  .table-row-buyer
+    background: #bfbfbf !important
 
 .element
   @include overflow-ellipsis(400px)

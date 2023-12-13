@@ -16,6 +16,7 @@ export const PAGE_MENU = [
   { id: 11, to: '/admin/auction/create', icon: 'new-page', label: 'Tạo mới', parentId: 9 },
   { id: 12, to: '/admin/order', icon: 'regulatory', label: 'Đơn hàng', hideToggled: true },
   { id: 13, to: '/admin/payment', icon: 'credit-card', label: 'Thanh toán', hideToggled: true },
+  { id: 14, to: '/admin/shipment', icon: 'credit-card', label: 'Đơn vận chuyển', hideToggled: true },
 ]
 
 export const PAGE_MENU_ADMIN = [
