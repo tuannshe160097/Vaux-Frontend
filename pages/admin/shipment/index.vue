@@ -18,7 +18,7 @@
         <div class="grid">
           <div class="col grid">
             <div class="col-4">
-              <label>ID</label><br/>
+              <label>ID, tên sản phẩm</label><br/>
               <InputText class="w-full" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
             </div>
             <div class="col-3">
