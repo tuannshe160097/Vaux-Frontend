@@ -163,7 +163,7 @@ class homepage extends Vue {
             orderBy: 'end',
         }
         const response = await this.actGetItemList(params)
-        console.log('this: ', response)
+        console.log('getEndingSoonItems: ', response)
         if (!response || !response.records) {
             this.$toast.add({
                 severity: 'error',

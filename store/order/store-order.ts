@@ -11,6 +11,7 @@ export default class StoreItem extends VuexModule {
         GET_ORDER: '/Order?completed=:completed',
         GET_ORDER_BY_ID: '/Order/:orderId',
         POST_ORDER: '/Order',
+        DELETE_ORDER: '/Order/:orderId',
         POST_ORDER_PAYMENT_LINK: '/Order/:orderId/Pay',
         PATCH_CONFIRM_PAYMENT: '/Order/:orderId/ConfirmPayment?'
             + 'vnp_Amount=:vnp_Amount'
@@ -54,6 +55,13 @@ export default class StoreItem extends VuexModule {
         try {
             const url = PathBind.transform(this.context, StoreItem.STATE_URL.POST_ORDER)
             return await $api.post(url, params.orderIdList)
+        } catch (error) { }
+    }
+    @Action({ rawError: true })
+    async actDeleteOrder(params: any): Promise<string | undefined> {
+        try {
+            const url = PathBind.transform(this.context, StoreItem.STATE_URL.DELETE_ORDER, { orderId: params.orderId })
+            return await $api.delete(url)
         } catch (error) { }
     }
     @Action({ rawError: true })

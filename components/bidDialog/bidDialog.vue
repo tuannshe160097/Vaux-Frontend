@@ -1,61 +1,90 @@
 <template>
   <div class="grid nested-grid">
-    <div class="col-12 text-brown">
-      Giá hiện tại
+    <div v-if="!bidEnd" class="align-self-center col-12 field">
+      <h4 class="mb-0">{{ countdownText }}</h4>
     </div>
-    <div class="col-12">
-      <h1>{{ formatNumber(curBid) }}</h1>
+    <div v-else class="align-self-center col-12 field">
+      <h4 class="mb-0">Đã kết thúc</h4>
     </div>
-    <div v-if="reservePrice <= curBid" class="col-12 text-brown">
-      Đã đạt mức giá tối thiểu
-    </div>
-    <div v-else class="col-12 text-brown">
-      Chưa đạt mức giá tối thiểu
-    </div>
-    <div class="col-12 mt-3  border-bottom-1" style="border-color: #E0A26F;">
-      <div v-if="user" class="grid">
-        <div class="col-4">
-          <button @click="BidOption(curBid + 100000)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid +
-            100000)
-          }}</button>
-        </div>
-        <div class="col-4">
-          <button @click="BidOption(curBid + 200000)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid +
-            200000)
-          }}</button>
-        </div>
-        <div class="col-4">
-          <button @click="BidOption(curBid + 300000)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid +
-            300000)
-          }}</button>
+    <div class="col-12 border-solid border-1 ">
+      <div class="grid nested-grid">
+        <div class="col-12 text-brown">
+          <span v-if="bidEnd">Giá cao nhất</span><span v-else>Giá hiện tại</span>
         </div>
         <div class="col-12">
-          <InputNumber class="w-full this-p-inputtext-p-4" v-model="priceBid"
-            :placeholder="`${formatNumber(curBid + 10000)} hoặc cao hơn`">
-          </InputNumber>
+          <h1>{{ formatNumber(curBid) }}</h1>
         </div>
-        <div class="col-12">
-          <button class="p-3 btn-primary border-10 w-full" @click="postBids()">Đấu giá</button>
+        <div v-if="reservePrice <= curBid" class="col-12 text-brown">
+          Đã đạt mức giá tối thiểu
+        </div>
+        <div v-else class="col-12 text-brown">
+          Chưa đạt mức giá tối thiểu
+        </div>
+        <div v-if="!bidEnd" class="col-12 mt-3  border-bottom-1" style="border-color: #E0A26F;">
+          <div v-if="user" class="grid">
+            <div class="col-4">
+              <button @click="BidOption(curBid + 100000)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid +
+                100000)
+              }}</button>
+            </div>
+            <div class="col-4">
+              <button @click="BidOption(curBid + 200000)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid +
+                200000)
+              }}</button>
+            </div>
+            <div class="col-4">
+              <button @click="BidOption(curBid + 300000)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid +
+                300000)
+              }}</button>
+            </div>
+            <div class="col-12">
+              <InputNumber class="w-full this-p-inputtext-p-4" v-model="priceBid"
+                :placeholder="`${formatNumber(curBid + 10000)} hoặc cao hơn`">
+              </InputNumber>
+            </div>
+            <div class="col-12">
+              <button class="p-3 btn-primary border-10 w-full" @click="postBids()">Đấu giá</button>
+            </div>
+          </div>
+          <div v-else>
+            <div class="font-bold text-center">
+              Vui lòng đăng nhập để tham gia đấu giá
+            </div>
+          </div>
+        </div>
+        <div class="w-full" v-if="!bidEnd">
+          <div class="col-12" v-if="bidshow.length > 0">
+            <div class="text-brown mb-1">Lịch sử đấu giá</div>
+            <table class="w-full" style="  border-collapse: collapse;  border-spacing: 0;">
+              <tr v-for="bid in bidshow" :key="bid.id">
+                <td class="p-0 pe-2"> Người tham gia {{ bid.userId }}</td>
+                <td class="px-2">{{ bid.timeString }}</td>
+                <td class="text-right ps-2">{{ formatNumber(bid.price) }}</td>
+              </tr>
+            </table>
+            <div v-if="bidFullList.length > 0" class="flex flex-column align-items-center mt-2">
+              <div for="post-2" class="read-more p-2 px-4 border-10 text-orange cursor-pointer"
+                @click="seeAllBid = !seeAllBid">
+                <span v-if="!seeAllBid">Xem thêm</span>
+                <span v-else>Ẩn bớt</span>
+              </div>
+              <table v-if="seeAllBid" class="w-full" style="  border-collapse: collapse;  border-spacing: 0;">
+                <tr v-for="bid in bidFullList" :key="bid.id">
+                  <td class="p-0 pe-2"> Người tham gia {{ bid.userId }}</td>
+                  <td class="px-2">{{ bid.timeString }}</td>
+                  <td class="text-right ps-2">{{ formatNumber(bid.price) }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="col-12" v-else>
+            <div class="text-center font-bold  mb-1">Chưa có ai tham gia đấu giá</div>
+          </div>
+        </div>
+        <div class="bg-red-100 col-12" v-if="bidEnd">
+          Đã kết thúc phiên đấu giá. Vui lòng quay trở lại trang chủ để tiếp tục
         </div>
       </div>
-      <div v-else>
-        <div class="font-bold text-center">
-          Vui lòng đăng nhập để tham gia đấu giá
-        </div>
-      </div>
-    </div>
-    <div class="col-12" v-if="bids.length > 0">
-      <div class="text-brown mb-1">Lịch sử đấu giá</div>
-      <table class="w-full" style="  border-collapse: collapse;  border-spacing: 0;">
-        <tr v-for="bid in bids" :key="bid.id">
-          <td class="p-0 pe-2"> Người tham gia {{ bid.userId }}</td>
-          <td class="px-2">{{ formatDistanceToNow(bid.time) }}</td>
-          <td class="text-right ps-2">{{ formatNumber(bid.price) }}</td>
-        </tr>
-      </table>
-    </div>
-    <div class="col-12" v-else>
-      <div class="text-center font-bold  mb-1">Chưa có ai tham gia đấu giá</div>
     </div>
   </div>
 </template>
@@ -71,16 +100,21 @@ import * as signalR from "@microsoft/signalr"
 class BidDialog extends Vue {
   @Prop() curItemId!: any;
   @Prop() reservePrice!: any;
+  @Prop() endDatetime!: any;
 
+  bidEnd: boolean = false
   curBid: any = 0
   priceBid: any = null
-  bids: any[] = [
+  bidshow: any[] = [
     // { id: 1, name: 'Lương Thị Kiểm Định Viên Thị Kiểm Định Viên', time: '2023-11-23T17:56', price: 1200000 },
     // { id: 2, name: 'Lương Tiến Anh', time: '2023-11-23T16:45', price: 1500000 },
     // { id: 3, name: 'Lương Tiến Anh', time: '2023-11-23T16:34', price: 1200000 },
     // { id: 4, name: 'Lương Tiến Anh', time: '2023-11-23T16:23', price: 120000 },
     // { id: 5, name: 'Lương Tiến Anh', time: '2023-11-23T16:11', price: 12000 }
   ]
+  bidFullList: any[] = []
+  seeAllBid: boolean = false
+  countdownText: string = ""; // Thêm dòng này
   @nsStoreItem.Action
   actGetItemBids!: (params: any) => Promise<any>
   @nsStoreItem.Action
@@ -99,11 +133,15 @@ class BidDialog extends Vue {
     await this.start()
     await this.joinBidRoom();
     await this.receiveMessage();
+    await this.receiveEndMessage();
   }
   async mounted() {
     await this.getItemInfo()
     await this.getBids()
     this.getBids()
+    this.formatItemsTimeLeft()
+    console.log(this.endDatetime)
+    this.formatTimeLeft(this.endDatetime);
   }
   async start() {
     try {
@@ -142,6 +180,16 @@ class BidDialog extends Vue {
       console.log(error);
     }
   }
+  async receiveEndMessage() {
+    try {
+      const eventName = "AuctionEnd"
+      await this.connection.on(eventName, () => {
+        this.onEndBid()
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  }
   async getItemInfo() {
     const params = {
       itemId: this.curItemId
@@ -161,16 +209,29 @@ class BidDialog extends Vue {
     }
     const response = await this.actGetItemBids(params)
     if (response && response.records.length > 0) {
-      this.bids = []
-      for (let i = response.records.length - 1; i >= 0; i--) {
-        const bid = response.records[i];
-        this.bids.push({
-          id: bid.index,
-          name: bid.user.name,
-          userId: bid.user.id,
-          price: bid.amount,
-          time: bid.created,
-        });
+      this.bidshow = []
+      this.bidFullList = []
+      const bid = response.records;
+      for (let i = bid.length - 1; i >= 0; i--) {
+        if (this.bidshow.length > 4) {
+          this.bidFullList.push({
+            id: i,
+            name: bid[i].user.name,
+            userId: bid[i].user.id,
+            price: bid[i].amount,
+            time: bid[i].created,
+            timeString: this.formatDistanceToNow(bid[i].created),
+          });
+        } else {
+          this.bidshow.push({
+            id: i,
+            name: bid[i].user.name,
+            userId: bid[i].user.id,
+            price: bid[i].amount,
+            time: bid[i].created,
+            timeString: this.formatDistanceToNow(bid[i].created),
+          });
+        }
       }
     }
   }
@@ -183,7 +244,7 @@ class BidDialog extends Vue {
     }
     console.log('hi: ')
     const response = await this.actAddItemBids(params)
-    console.log('heello: ',response)
+    console.log('heello: ', response)
     if (response && response.status == 200) {
       this.$toast.add({
         severity: 'success',
@@ -200,6 +261,26 @@ class BidDialog extends Vue {
   formatNumber(number: any) {
     const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
     return "₫" + formattedNumber;
+  }
+  formatItemsTimeLeft() {
+    const updateInterval = 1000;
+    const updateTimer = () => {
+      for (let i = 0; i < this.bidshow.length; i++) {
+        const targetTime: any = new Date(this.bidshow[i].time);
+        this.bidshow[i].timeString = this.formatDistanceToNow(targetTime);
+      }
+      for (let i = 0; i < this.bidFullList.length; i++) {
+        const targetTime: any = new Date(this.bidFullList[i].time);
+        this.bidFullList[i].timeString = this.formatDistanceToNow(targetTime);
+      }
+    }
+    // Initial update
+    updateTimer();
+    // Set up interval for periodic updates
+    const intervalId = setInterval(() => {
+      updateTimer();
+    }, updateInterval);
+
   }
   formatDistanceToNow(timeString: any) {
     const currentTime: any = new Date();
@@ -221,10 +302,60 @@ class BidDialog extends Vue {
       return `${seconds > 10 ? seconds : 'vài'} giây trước`;
     }
   }
+  formatTimeLeft(timeEnd: any) {
+    const updateInterval = 1000;
+    const targetTime: any = new Date(timeEnd);
+    const updateTimer = () => {
+      this.countdownText = "Thời gian còn lại: " + this.calculateRemainingTime(targetTime);
+    }
+    // Initial update
+    updateTimer();
+    // Set up interval for periodic updates
+    const intervalId = setInterval(() => {
+      updateTimer();
+    }, updateInterval);
+  }
+  calculateRemainingTime(targetTime: any): string {
+    const currentTime: any = new Date();
+    const diffInMs = targetTime - currentTime;
+    if (diffInMs <= 0) {
+      this.bidEnd = true
+    }
+    const diffInSeconds = Math.floor(diffInMs / 1000);
+    const diffInMinutes = Math.floor(diffInSeconds / 60);
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    const diffInDays = Math.floor(diffInHours / 24);
+    const remainingHours = diffInHours % 24;
+    const remainingMinutes = diffInMinutes % 60;
+    const remainingSeconds = diffInSeconds % 60;
+
+    let timeLeft = "";
+    if (diffInDays > 0) {
+      timeLeft += `${diffInDays} ngày `;
+    }
+    if (remainingHours > 0) {
+      timeLeft += `${remainingHours} giờ `;
+    }
+    if (remainingMinutes > 0) {
+      timeLeft += `${remainingMinutes} phút `;
+    }
+    timeLeft += `${remainingSeconds} giây`;
+
+    return timeLeft;
+  }
+  onEndBid() {
+
+  }
+  @Watch('endDatetime')
+  setShowModal() {
+    console.log(this.endDatetime)
+    this.formatTimeLeft(this.endDatetime);
+  }
 }
 export default BidDialog
 </script>
   
 <style lang="sass" scoped>
-
+.read-more
+  border: 1px solid $primary-orange
   </style>

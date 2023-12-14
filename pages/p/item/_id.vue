@@ -60,14 +60,7 @@
                         </div>
                     </div>
                     <div class="md:col-5 col-12 md:pl-3">
-                        <div class="grid nested-grid">
-                            <div class="align-self-center col-12 field">
-                                <h4 class="mb-0">{{ countdownText }}</h4>
-                            </div>
-                            <div class="col-12 border-solid border-1 ">
-                                <BidDialog :curItemId="itemId" :reservePrice="item.reservePrice"></BidDialog>
-                            </div>
-                        </div>
+                        <BidDialog :curItemId="itemId" :endDatetime="endDate" :reservePrice="item.reservePrice"></BidDialog>
                     </div>
                 </div>
             </div>
@@ -103,13 +96,13 @@ class EditAuctionList extends Vue {
         category: '',
     }
     startDate: any = null
-    endDate: any = '2023-12-29T20:00:00'
-    countdownText: string = ""; // Thêm dòng này
+    endDate: any = ''
     displayAddItem: boolean = false
     display: boolean = false
     selectedItemsApproved: any = []
     priceBid: any = null
     previewImage: string | null | undefined = null;
+    bidEnd: boolean = false
 
     zoom: number = 1;
     rotation: number = 0;
@@ -132,13 +125,7 @@ class EditAuctionList extends Vue {
         { label: 'Nguồn gốc', value: 'Thần rùa' },
         { label: 'Chất liệu', value: 'Thép đen nguyên khối' }
     ]
-    bids = [
-        // { id: 1, name: 'Lương Thị Kiểm Định Viên Thị Kiểm Định Viên', time: '2023-11-23T17:56', price: 1200000 },
-        // { id: 2, name: 'Lương Tiến Anh', time: '2023-11-23T16:45', price: 1500000 },
-        // { id: 3, name: 'Lương Tiến Anh', time: '2023-11-23T16:34', price: 1200000 },
-        // { id: 4, name: 'Lương Tiến Anh', time: '2023-11-23T16:23', price: 120000 },
-        // { id: 5, name: 'Lương Tiến Anh', time: '2023-11-23T16:11', price: 12000 }
-    ]
+    bids = []
     disableButton: boolean = false
     @nsStoreItem.Action
     actGetItem!: (params: any) => Promise<any>
@@ -154,7 +141,7 @@ class EditAuctionList extends Vue {
         await this.fetchData();
         console.log(this.itemId)
         this.items = [
-            { label: 'Danh sách Sản phẩm', to: '/item' },
+            { label: 'Danh sách Sản phẩm', to: '/p/item' },
             { label: this.item.category.name, to: '/p/item?cId=' + this.item.category.id },
             { label: this.item.name }
         ]
@@ -181,7 +168,6 @@ class EditAuctionList extends Vue {
             this.images.push(imageInfo);
         }
         this.Properties = response.itemProperties
-        this.formatTimeLeft(response.auctionSessions[0].endDate);
     }
     getImageUrl(itemId: any, imgId: any) {
         try {
@@ -247,44 +233,6 @@ class EditAuctionList extends Vue {
         } else {
             return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
         }
-    }
-    formatTimeLeft(timeEnd: any) {
-        const updateInterval = 1000;
-        const targetTime: any = new Date(timeEnd);
-        const updateTimer = () => {
-            this.countdownText = "Thời gian còn lại: " + this.calculateRemainingTime(targetTime);
-        }
-        // Initial update
-        updateTimer();
-        // Set up interval for periodic updates
-        const intervalId = setInterval(() => {
-            updateTimer();
-        }, updateInterval);
-    }
-    calculateRemainingTime(targetTime: any): string {
-        const currentTime: any = new Date();
-        const diffInMs = targetTime - currentTime;
-        const diffInSeconds = Math.floor(diffInMs / 1000);
-        const diffInMinutes = Math.floor(diffInSeconds / 60);
-        const diffInHours = Math.floor(diffInMinutes / 60);
-        const diffInDays = Math.floor(diffInHours / 24);
-        const remainingHours = diffInHours % 24;
-        const remainingMinutes = diffInMinutes % 60;
-        const remainingSeconds = diffInSeconds % 60;
-
-        let timeLeft = "";
-        if (diffInDays > 0) {
-            timeLeft += `${diffInDays} ngày `;
-        }
-        if (remainingHours > 0) {
-            timeLeft += `${remainingHours} giờ `;
-        }
-        if (remainingMinutes > 0) {
-            timeLeft += `${remainingMinutes} phút `;
-        }
-        timeLeft += `${remainingSeconds} giây`;
-
-        return timeLeft;
     }
 }
 export default EditAuctionList

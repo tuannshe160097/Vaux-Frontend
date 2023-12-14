@@ -48,9 +48,8 @@ export const PAGE_MENU_MOD = [
 ]
 
 export const PAGE_MENU_EXPERT = [
-  { id: 1, to: '/dashboard', icon: 'dashboard', label: 'Thống kê', hideToggled: true },
-  { id: 7, icon: 'product', label: 'Sản phẩm' },
-  { id: 8, to: '/expert/items', icon: 'user', label: 'Danh sách Sản phẩm', parentId: 7 },
+  { id: 1, to: '/homepage', icon: 'dashboard', label: 'Trang chủ', hideToggled: true },
+  { id: 8, to: '/expert/items', icon: 'product', label: 'Danh sách Sản phẩm', hideToggled: true },
   // { id: 9, to: '/expert/items', icon: 'user', label: 'Danh sách Sản phẩm', parentId: 7 },
 ]
 

@@ -76,7 +76,10 @@
                                     <span class="material-icons vertical-align-bottom mr-2">person</span>
                                     {{ order.receiverName + ' - ' + order.receiverPhone + ' - ' + order.address }}
                                 </span>
-                                <a :href="'http://localhost:4000/account/items/checkout/' + order.id">Tiếp tục</a>
+                                <span>
+                                    <a @click="cancelOrder(order.id)">Hủy</a>
+                                    <a :href="'http://localhost:4000/account/items/checkout/' + order.id">Tiếp tục</a>
+                                </span>
                             </div>
                             <div class="grid nested-grid item p-2 border-10 w-full" v-for="item in order.items"
                                 :key="item.id" :item="item">
@@ -131,6 +134,8 @@ class ItemList extends Vue {
     @nsStoreOrder.Action
     actPostOrder!: (params: any) => Promise<any>
     @nsStoreOrder.Action
+    actDeleteOrder!: (params: any) => Promise<any>
+    @nsStoreOrder.Action
     actGetAllOrder!: (params: any) => Promise<any>
 
     async created() {
@@ -138,7 +143,7 @@ class ItemList extends Vue {
         const paymentStatus = Array.isArray(this.$route.query.vnp_ResponseCode)
             ? this.$route.query.vnp_ResponseCode[0]
             : this.$route.query.vnp_ResponseCode
-        console.log('LTA',paymentStatus)
+        console.log('LTA', paymentStatus)
     }
     async mounted() {
         this.getItems()
@@ -223,6 +228,13 @@ class ItemList extends Vue {
                 console.log(response)
                 this.$router.push("/account/items/checkout/" + response.id)
             }
+        }
+    }
+    async cancelOrder(orderId: any) {
+        const response = await this.actDeleteOrder({ orderId: orderId })
+        console.log(response)
+        if (response) {
+            this.$router.push("/account/items/checkout/" + response.id)
         }
     }
     getImageUrl(itemId: any, imgId: any) {
