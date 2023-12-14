@@ -11,12 +11,10 @@ export const PAGE_MENU = [
   { id: 6, to: '/admin/category', icon: 'category', label: 'Thể loại', hideToggled: true },
   { id: 7, icon: 'product', label: 'Sản phẩm'},
   { id: 8, to: '/admin/item', icon: 'list-product', label: 'Danh sách Sản phẩm', parentId: 7 },
-  { id: 9,  icon: 'auction', label: 'Phiên đấu giá' },
-  { id: 10, to: '/admin/auction', icon: 'regulatory', label: 'Danh sách', parentId: 9 },
-  { id: 11, to: '/admin/auction/create', icon: 'new-page', label: 'Tạo mới', parentId: 9 },
+  { id: 10, to: '/admin/auction', icon: 'auction', label: 'Phiên đấu giá', hideToggled: true },
   { id: 12, to: '/admin/order', icon: 'regulatory', label: 'Đơn hàng', hideToggled: true },
   { id: 13, to: '/admin/payment', icon: 'credit-card', label: 'Thanh toán', hideToggled: true },
-  { id: 14, to: '/admin/shipment', icon: 'credit-card', label: 'Đơn vận chuyển', hideToggled: true },
+  { id: 14, to: '/admin/shipment', icon: 'fast-delivery', label: 'Giao hàng', hideToggled: true },
 ]
 
 export const PAGE_MENU_ADMIN = [
@@ -40,9 +38,7 @@ export const PAGE_MENU_MOD = [
   { id: 6, to: '/admin/category', icon: 'category', label: 'Thể loại', hideToggled: true },
   { id: 7, icon: 'product', label: 'Sản phẩm'},
   { id: 8, to: '/admin/item', icon: 'list-product', label: 'Danh sách Sản phẩm', parentId: 7 },
-  { id: 9,  icon: 'auction', label: 'Phiên đấu giá' },
-  { id: 10, to: '/admin/auction', icon: 'regulatory', label: 'Danh sách', parentId: 9 },
-  { id: 11, to: '/admin/auction/create', icon: 'new-page', label: 'Tạo mới', parentId: 9 },
+  { id: 10, to: '/admin/auction', icon: 'auction', label: 'Phiên đấu giá', hideToggled: true },
   { id: 12, to: '/admin/payment', icon: 'credit-card', label: 'Thanh toán', hideToggled: true },
   { id: 13, to: '/admin/shipment', icon: 'fast-delivery', label: 'Vận chuyển', hideToggled: true},
 ]

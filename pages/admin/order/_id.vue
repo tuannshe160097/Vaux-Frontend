@@ -20,7 +20,7 @@
               <p>{{ orderInfo?.user?.name }}</p>
             </div>
             <div class="field col-12 md:col-6">
-              <label class="font-semibold">Số tiền:</label>
+              <label class="font-semibold">Tổng số tiền:</label>
               <p>{{ orderInfo?.totalCost | moneyNumberFomat }}</p>
             </div>
             <div class="field col-12 md:col-6">
@@ -47,7 +47,7 @@
                 <p class="element">{{ data?.seller?.name }}</p>
               </template>
             </Column>
-            <Column field="itemCost" header="Số tiền" sortable="sortable" className="w-3">
+            <Column field="itemCost" header="Giá sản phẩm" sortable="sortable" className="w-3">
               <template #body="{ data }">{{
                 data.itemCost | moneyNumberFomat
               }}</template>
@@ -70,7 +70,7 @@
               <div class="px-5" v-if="slotProps?.data?.items">
                 <label class="font-semibold">Sản phẩm của {{ slotProps?.data?.seller?.name }}</label>
                 <DataTable class="mt-2" :value="slotProps?.data?.items">
-                  <Column field="id" header="Id" sortable></Column>
+                  <Column field="id" header="Id sản phẩm" sortable></Column>
                   <Column field="name" header="Tên sản phẩm" sortable></Column>
                   <Column field="category" header="Hạng mục" sortable>
                     <template #body="{ data }">{{
@@ -106,8 +106,8 @@ class OrderDetail extends Vue {
   orderInfo: any = null
   SHIPMENT_STATUS_MAP = new Map<number, string>([
     [0, 'Đang chờ duyệt'],
-    [1, 'Đang vận chuyển'],
-    [2, 'Đã vận chuyển']
+    [1, 'Đang giao hàng'],
+    [2, 'Đã giao hàng']
   ])
   shipmentStatus = [
     { code: 0, name: this.SHIPMENT_STATUS_MAP.get(0) },

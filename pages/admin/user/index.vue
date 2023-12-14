@@ -52,7 +52,7 @@
           <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="boxData" :value="boxData"
             responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="20" :scrollable="false" stripedRows>
             <Column field="id" header="STT">
-              <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
+              <template #body="slotProps"><span>{{ (pPagenum - 1) * pPageSize + slotProps.index + 1 }}</span></template>
             </Column>
             <Column field="phone" header="SỐ ĐIỆN THOẠI" sortable="sortable" bodyClass="font-semibold"></Column>
             <Column field="name" header="TÊN" sortable="sortable" className="w-3 font-semibold"></Column>
@@ -213,6 +213,7 @@ class UserList extends Vue {
     }
   }
   onPage(event: any) {
+    this.pPagenum = event.page + 1
     this.Search(event.page + 1)
   }
 }

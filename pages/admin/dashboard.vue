@@ -44,9 +44,6 @@
         <div class="col-6">
           <Chart v-if="chartExpertContributionData" type="bar" :data="chartExpertContributionData" :options="chartExpertContributionOptions"/>
         </div>
-        <div class="col-12">
-          <Chart v-if="chartAuctionData" type="bar" :data="chartAuctionData" :options="chartAuctionOptions"/>
-        </div>
       </div>
     </div>
   </div>
@@ -104,8 +101,6 @@ class DashboardPages extends Vue {
   chartUnpaidItemsOptions: any = this.initChartOptions
   chartExpertContributionData: any = null
   chartExpertContributionOptions: any = this.initChartOptions
-  chartAuctionData: any = null
-  chartAuctionOptions: any = this.initChartOptions
 
 
   @nsStoreDashboard.Action
@@ -167,7 +162,6 @@ class DashboardPages extends Vue {
     this.initUnsoldItem(from, to)
     this.initUnpaidItems(from, to)
     this.initExpertContribution(from, to)
-    this.initAuctionReport(from, to)
   }
 
   async initAccountList(from: any, to: any) {
@@ -207,7 +201,7 @@ class DashboardPages extends Vue {
           ...this.initChartOptions.plugins,
           title: {
             display: true,
-            text: 'Sản phẩm đã bán',
+            text: 'Những sản phẩm đã đấu giá thành công',
             padding: {
               top: 10,
               bottom: 16
@@ -252,7 +246,7 @@ class DashboardPages extends Vue {
           ...this.initChartOptions.plugins,
           title: {
             display: true,
-            text: 'Sản phẩm chưa bán',
+            text: 'Những sản phẩm đấu giá không thành công',
             padding: {
               top: 10,
               bottom: 16
@@ -296,7 +290,7 @@ class DashboardPages extends Vue {
           ...this.initChartOptions.plugins,
           title: {
             display: true,
-            text: 'Các khoản chưa thanh toán',
+            text: 'Những sản phẩm quá hạn thanh toán',
             padding: {
               top: 16,
               bottom: 16
@@ -369,82 +363,6 @@ class DashboardPages extends Vue {
           title: {
             display: true,
             text: 'Top 10 các chuyên gia có đóng góp nhiều nhất',
-            padding: {
-              top: 16,
-              bottom: 16
-            },
-            font: {
-              size: 16,
-            }
-          }
-        }
-      }
-    }
-  }
-
-  async initAuctionReport(from: any, to: any) {
-    const response = await this.actGetAuctionReport({ from, to })
-    if (response) {
-      const res = Object.values(response)
-      let auctionLabelList: string[] = []
-      let activeItems: number[] = []
-      let auctionedItems: number[] = []
-      let soldItems: number[] = []
-      let auctions = res.sort((a: any, b: any) => b?.report?.totalRevenue - a.report?.totalRevenue)
-      auctions = auctions?.length > 10 ? auctions.slice(0, 10) : auctions
-      console.log(auctions);
-      
-      if (auctions) {
-        auctions.forEach((aut: any) => {
-          auctionLabelList.push(`ID: ${aut?.auction.id} (${this.formatNumber(aut?.report?.totalRevenue)})`)
-          activeItems.push(aut?.report?.activeItems)
-          auctionedItems.push(aut?.report?.auctionedItems)
-          soldItems.push(aut?.report?.soldItems)
-        });
-
-        this.chartAuctionData = {
-          labels: auctionLabelList,
-          datasets: [
-            {
-              label: 'Sản phẩm tham gia',
-              data: activeItems || [],
-              fill: false,
-              tension: 0.4,
-              backgroundColor: 'rgb(75, 192, 192, 0.2)',
-              borderColor: 'rgb(75, 192, 192)',
-              borderWidth: 1
-            },
-            {
-              label: 'Sản phẩm được đấu giá',
-              data: auctionedItems || [],
-              fill: false,
-              tension: 0.4,
-              backgroundColor: 'rgb(54, 162, 235, 0.2)',
-              borderColor: 'rgb(54, 162, 235)',
-              borderWidth: 1
-            },
-            {
-              label: 'Sản phẩm đã bán',
-              data: soldItems || [],
-              fill: false,
-              tension: 0.4,
-              backgroundColor: 'rgba(255, 99, 132, 0.2)',
-              borderColor: 'rgb(255, 99, 132)',
-              borderWidth: 1
-            },
-          ]
-        }
-      }
-      this.chartAuctionOptions = { 
-        ...this.initChartOptions,
-        plugins: {
-          ...this.initChartOptions.plugins,
-          legend: {
-            display: true
-          },
-          title: {
-            display: true,
-            text: 'Top 10 phiên đấu giá có doanh thu cao nhất',
             padding: {
               top: 16,
               bottom: 16

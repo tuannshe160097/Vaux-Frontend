@@ -33,12 +33,22 @@
             </Column>
             <Column field="itemId" header="ID Đơn hàng">
                 <template #body="slotProps">
-                    <span class="image-text">{{slotProps.data.itemId}}</span>
+                    <span class="image-text font-semibold">{{slotProps.data.itemId}}</span>
                 </template>
             </Column>
             <Column field="itemId" header="Doanh thu">
                 <template #body="slotProps">
-                    <span class="image-text">{{ slotProps.data.revenue  | moneyNumberFomat }}</span>
+                    <span class="image-text">{{ slotProps.data.revenue | moneyNumberFomat }}</span>
+                </template>
+            </Column>
+            <Column field="itemId" header="Giá đấu giá">
+                <template #body="slotProps">
+                    <span class="image-text">{{ slotProps.data.bidAmount | moneyNumberFomat }}</span>
+                </template>
+            </Column>
+            <Column field="itemId" header="Phí bảo vệ người bán">
+                <template #body="slotProps">
+                    <span class="image-text">{{ slotProps.data.buyerProtectionFee | moneyNumberFomat }}</span>
                 </template>
             </Column>
             <Column field="country" header="Người nhận">
@@ -145,7 +155,7 @@ class PaymentList extends Vue {
       this.totalRecords = response.totalRecords
       const paymentList: any = []
       response.records.forEach((p: any) => {
-        const originObject = { id: p.id, itemId: p.itemId, revenue: p.revenue }
+        const originObject = { id: p.id, itemId: p.itemId, revenue: p.revenue, bidAmount: p.bidAmount, buyerProtectionFee: p.buyerProtectionFee }
         paymentList.push({
           ... originObject,
           paymentApprovedBy: p.expertPaymentApprovedBy,

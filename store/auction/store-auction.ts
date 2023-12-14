@@ -7,11 +7,13 @@ import { $api, PathBind } from '~/utils'
 
 export default class StoreAuction extends VuexModule {
   private static readonly STATE_URL = {
-    GET_AUCTION: '/Mod/Auction?pageNum=:pageNum&pageSize=:pageSize&from=:from&to=:to',
+    GET_AUCTION: '/Mod/Auction?pageNum=:pageNum&pageSize=:pageSize&from=:from&to=:to&status=:status',
     CREATE_AUCTION: '/Mod/Auction',
     DELETE_AUCTION: '/Mod/Auction/:id',
     GET_DETAIL_AUCTION: '/Mod/Auction/:id',
     UPDATE_AUCTION: '/Mod/Auction/:id',
+    FORCE_START_AUCTION: '/Mod/Auction/:id/ForceStart',
+    FORCE_END_AUCTION: '/Mod/Auction/:id/ForceEnd',
   }
 
 
@@ -52,6 +54,22 @@ export default class StoreAuction extends VuexModule {
     try {
       const url = PathBind.transform(this.context, StoreAuction.STATE_URL.UPDATE_AUCTION, param)
       return await $api.put(url, param)
+    } catch (error) {}
+  }
+
+  @Action({ rawError: true })
+  async actForceStartAuction(param: { id: number }): Promise<string | undefined> {
+    try {
+      const url = PathBind.transform(this.context, StoreAuction.STATE_URL.FORCE_START_AUCTION, param)
+      return await $api.patch(url) 
+    } catch (error) {}
+  }
+
+  @Action({ rawError: true })
+  async actForceEndAuction(param: { id: number }): Promise<string | undefined> {
+    try {
+      const url = PathBind.transform(this.context, StoreAuction.STATE_URL.FORCE_END_AUCTION, param)
+      return await $api.patch(url) 
     } catch (error) {}
   }
 }
