@@ -81,8 +81,9 @@
             <div class="text-center font-bold  mb-1">Chưa có ai tham gia đấu giá</div>
           </div>
         </div>
-        <div class="bg-red-100 col-12" v-if="bidEnd">
-          Đã kết thúc phiên đấu giá. Vui lòng quay trở lại trang chủ để tiếp tục
+        <div class="bg-red-100 col-12 flex flex-column align-items-center" v-if="bidEnd">
+          <h3>Đã kết thúc phiên đấu giá. Vui lòng quay trở lại trang chủ để tiếp tục</h3>
+          <a href="/homepage" class="btn-primary border-10 p-2 px-4 no-underline">Trang chủ</a>
         </div>
       </div>
     </div>
@@ -134,6 +135,7 @@ class BidDialog extends Vue {
     await this.joinBidRoom();
     await this.receiveMessage();
     await this.receiveEndMessage();
+    console.log('LTAb: ', this.endDatetime)
   }
   async mounted() {
     await this.getItemInfo()
@@ -344,7 +346,7 @@ class BidDialog extends Vue {
     return timeLeft;
   }
   onEndBid() {
-
+    this.bidEnd = true
   }
   @Watch('endDatetime')
   setShowModal() {

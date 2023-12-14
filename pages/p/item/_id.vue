@@ -96,13 +96,12 @@ class EditAuctionList extends Vue {
         category: '',
     }
     startDate: any = null
-    endDate: any = ''
+    endDate: any
     displayAddItem: boolean = false
     display: boolean = false
     selectedItemsApproved: any = []
     priceBid: any = null
     previewImage: string | null | undefined = null;
-    bidEnd: boolean = false
 
     zoom: number = 1;
     rotation: number = 0;
@@ -134,12 +133,11 @@ class EditAuctionList extends Vue {
     @nsStoreItem.Action
     actAddItemBids!: (params: any) => Promise<any>
 
-    created() {
+    async created() {
         this.itemId = this.$route?.params?.id
     }
     async mounted() {
         await this.fetchData();
-        console.log(this.itemId)
         this.items = [
             { label: 'Danh sách Sản phẩm', to: '/p/item' },
             { label: this.item.category.name, to: '/p/item?cId=' + this.item.category.id },
@@ -151,7 +149,6 @@ class EditAuctionList extends Vue {
             itemId: this.itemId
         }
         const response = await this.actGetItem(params)
-        console.log('LTA: ', response)
         this.item = {
             id: response.id,
             name: response.name,
@@ -162,6 +159,7 @@ class EditAuctionList extends Vue {
             description: response.description,
             category: response.category,
         }
+        this.endDate = response.ongoingSession.endDate
         for (const imgId of response.images) {
             const result2 = await this.getImageUrl(this.itemId, imgId)
             const imageInfo = { itemImageSrc: result2, alt: "result2.name", index: imgId.index };
