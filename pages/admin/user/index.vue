@@ -52,11 +52,11 @@
           <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="boxData" :value="boxData"
             responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="20" :scrollable="false" stripedRows>
             <Column field="id" header="STT">
-              <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
+              <template #body="slotProps"><span>{{ (pPagenum - 1) * pPageSize + slotProps.index + 1 }}</span></template>
             </Column>
-            <Column field="phone" header="SỐ ĐIỆN THOẠI" sortable="sortable" bodyClass="font-semibold"></Column>
+            <Column field="phone" header="SỐ ĐIỆN THOẠI" sortable="sortable" bodyClass="font-semibold" className="p-text-right"></Column>
             <Column field="name" header="TÊN" sortable="sortable" className="w-3 font-semibold"></Column>
-            <Column field="role" header="QUYỀN" sortable="sortable" className="p-text-right">
+            <Column field="role" header="QUYỀN" sortable="sortable" className="p-text-center">
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2 bg-green-100" v-if="data.role.id == 5" severity="danger"><span
@@ -82,7 +82,7 @@
                 data.updated | dateTimeFomat
               }}</template>
             </Column>
-            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-center">
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2" v-if="data.deleted != null" severity="danger" value="Đã cấm"></Tag>
@@ -213,6 +213,7 @@ class UserList extends Vue {
     }
   }
   onPage(event: any) {
+    this.pPagenum = event.page + 1
     this.Search(event.page + 1)
   }
 }

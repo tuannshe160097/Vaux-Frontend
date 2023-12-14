@@ -16,18 +16,24 @@
     <div class="card-body">
       <div>
         <div class="grid">
-          <div class="col grid flex justify-content-between">
-            <div class="col-5">
+          <div class="col-7 grid flex justify-content-between">
+            <div class="col-4">
+              <label>Tìm kiếm theo ngày</label><br/>
               <Calendar class="w-full" v-model="startDate" dateFormat="dd-mm-yy" placeholder="Thời gian bắt đầu" />
             </div>
-            <div class="col-5">
+            <div class="col-4">
+              <label></label><br/>
               <Calendar class="w-full" v-model="endDate" dateFormat="dd-mm-yy" placeholder="Thời gian kết thúc" />
             </div>
-            <div class="col-2">
-              <Button label="Tìm kiếm" style="height: 36px" @click="getAuction" class="w-full max-w-6rem" />
+            <div class="col-4">
+              <label>Trạng thái</label>
+              <Dropdown class="w-100 line-height-1" v-model="statusSelected" :options="status" optionLabel="name"
+                optionValue="id" placeholder="Tình trạng"/>
             </div>
           </div>
-          <div class="col justify-content-end flex">
+          <div class="col justify-content-between flex">
+            <label></label>
+            <Button label="Tìm kiếm" style="height: 36px" @click="getAuction" class="w-full max-w-6rem" />
             <Button class="" label="Thêm Mới" style="height: 36px" @click="onCreateAuction" />
           </div>
         </div>
@@ -38,20 +44,20 @@
             responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="10" :scrollable="false" stripedRows>
             <Column field="id" header="STT" sortable="sortable">
               <template #body="slotProps">
-                <span class="">{{ slotProps.index + 1 }}</span>
+                <span class="">{{ (pPagenum - 1) * pPageSize + slotProps.index + 1 }}</span>
               </template>
             </Column>
-            <Column field="startDate" header="Bắt đầu" sortable="sortable" className="p-text-right">
+            <Column field="startDate" header="Bắt đầu" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.startDate | dateTimeFomat
               }}</template>
             </Column>
-            <Column field="endDate" header="Kết thúc" sortable="sortable" className="p-text-right">
+            <Column field="endDate" header="Kết thúc" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.endDate | dateTimeFomat
               }}</template>
             </Column>
-            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-center">
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2 bg-yellow-100" v-if="data.status == 1" severity="success"><span
@@ -65,6 +71,18 @@
             </Column>
             <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
+                <Button
+                  v-if="data.status == 1"
+                  label="Bắt đầu"
+                  class="p-button-sm p-button-outlined"
+                  @click="onForceStart(data)"
+                />
+                <Button
+                  v-if="data.status == 2"
+                  label="Kết thúc"
+                  class="p-button-sm p-button-outlined p-button-danger"
+                  @click="onForceEnd(data)"
+                />
                 <Button class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
                   @click="onUpdateAuction(data)">
                   <div class="icon--small icon-compose"></div>
@@ -110,6 +128,7 @@ import { Component, namespace, Vue } from 'nuxt-property-decorator'
 import { confirmDelete } from '~/utils/commons/helper'
 const nsStoreAuction = namespace('auction/store-auction')
 const dayjs = require('dayjs')
+import { confirm } from '~/utils/commons/helper'
 
 @Component({
   middleware: ['authenticate'],
@@ -122,12 +141,25 @@ class AuctionList extends Vue {
   pPagenum: number = 1
   pPageSize: number = 10
   totalRecords: number = 0
+  status = [
+    { id: '', name: 'Tất cả' },
+    { id: 1, name: 'Đang chờ' },
+    { id: 2, name: 'Đang hoạt động' },
+    { id: 3, name: 'Đã kết thúc' },
+  ]
+  statusSelected = ''
 
   @nsStoreAuction.Action
   actGetAuction!: (param: any) => Promise<any>
 
   @nsStoreAuction.Action
   actDeleteAuction!: (params: { id: number }) => Promise<any>
+  
+  @nsStoreAuction.Action
+  actForceStartAuction!: (params: { id: number }) => Promise<any>
+
+  @nsStoreAuction.Action
+  actForceEndAuction!: (params: { id: number }) => Promise<any>
 
   async mounted() {
     this.getAuction()
@@ -139,6 +171,7 @@ class AuctionList extends Vue {
       pageNum: this.pPagenum,
       from: this.startDate ? dayjs(new Date(this.startDate)).format('YYYY-MM-DD') : '',
       to: this.endDate ? dayjs(new Date(this.endDate)).format('YYYY-MM-DD') : '',
+      status: this.statusSelected
     })
     if (response) {
       this.auctions = response.records
@@ -168,6 +201,56 @@ class AuctionList extends Vue {
         await this.getAuction()
       }
     })
+  }
+
+  onForceStart(data: any) {
+    const _this: any = this
+    confirm(_this,
+      'Xác nhận bắt đầu phiên đấu giá',
+      `Bạn có chắc bạn muốn bắt đầu cho mã phiên đấu giá ${data.id} không?`,
+      'pi pi-exclamation-triangle',
+      'btn-success',
+      'Xác nhận',
+      'Hủy',
+      async () => {
+        const response = await this.actForceStartAuction({
+          id: data.id
+        })
+        if (response) {
+          this.getAuction()
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Thông báo thành công',
+            detail: 'Bắt đầu phiên đấu giá thành công',
+            life: 3000,
+          })
+        }
+      })
+  }
+
+  onForceEnd(data: any) {
+    const _this: any = this
+    confirm(_this,
+      'Xác nhận kết thúc phiên đấu giá',
+      `Bạn có chắc bạn muốn kết thúc cho mã phiên đấu giá ${data.id} không?`,
+      'pi pi-exclamation-triangle',
+      'btn-success',
+      'Xác nhận',
+      'Hủy',
+      async () => {
+        const response = await this.actForceEndAuction({
+          id: data.id
+        })
+        if (response) {
+          this.getAuction()
+          this.$toast.add({
+            severity: 'success',
+            summary: 'Thông báo thành công',
+            detail: 'Kết thúc phiên đấu giá thành công',
+            life: 3000,
+          })
+        }
+      })
   }
 
   onPage(event: any) {

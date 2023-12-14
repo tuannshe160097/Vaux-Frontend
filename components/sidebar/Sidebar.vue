@@ -56,7 +56,7 @@
 <script lang='ts'>
 import { Component, namespace, ProvideReactive, Vue, Watch } from 'nuxt-property-decorator'
 import { User } from '~/models/User'
-import { MENU_ACTION, PAGE_MENU, PAGE_MENU_ADMIN, PAGE_MENU_MOD, PAGE_MENU_EXPERT, SETTING_MENU } from '~/utils'
+import { MENU_ACTION, PAGE_MENU, PAGE_MENU_MOD, PAGE_MENU_EXPERT, SETTING_MENU } from '~/utils'
 const nsSidebar = namespace('layout/store-sidebar')
 const nsUser = namespace('user-auth/store-user')
 

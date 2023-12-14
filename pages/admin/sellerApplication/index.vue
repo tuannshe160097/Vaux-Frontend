@@ -38,16 +38,16 @@
             responsiveLayout="scroll" :selection.sync="selectedBoxes" dataKey="id" :resizableColumns="true" :rows="20"
             :scrollable="false" stripedRows>
             <Column field="id" header="STT">
-              <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
+              <template #body="slotProps"><span>{{ (pPagenum - 1) * pPageSize + slotProps.index + 1 }}</span></template>
             </Column>
-            <Column field="user.phone" header="SỐ ĐIỆN THOẠI" sortable="sortable" bodyClass="font-semibold"></Column>
+            <Column field="user.phone" header="SỐ ĐIỆN THOẠI" sortable="sortable" bodyClass="font-semibold" className="p-text-right"></Column>
             <Column field="user.name" header="TÊN" sortable="sortable" className="w-3 font-semibold"></Column>
-            <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
+            <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.created | dateTimeFomat
               }}</template>
             </Column>
-            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-center"
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2" v-if="data.status == 3" severity="danger" value="Đã từ chối"></Tag>
@@ -143,6 +143,7 @@ class UserList extends Vue {
     this.$router.push('/admin/sellerApplication/view?appliId=' + id)
   }
   onPage(event: any) {
+    this.pPagenum = event.page + 1
     this.Search(event.page + 1)
   }
   deleteBoxById(id: any) { }

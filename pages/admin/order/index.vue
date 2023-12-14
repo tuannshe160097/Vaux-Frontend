@@ -32,18 +32,18 @@
           <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="orders" :value="orders"
             responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="10" :scrollable="false" stripedRows>
             <Column field="id" className="font-semibold" header="ID Đơn hàng" sortable="sortable"></Column>
-            <Column field="name" header="Tên người nhận" sortable="sortable" className="overflow-ellipsis">
+            <Column field="name" header="Tên người nhận" sortable="sortable" className="overflow-ellipsis p-text-left">
               <template #body="{ data }">
                 <p class="element">{{ data?.user?.name }}</p>
               </template>
             </Column>
-            <Column field="totalCost" className="font-semibold" header="Số tiền" sortable="sortable">
+            <Column field="totalCost" className="font-semibold p-text-right" header="Tổng số tiền" sortable="sortable">
               <template #body="{ data }">{{
                 data.totalCost | moneyNumberFomat
               }}</template>
             </Column>
-            <Column field="address" header="Địa chỉ" sortable="sortable" className="p-text-right"></Column>
-            <Column field="created" header="Ngày tạo" sortable="sortable" className="p-text-right">
+            <Column field="address" header="Địa chỉ" sortable="sortable" className="p-text-left"></Column>
+            <Column field="created" header="Ngày tạo" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.created | dateTimeFomat
               }}</template>

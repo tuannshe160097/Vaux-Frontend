@@ -44,12 +44,12 @@
                 <p class="element">{{ data?.seller?.name }}</p>
               </template>
             </Column>
-            <Column field="itemCost" header="Số tiền" sortable="sortable" className="w-3">
+            <Column field="itemCost" header="Số tiền" sortable="sortable" className="w-3 p-text-right">
               <template #body="{ data }">{{
                 data.itemCost | moneyNumberFomat
               }}</template>
             </Column>
-            <Column field="shippingCost" header="Phí vận chuyển" sortable="sortable" className="w-3"></Column>
+            <Column field="shippingCost" header="Phí vận chuyển" sortable="sortable" className="w-3 p-text-right"></Column>
             <Column field="address" header="Địa chỉ người gửi" sortable="sortable" className="overflow-ellipsis"></Column>
             <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right overflow-visible">
               <template #body="{ data }">
@@ -124,8 +124,8 @@ class ShipmentPage extends Vue {
   expandedRows: any = []
   SHIPMENT_STATUS_MAP = new Map<number, string>([
     [0, 'Đang chờ duyệt'],
-    [1, 'Đang vận chuyển'],
-    [2, 'Đã vận chuyển']
+    [1, 'Đang giao hàng'],
+    [2, 'Đã giao hàng']
   ])
   shipmentStatus = [
     { code: 0, name: this.SHIPMENT_STATUS_MAP.get(0) },

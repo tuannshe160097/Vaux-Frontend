@@ -40,16 +40,16 @@
             responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="10" :scrollable="false" stripedRows>
             <Column field="id" header="STT" sortable="sortable">
               <template #body="slotProps">
-                <span class="">{{ slotProps.index + 1 }}</span>
+                <span class="">{{ (pPagenum - 1) * pPageSize + slotProps.index + 1 }}</span>
               </template>
             </Column>
-            <Column field="name" className="font-semibold" header="Tên" sortable="sortable"></Column>
-            <Column field="description" header="Mô tả" sortable="sortable" className="overflow-ellipsis">
+            <Column field="name" className="font-semibold p-text-left" header="Tên" sortable="sortable"></Column>
+            <Column field="description" header="Mô tả" sortable="sortable" className="overflow-ellipsis p-text-left">
               <template #body="{ data }">
                 <p class="element">{{ data.description }}</p>
               </template>
             </Column>
-            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-center">
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2 bg-green-100" v-if="!data.deleted" severity="success"><span
@@ -141,7 +141,6 @@ class CategoryList extends Vue {
 
   @nsStoreCategory.Action
   actGetCategory!: (params: any) => Promise<any>
-  //actGetCategory!: (params: any) => Promise<any>
 
   @nsStoreCategory.Action
   actAddCategory!: (params: {
@@ -156,7 +155,6 @@ class CategoryList extends Vue {
     description: string
   }) => Promise<any>
 
-  //LTA nsStoreCategory.Action  => Xóa()
   @nsStoreCategory.Action
   actDeleteCategory!: (params: { id: string }) => Promise<any>
 
@@ -231,8 +229,6 @@ class CategoryList extends Vue {
         detail: 'Record deleted',
         life: 3000,
       })
-      //Lta Xoa()=> list lại cate
-      //
     })
   }
   async deleteCategory(id: string) {
@@ -251,6 +247,7 @@ class CategoryList extends Vue {
     this.sDescription = row?.description || ''
   }
   onPage(event: any) {
+    this.pPagenum = event.page + 1
     this.getCategory(event.page + 1)
   }
 }

@@ -2,6 +2,20 @@
   <Dialog header="Danh sách sản phẩm" :visible.sync="showModal" :containerStyle="{ width: '50vw' }"
     :contentStyle="{ minHeight: '50vh' }" :maximizable="true" :modal="true">
     <div class="p-fluid">
+      <div class="grid">
+        <div class="col-3">
+          <label>Tên sản phẩm</label>
+          <InputText class="w-full" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
+        </div>
+        <div class="col-3">
+          <label>Hạng mục</label>
+          <Dropdown class="w-100 line-height-1" placeholder="Hạng mục" v-model="categoryId" :options="categories" optionLabel="name"
+            optionValue="id" />
+        </div>
+        <div class="col justify-content-end flex align-items-center">
+          <Button class="mr-2 w-8rem" label="Tìm kiếm" style="height: 36px" @click="getItemApproved()" />
+        </div>
+      </div>
       <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="items" :value="items"
         responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="10" :scrollable="false" stripedRows
         :selection.sync="selectedItems" selectionMode="multiple" :rowsPerPageOptions="[10, 25, 50]" :paginator="true">
@@ -31,6 +45,7 @@
 <script lang="ts">
 import { Component, Vue, Prop, namespace, Watch } from 'nuxt-property-decorator'
 const nsStoreItem = namespace('item/store-item')
+const nsStoreCategory = namespace('category/store-category')
 
 @Component
 class CreateAuction extends Vue {
@@ -39,9 +54,15 @@ class CreateAuction extends Vue {
   items = []
   selectedItems: any = []
   showModal = false
+  search: string = ''
+  categoryId = ''
+  categories: any = []
 
   @nsStoreItem.Action
-  actGetItemApproved!: () => Promise<any>
+  actGetItemApproved!: (params: any) => Promise<any>
+
+  @nsStoreCategory.Action
+  actGetAllCategory!: () => Promise<any>
 
   @Watch('isDisplayDialog')
   setShowModal() {
@@ -49,11 +70,15 @@ class CreateAuction extends Vue {
     this.showModal = this.isDisplayDialog
     if (this.isDisplayDialog) {
       this.getItemApproved()
+      this.getCategory()
     }
   }
 
   async getItemApproved() {
-    const response = await this.actGetItemApproved()
+    const response = await this.actGetItemApproved({
+      search: this.search,
+      category: this.categoryId
+    })
     if (response) {
       this.items = response?.records?.map((item: any) => {
         return {
@@ -64,6 +89,16 @@ class CreateAuction extends Vue {
           description: item?.description
         }
       })
+    }
+  }
+
+  async getCategory() {
+    const response = await this.actGetAllCategory()
+    if (response) {
+      this.categories = [
+        { id: '', name: '----Tất cả----' },
+        ...response.records
+      ]
     }
   }
 

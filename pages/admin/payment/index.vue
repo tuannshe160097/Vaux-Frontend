@@ -31,14 +31,24 @@
                     <span class="image-text">{{slotProps.data.id}}</span>
                 </template>
             </Column>
-            <Column field="itemId" header="ID Đơn hàng">
+            <Column field="itemId" header="ID Đơn hàng" className="p-text-right">
                 <template #body="slotProps">
-                    <span class="image-text">{{slotProps.data.itemId}}</span>
+                    <span class="image-text font-semibold">{{slotProps.data.itemId}}</span>
                 </template>
             </Column>
-            <Column field="itemId" header="Doanh thu">
+            <Column field="itemId" header="Doanh thu" className="p-text-right">
                 <template #body="slotProps">
-                    <span class="image-text">{{ slotProps.data.revenue  | moneyNumberFomat }}</span>
+                    <span class="image-text">{{ slotProps.data.revenue | moneyNumberFomat }}</span>
+                </template>
+            </Column>
+            <Column field="itemId" header="Giá đấu giá" className="p-text-right">
+                <template #body="slotProps">
+                    <span class="image-text">{{ slotProps.data.bidAmount | moneyNumberFomat }}</span>
+                </template>
+            </Column>
+            <Column field="itemId" header="Phí bảo vệ người bán" className="p-text-right">
+                <template #body="slotProps">
+                    <span class="image-text">{{ slotProps.data.buyerProtectionFee | moneyNumberFomat }}</span>
                 </template>
             </Column>
             <Column field="country" header="Người nhận">
@@ -48,17 +58,22 @@
                   </span>
                 </template>
             </Column>
-            <Column field="payout" header="Thanh toán">
+            <Column field="payout" header="Thanh toán" className="p-text-right">
                 <template #body="slotProps">
                     <span class="image-text">{{ slotProps.data.payout  | moneyNumberFomat }}</span>
                 </template>
             </Column>
-            <Column field="payout" header="Trạng thái">
+            <Column field="payout" header="Trạng thái" className="p-text-center">
                 <template #body="slotProps">
-                    <span class="image-text">{{ slotProps.data.paymentStatus === 1 ? 'Chưa gửi' : 'Đã gửi' }}</span>
+                  <div>
+                  <Tag class="px-2 bg-yellow-100" v-if="slotProps.data.paymentStatus == 1" severity="success"><span
+                      class="font-bold text-yellow-400 font-size-small">Đang chờ</span></Tag>
+                  <Tag class="px-2 bg-green-100" v-else-if="slotProps.data.paymentStatus == 2" severity="success"><span
+                      class="font-bold text-green-400 font-size-small">Đã thanh toán</span></Tag>
+                </div>
                 </template>
             </Column>
-            <Column field="paymentApprovedBy" header="Người phê duyệt">
+            <Column field="paymentApprovedBy" header="Người phê duyệt" className="p-text-left">
                 <template #body="slotProps">
                     <span class="image-text">{{ slotProps.data.paymentApprovedBy?.name }}</span>
                 </template>
@@ -120,8 +135,8 @@ class PaymentList extends Vue {
   totalRecords: number = 0
   status = [
     { id: '', name: 'Tất cả' },
-    { id: 1, name: 'Chưa gửi' },
-    { id: 2, name: 'Đã gửi' },
+    { id: 1, name: 'Đang chờ' },
+    { id: 2, name: 'Đã thanh toán' },
   ]
   statusSelected = ''
 
@@ -145,7 +160,7 @@ class PaymentList extends Vue {
       this.totalRecords = response.totalRecords
       const paymentList: any = []
       response.records.forEach((p: any) => {
-        const originObject = { id: p.id, itemId: p.itemId, revenue: p.revenue }
+        const originObject = { id: p.id, itemId: p.itemId, revenue: p.revenue, bidAmount: p.bidAmount, buyerProtectionFee: p.buyerProtectionFee }
         paymentList.push({
           ... originObject,
           paymentApprovedBy: p.expertPaymentApprovedBy,
