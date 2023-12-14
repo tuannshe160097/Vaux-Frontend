@@ -73,9 +73,10 @@
 				}}</span></a>
 				<div v-if="profileDisplay" class="relative">
 					<ul class="drop-menu2 absolute">
-						<li><a href="/account/profile">Cá nhân</a></li>
-						<li><a href="/account/items">Sản phẩm</a></li>
-						<li><a href="/account/orders">Đơn hàng</a></li>
+						<li><a href="/account/profile">Thông tin cá nhân</a></li>
+						<li v-if="userRoleId==2"><a href="/expert/items">Danh sách sản phẩm</a></li>
+						<li><a href="/account/items">Sản phẩm đã thắng</a></li>
+						<li><a href="/account/orders">Danh sách đơn hàng</a></li>
 						<li><a @click="logout()">Đăng xuất</a></li>
 					</ul>
 				</div>
@@ -124,6 +125,10 @@ class MenuNavbar extends Vue {
 	get userDisplayName() {
 		console.log('LTA0: ', this.user)
 		return this.user?.name || 'Unknown'
+	}
+	get userRoleId() {
+		console.log('LTA1: ', this.user?.role.id)
+		return this.user?.role.id || 4
 	}
 	logout() {
 		this.user = null

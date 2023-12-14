@@ -22,7 +22,7 @@ class Index extends Vue {
   async redirect() {
     if (!this.user) {
       this.$router.push('/homepage')
-    } else if (this.user.role.id == 1 || this.user.role.id == 2 || this.user.role.id == 5) {
+    } else if (this.user.role.id == 1 || this.user.role.id == 5) {
       this.$router.push('/admin/dashboard')
     } else {
       this.$router.push('/homepage')
