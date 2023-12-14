@@ -37,7 +37,7 @@
             responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="10" :scrollable="false" stripedRows>
             <Column field="id" header="STT" sortable="sortable">
               <template #body="slotProps">
-                <span class="">{{ slotProps.index + 1 }}</span>
+                <span class="">{{ (pPagenum - 1) * pPageSize + slotProps.index + 1 }}</span>
               </template>
             </Column>
             <Column field="name" className="font-semibold max-w-30rem overflow-ellipsis text-overflow-ellipsis" header="Tên" sortable="sortable" bodyStyle="max-wi"></Column>

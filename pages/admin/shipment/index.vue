@@ -124,8 +124,8 @@ class ShipmentPage extends Vue {
   expandedRows: any = []
   SHIPMENT_STATUS_MAP = new Map<number, string>([
     [0, 'Đang chờ duyệt'],
-    [1, 'Đang vận chuyển'],
-    [2, 'Đã vận chuyển']
+    [1, 'Đang giao hàng'],
+    [2, 'Đã giao hàng']
   ])
   shipmentStatus = [
     { code: 0, name: this.SHIPMENT_STATUS_MAP.get(0) },

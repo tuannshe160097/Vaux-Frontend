@@ -11,13 +11,13 @@
       <div class="card-function">
         <div class="grid formgrid">
           <div class="col p-fluid grid formgrid flex justify-content-between">
-            <div class="field col-12 md:col-5">
+            <div class="field col-12 md:col-6">
               <label>Thời gian bắt đầu</label>
-              <Calendar v-model="startDate" dateFormat="dd-mm-yy" :minDate="minDateValue" />
+              <Calendar v-model="startDate" dateFormat="dd-mm-yy" :minDate="minDateValue" placeholder="Thời gian bắt đầu"/>
             </div>
-            <div class="field col-12 md:col-5">
+            <div class="field col-12 md:col-6">
               <label>Thời gian kết thúc</label>
-              <Calendar v-model="endDate" dateFormat="dd-mm-yy" :minDate="startDate" />
+              <Calendar v-model="endDate" dateFormat="dd-mm-yy" :minDate="startDate" placeholder="Thời gian kết thúc"/>
             </div>
           </div>
           <div class="col field justify-content-end flex pt-5">
@@ -84,8 +84,8 @@ const dayjs = require('dayjs')
 })
 class CreateAuctionList extends Vue {
   minDateValue:Date = new Date()
-  startDate = null
-  endDate = null
+  startDate: any = null
+  endDate: any = null
   displayAddItem: boolean = false
   selectedItemsApproved: any = []
 
@@ -94,7 +94,6 @@ class CreateAuctionList extends Vue {
 
   async mounted() {
     this.selectedItemsApproved = []
-    // this.minDateValue = new Date();
   }
 
   openModelAddItem() {
@@ -142,8 +141,8 @@ class CreateAuctionList extends Vue {
     }
 
     const response = await this.actCreateAuction({
-      startDate: this.startDate,
-      endDate: this.endDate,
+      startDate: this.startDate ? dayjs(new Date(this.startDate)).format('YYYY-MM-DD') : '',
+      endDate: this.endDate ? dayjs(new Date(this.endDate)).format('YYYY-MM-DD') : '',
       itemIds: this.selectedItemsApproved.map((item: any) => item.id)
     })
 

@@ -11,11 +11,11 @@
       <div class="card-function">
         <div class="grid formgrid">
           <div class="col p-fluid grid formgrid flex justify-content-between">
-            <div class="field col-12 md:col-5">
+            <div class="field col-12 md:col-6">
               <label>Thời gian bắt đầu</label>
               <Calendar v-model="startDate" dateFormat="dd-mm-yy" />
             </div>
-            <div class="field col-12 md:col-5">
+            <div class="field col-12 md:col-6">
               <label>Thời gian kết thúc</label>
               <Calendar v-model="endDate" dateFormat="dd-mm-yy" />
             </div>
