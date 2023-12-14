@@ -43,13 +43,13 @@
                 <span class="">{{ (pPagenum - 1) * pPageSize + slotProps.index + 1 }}</span>
               </template>
             </Column>
-            <Column field="name" className="font-semibold" header="Tên" sortable="sortable"></Column>
-            <Column field="description" header="Mô tả" sortable="sortable" className="overflow-ellipsis">
+            <Column field="name" className="font-semibold p-text-left" header="Tên" sortable="sortable"></Column>
+            <Column field="description" header="Mô tả" sortable="sortable" className="overflow-ellipsis p-text-left">
               <template #body="{ data }">
                 <p class="element">{{ data.description }}</p>
               </template>
             </Column>
-            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-center">
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2 bg-green-100" v-if="!data.deleted" severity="success"><span

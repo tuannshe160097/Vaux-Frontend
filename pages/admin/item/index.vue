@@ -43,17 +43,17 @@
             <Column field="name" className="font-semibold max-w-30rem overflow-ellipsis text-overflow-ellipsis" header="Tên" sortable="sortable" bodyStyle="max-wi"></Column>
             <Column field="category.name" className="font-semibold" header="Hạng mục" sortable="sortable"></Column>
             <Column field="seller.name" className="" header="Người bán" sortable="sortable"></Column>
-            <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
+            <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.created | dateTimeFomat
               }}</template>
             </Column>
-            <Column field="updated" header="NGÀY CẬP NHẬT" sortable="sortable" className="p-text-right">
+            <Column field="updated" header="NGÀY CẬP NHẬT" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.updated | dateTimeFomat
               }}</template>
             </Column>
-            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-center">
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2 bg-danger-100" v-if="data.status == 3" severity="danger"><span

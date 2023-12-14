@@ -18,17 +18,21 @@
         <div class="grid">
           <div class="col-7 grid flex justify-content-between">
             <div class="col-4">
+              <label>Tìm kiếm theo ngày</label><br/>
               <Calendar class="w-full" v-model="startDate" dateFormat="dd-mm-yy" placeholder="Thời gian bắt đầu" />
             </div>
             <div class="col-4">
+              <label></label><br/>
               <Calendar class="w-full" v-model="endDate" dateFormat="dd-mm-yy" placeholder="Thời gian kết thúc" />
             </div>
             <div class="col-4">
+              <label>Trạng thái</label>
               <Dropdown class="w-100 line-height-1" v-model="statusSelected" :options="status" optionLabel="name"
                 optionValue="id" placeholder="Tình trạng"/>
             </div>
           </div>
           <div class="col justify-content-between flex">
+            <label></label>
             <Button label="Tìm kiếm" style="height: 36px" @click="getAuction" class="w-full max-w-6rem" />
             <Button class="" label="Thêm Mới" style="height: 36px" @click="onCreateAuction" />
           </div>
@@ -43,17 +47,17 @@
                 <span class="">{{ (pPagenum - 1) * pPageSize + slotProps.index + 1 }}</span>
               </template>
             </Column>
-            <Column field="startDate" header="Bắt đầu" sortable="sortable" className="p-text-right">
+            <Column field="startDate" header="Bắt đầu" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.startDate | dateTimeFomat
               }}</template>
             </Column>
-            <Column field="endDate" header="Kết thúc" sortable="sortable" className="p-text-right">
+            <Column field="endDate" header="Kết thúc" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.endDate | dateTimeFomat
               }}</template>
             </Column>
-            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-center">
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2 bg-yellow-100" v-if="data.status == 1" severity="success"><span
