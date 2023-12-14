@@ -10,14 +10,14 @@
             <label>Thể loại</label>
             <!-- <Dropdown class="w-full mb-2 line-height-1" v-model="selectedCategory" :options="sortOptions"
               optionLabel="name" placeholder="Thể loại" /> -->
-            <Dropdown class="w-100 line-height-1" v-model="selectedCategory" :options="sortOptions" :filter="true"
+            <Dropdown class="w-100 line-height-1" v-model="selectedCategory" :options="sortOptions"
               filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="Thể loại" @change="onSelectCat()" />
             <label>Sắp xếp theo</label>
             <!-- <Dropdown class="w-full mb-2 line-height-1" v-model="sortedBy" :options="oSortedBy" dataKey="value"
               optionValue="value" optionLabel="name" placeholder="" /> -->
-            <Dropdown class="w-100 line-height-1" v-model="sortedBy" :options="oSortedBy" :filter="true"
-              filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="" />
-            <Button class="border-10 btn-primary" label="Lọc" @click="getItem()" />
+            <Dropdown class="w-100 line-height-1" v-model="sortedBy" :options="oSortedBy" filterPlaceholder="Tìm kiếm"
+              optionLabel="name" placeholder="----Tất cả----" />
+            <Button class="border-10 btn-primary mt-2" label="Tìm kiếm" @click="getItem()" />
           </div>
         </div>
         <div class="col-9 mt-2">
@@ -95,7 +95,7 @@ class ItemList extends Vue {
   totalRecords: number = 0
 
   oSortedBy: any[] = [
-    { value: '', name: 'Mặc định' },
+    { value: '', name: 'Mới nhất' },
     { value: 'bid', name: 'Hot nhất' },
     { value: 'end', name: 'Sắp kết thúc' }
   ]
@@ -133,7 +133,7 @@ class ItemList extends Vue {
       pageSize: this.pPageSize,
       search: this.searchText || '',
       category: this.category || '',
-      orderBy: this.sortOrder || '',
+      orderBy: this.sortedBy.value || '',
     }
     const response = await this.actGetItem(param)
     if (response) {
@@ -186,10 +186,13 @@ class ItemList extends Vue {
       //   { id: '', name: '----Tất cả----' },
       //   ...response.records
       // ]
-      this.sortOptions = response.records.map((cat: any) => ({
-        id: cat.id,
-        name: cat.name,
-      }));
+      this.sortOptions = [
+        { id: '', name: '----Tất cả----' },
+        ...response.records.map((cat: any) => ({
+          id: cat.id,
+          name: cat.name,
+        })),
+      ]
     }
     console.log(this.sortOptions)
     this.selectedCategory = this.sortOptions.find((cat: any) => cat.id == this.category) || null;

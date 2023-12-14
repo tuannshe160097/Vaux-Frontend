@@ -7,7 +7,7 @@ import { $api, PathBind } from '~/utils'
 
 export default class StoreItem extends VuexModule {
   private static readonly STATE_URL = {
-    GET_ITEM: '/Item?pageNum=:pageNum&pageSize=:pageSize&search=:search&category=:category',
+    GET_ITEM: '/Item?pageNum=:pageNum&pageSize=:pageSize&search=:search&category=:category&orderBy=:orderBy',
   }
 
   @Action({ rawError: true })
