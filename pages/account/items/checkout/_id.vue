@@ -15,35 +15,35 @@
                             <div class="envelope"></div>
                             <div class="col-12 grid p-3">
                                 <div class="align-self-center col-6 field mb-0">
-                                    <label class="">Họ và tên người nhận</label>
-                                    <InputText class="w-100 line-height-1" v-model="name" />
+                                    <label class="">Họ và tên người nhận<span class="text-danger">*</span></label>
+                                    <InputText :class="{ 'p-invalid': fields.name.error }" class="w-100 line-height-1" v-model="name" />
                                 </div>
                                 <div class="align-self-center col-6 field mb-0">
-                                    <label class="">Số điện thoại người nhận</label>
-                                    <InputText class="w-100 line-height-1" v-model="phone" />
+                                    <label class="">Số điện thoại người nhận<span class="text-danger">*</span></label>
+                                    <InputText :class="{ 'p-invalid': fields.phone.error }" class="w-100 line-height-1" v-model="phone" />
                                 </div>
                                 <div class="align-self-center col-4 field mb-0">
-                                    <label class="">Thành phố</label>
-                                    <Dropdown class="w-100 line-height-1" v-model="selectedCity" :options="oCitys"
+                                    <label class="">Thành phố<span class="text-danger">*</span></label>
+                                    <Dropdown :class="{ 'p-invalid': fields.city.error }" class="w-100 line-height-1" v-model="selectedCity" :options="oCitys"
                                         :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
                                         placeholder="-Chọn Thành phố-" @change="onSelectCity()" />
                                 </div>
                                 <div class="align-self-center col-4 field mb-0">
-                                    <label class="">Quận/ Huyện</label>
-                                    <Dropdown class="w-100 line-height-1" v-model="selectedDistrict" :options="oDistricts"
+                                    <label class="">Quận/ Huyện<span class="text-danger">*</span></label>
+                                    <Dropdown :class="{ 'p-invalid': fields.district.error }" class="w-100 line-height-1" v-model="selectedDistrict" :options="oDistricts"
                                         :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
                                         placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
                                 </div>
                                 <div class="align-self-center col-4 field mb-0">
-                                    <label class="">Phố/ Phường</label>
-                                    <Dropdown class="w-100 line-height-1" v-model="street" :options="oStreets"
+                                    <label class="">Phố/ Phường<span class="text-danger">*</span></label>
+                                    <Dropdown :class="{ 'p-invalid': fields.street.error }" class="w-100 line-height-1" v-model="street" :options="oStreets"
                                         :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
                                         placeholder="-Chọn Phố/Phường-" optionValue="value" />
                                 </div>
                                 <div class="align-self-center col-12 field mb-0">
-                                    <label class="">Địa chỉ cụ thể</label>
-                                    <Textarea class="text-left w-full" :autoResize="true" v-model="houseNumber" rows="1"
-                                        placeholder="Sử dụng phần này để thêm thông tin lý do." />
+                                    <label class=""  v-tooltip.top="'Enter your username'" >Địa chỉ cụ thể<span class="text-danger">*</span></label>
+                                    <Textarea :class="{ 'p-invalid': fields.houseNumber.error }" class="text-left w-full" :autoResize="true" v-model="houseNumber" rows="1"
+                                        placeholder="Địa chỉ cụ thể" />
                                 </div>
                             </div>
                         </div>
@@ -80,10 +80,27 @@
                             <div class="grid nested-grid item p-2 border-10 w-full"
                                 style="border-top: 1px dashed rgba(0,0,0,.09)">
                                 <div class="col-3 col-offset-6">
+                                    Tiền sản phẩm:
+                                </div>
+                                <div class="col-3 flex align-items-center justify-content-end">
+                                    <span class="">{{ formatNumber(shipment.itemCost - shipment.buyerProtectionFee)
+                                    }}</span>
+                                </div>
+                            </div>
+                            <div class="grid nested-grid item p-2 border-10 w-full">
+                                <div class="col-3 col-offset-6">
                                     Phí vận chuyển:
                                 </div>
                                 <div class="col-3 flex align-items-center justify-content-end">
                                     <span class="">{{ formatNumber(shipment.shippingCost) }}</span>
+                                </div>
+                            </div>
+                            <div class="grid nested-grid item p-2 border-10 w-full">
+                                <div class="col-3 col-offset-6">
+                                    Phí bảo vệ người dùng:
+                                </div>
+                                <div class="col-3 flex align-items-center justify-content-end">
+                                    <span class="">{{ formatNumber(shipment.buyerProtectionFee) }}</span>
                                 </div>
                             </div>
                             <div class="grid nested-grid item p-2 border-10 w-full">
@@ -114,6 +131,10 @@
                                                 <td class="text-right">{{ formatNumber(totalShipCost) }} </td>
                                             </tr>
                                             <tr>
+                                                <td class="px-3">Phí bảo vệ người dùng </td>
+                                                <td class="text-right">{{ formatNumber(totalProtectFeeCost) }} </td>
+                                            </tr>
+                                            <tr>
                                                 <td class="px-3">Tổng thanh toán </td>
                                                 <td class="text-right">
                                                     <h3 class="text-brown m-0">{{ formatNumber(totalCost) }} </h3>
@@ -122,18 +143,12 @@
                                         </table>
                                     </div>
                                     <div class="col-12 flex justify-content-end">
-                                        <Button @click="createPayment()" class="btn-primary border-10"><span
+                                        <Button @click="createPayment()" class="btn-final border-10"><span
                                                 class="material-icons vertical-align-bottom mr-2">
                                                 check
                                             </span> Thanh toán</Button>
                                     </div>
                                 </div>
-                                <!-- <div class="col-fixed"></div>
-                                    <div class="col-6">1200000 </div>
-                                    <div class="col-6">Tổng tiền Ship </div>
-                                    <div class="col-6">10000 </div>
-                                    <div class="col-6">Tổng thanh toán </div>
-                                    <div class="col-6">1000000000 </div> -->
                             </div>
                         </div>
                     </div>
@@ -157,8 +172,8 @@ const nsStoreCategory = namespace('category/store-category')
     layout: 'payment'
 })
 class ItemList extends Vue {
+    //================================================
     orderId: any
-    //---------------------------------------
     home = { icon: 'pi pi-home', to: '/homepage' }
     breads = [
         { label: 'Giỏ hàng' }
@@ -168,18 +183,29 @@ class ItemList extends Vue {
     totalCost: any = 0
     totalItemCost: any = 0
     totalShipCost: any = 0
+    totalProtectFeeCost: any = 0
+    //================================================
     selectedCity: Option.Option | null = null
     selectedDistrict: Option.Option | null = null
     selectedStreet: Option.Option | null = null
     oCitys: Option.Option[] = []
     oDistricts: Option.Option[] = []
     oStreets: Option.Option[] = []
+    //================================================
     houseNumber: string = ''
     city: string = ''
     district: string = ''
     street: string = ''
     name: string = ''
     phone: string = ''
+    fields: any = {
+        name: { label: 'Tên người dùng', required: true, error: false, value: '' },
+        phone: { label: 'Số điện thoại', required: true, error: false, value: '' },
+        city: { label: 'Thành phố', required: true, error: false, value: '' },
+        district: { label: 'Quận, huyện', required: true, error: false, value: '' },
+        street: { label: 'Phường, xã', required: true, error: false, value: '' },
+        houseNumber: { label: 'Địa chỉ cụ thể', required: true, error: false, value: '' },
+    }
     @nsStoreUser.Action
     actGetUserDetail!: () => Promise<string>
     @nsStoreAddress.Action
@@ -252,7 +278,7 @@ class ItemList extends Vue {
         if (this.user == null) {
             this.$store.commit(
                 'commons/store-error/setError',
-                'Không tìm thấy thông tin tài khoản'
+                'Không tìm thấy thông tin người dùng'
             )
             return
         }
@@ -267,7 +293,6 @@ class ItemList extends Vue {
         await this.getStreet();
         await this.getOrder()
     }
-
     async getOrder() {
         const response = await this.actGetOrderById({ orderId: this.orderId })
         console.log(response)
@@ -285,6 +310,7 @@ class ItemList extends Vue {
                 id: response.shipment[i].id,
                 sellerName: response.shipment[i].seller.name,
                 itemCost: response.shipment[i].itemCost,
+                buyerProtectionFee: response.shipment[i].buyerProtectionFee,
                 shippingCost: response.shipment[i].shippingCost,
                 items: [],
             }
@@ -298,12 +324,16 @@ class ItemList extends Vue {
                 })
             }
             this.totalShipCost += response.shipment[i].shippingCost
-            this.totalItemCost += response.shipment[i].itemCost
+            this.totalItemCost += (response.shipment[i].itemCost - response.shipment[i].buyerProtectionFee)
+            this.totalProtectFeeCost += response.shipment[i].buyerProtectionFee
             this.shipments.push(shipment)
         }
         this.totalCost = response.totalCost
     }
     async createPayment() {
+        if (!this.checkValid()) {
+            return
+        }
         const param = {
             orderId: this.orderId,
             receiverName: this.name,
@@ -374,6 +404,66 @@ class ItemList extends Vue {
         this.street = ''
         this.oStreets = []
         this.getDistrict()
+    }
+    checkValid() {
+        this.fetchFormData();
+        if (!this.checkNullValue(this.fields)) {
+            return false
+        }
+        if (this.fields.name.value && this.fields.name.value.length > 40) {
+            this.fields.name.error = true;
+            this.$store.commit('commons/store-error/setError', "Tên người dùng không được dài quá 40 ký tự")
+            return false
+        }
+        const phoneRegex = /^(0|\+84)(9[0-9]|8[0-9]|7[0-9]|5[0-9]|3[0-9]|2[0-9]|6[0-9]|4[0-9]|1[0-9])+([0-9]{7})\b/;
+        if (!phoneRegex.test(this.fields.phone.value)) {
+            this.fields.phone.error = true;
+            this.$store.commit('commons/store-error/setError', "Số điện thoại không đúng định dạng")
+            return false
+        }
+        if (!(this.fields.houseNumber.value.trim() == '') && this.fields.houseNumber.value.length > 100) {
+            this.fields.mail.error = true;
+            this.$store.commit('commons/store-error/setError', "Địa chỉ cụ thể quá dài (100 ký tự)")
+            return false
+        }
+        return true
+    }
+    fetchFormData() {
+        for (const fieldName in this.fields) {
+            if (this.fields.hasOwnProperty(fieldName)) {
+                this.fields[fieldName].value = (this as any)[fieldName];
+                this.fields[fieldName].error = false
+            }
+        }
+    }
+    checkNullValue(fields: any) {
+        const invalidFields: any[] = []
+        for (const fieldName in fields) {
+            if (fields.hasOwnProperty(fieldName)) {
+                const fieldProperties = fields[fieldName];
+                if (fieldProperties.required) {
+                    const value = fieldProperties.value;
+                    const trimmedValue = value != null && typeof value === 'string' ? value.trim() : value;
+
+                    // if (!fieldProperties.value || fieldProperties.value.trim() === '') {
+                    if (!trimmedValue || trimmedValue === '') {
+                        fieldProperties.error = true;
+                        invalidFields.push(fieldProperties.label)
+                    } else {
+                        fieldProperties.error = false;
+                    }
+                }
+            }
+        }
+        if (invalidFields.length > 0) {
+            const errorFields = invalidFields
+                // .map((field: any) => field.label)
+                .join(', ')
+            const errorMessage = `Vui lòng điền thêm thông tin: ${errorFields}`
+            this.$store.commit('commons/store-error/setError', errorMessage)
+            return false
+        }
+        return true
     }
     async confirmPayment(param: any) {
         const response = await this.actConfirmPayment(param)

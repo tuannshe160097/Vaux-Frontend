@@ -50,7 +50,7 @@
 						<li v-for="item in notifications" :key="item.id" :item="item"
 							class="p-2 hover:surface-300 cursor-pointer border-bottom-1 border-200">
 							<a :href="item.redirect" class="border-10" style="line-height: 1.6;">
-								<div class="flex align-content-center ">
+								<div class="flex align-content-center justify-content-between">
 									<div class="notiContent vertical-align-middle pr-2">
 										{{ item.content }}
 									</div>

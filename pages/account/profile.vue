@@ -161,52 +161,6 @@
                             </div>
                         </div>
                     </TabPanel>
-                    <!-- <TabPanel>
-                        <template #header>
-                            <i class="pi pi-user"></i>
-                            <span>Yêu cầu lên người bán</span>
-                        </template>
-                        <div>
-                            <div v-if="!userApliId">
-                                <div class="field col-12">
-                                    <h4 class="font-bold text-brown mb-0">Có vẻ bạn chưa từng làm đơn xin trở thành người
-                                        bán</h4>
-                                </div>
-                                <div class="field col-12">
-                                    <Button class="btn-primary border-10" label="Tham gia ngay" @click="onCreateApp()" />
-                                </div>
-                            </div>
-                            <div v-else>
-                                <div v-if="userApliStatus == 1">
-                                    <div class="check">
-                                        <div class="check">
-                                            <div class="check__border"></div>
-                                            <div class="check__check">
-                                                <div class="check__check-bottom"></div>
-                                                <div class="check__check-top"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>Thành công</div>
-                                </div>
-                                <div v-else-if="userApliStatus == 3">
-                                    <div class="check">
-                                        <div class="check">
-                                            <div class="x__border"></div>
-                                            <div class="x__check">
-                                                <div class="x__check-bottom"></div>
-                                                <div class="x__check-top"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div>Thất bại</div>
-                                </div>
-                                <div v-else>
-                                    Quản trị viên chưa duyệt
-                                </div>
-                            </div>
-                        </div>
-                    </TabPanel> -->
                 </TabView>
             </div>
         </div>
@@ -347,6 +301,7 @@ class Profile extends Vue {
             bankCode: this.bankCode,
             bankName: this.bankName,
             bankAccountNum: this.bankAccountNum,
+            address: this.getAddress(this.houseNumber, this.selectedStreet?.name, this.selectedDistrict?.name, this.selectedCity?.name),
         }
         const response: any = await this.actUpdateProfile(params)
         if (response?.status == 200) this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã cập nhật thông tin', life: 10000 })
@@ -454,6 +409,25 @@ class Profile extends Vue {
             value: street.codename,
         }));
         this.selectedStreet = this.oStreets.find((street) => street.value === this.street) || null;
+    }
+    getAddress(houseNumber: any, street: any, district: any, city: any,) {
+        let address = ''
+        if (houseNumber.trim() !== "") {
+            address += houseNumber.trim() + " ";
+        }
+
+        if (street.trim() !== "") {
+            address += street.trim() + ", ";
+        }
+
+        if (district.trim() !== "") {
+            address += district.trim() + ", ";
+        }
+
+        if (city.trim() !== "") {
+            address += city.trim();
+        }
+        return address
     }
     onSelectCity() {
         this.district = ''
