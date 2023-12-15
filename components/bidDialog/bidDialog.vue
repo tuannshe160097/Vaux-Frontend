@@ -18,7 +18,8 @@
           Đã đạt mức giá tối thiểu
         </div>
         <div v-else class="col-12 text-brown">
-          Chưa đạt mức giá tối thiểu
+          Chưa đạt mức giá tối thiểu <i class="pi pi-question-circle"
+            v-tooltip.top="'Giá hiện tại chưa thỏa mãn người bán. Bạn có thể đấu giá tiếp với giá cao hơn để có thể đạt tới mức giá tối thiểu'"></i>
         </div>
         <div v-if="!bidEnd" class="col-12 mt-3  border-bottom-1" style="border-color: #E0A26F;">
           <div v-if="user" class="grid">
@@ -38,7 +39,7 @@
               }}</button>
             </div>
             <div class="col-12">
-              <InputNumber class="w-full this-p-inputtext-p-4" v-model="priceBid"
+              <InputNumber class="w-full this-p-inputtext-p-4" v-model="priceBid" suffix=",000"
                 :placeholder="`${formatNumber(curBid + 10000)} hoặc cao hơn`">
               </InputNumber>
             </div>

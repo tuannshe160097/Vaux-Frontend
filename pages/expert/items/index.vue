@@ -26,8 +26,13 @@
               <Dropdown class="w-100 line-height-1" v-model="category" :options="categories" optionLabel="name"
                 optionValue="id" />
             </div>
+            <div class="col-3 field">
+              <label>Tình trạng</label>
+              <Dropdown class="w-100 line-height-1" v-model="status" :options="oStatus" optionLabel="name"
+                optionValue="value" />
+            </div>
             <div class="col-fixed field pt-5">
-              <Button class="mr-2 border-10 btn-primary" label="Tìm kiếm"  @click="Search()" />
+              <Button class="mr-2 border-10 btn-primary" label="Tìm kiếm" @click="Search()" />
             </div>
           </div>
         </div>
@@ -128,12 +133,11 @@ class ItemList extends Vue {
   boxData: any[] = []
   selectedBoxes = []
   search: string = ''
-  status: number = 0
+  status: any = 0
   oStatus = [
-    { name: 'Tất cả', value: null },
-    { name: 'Đã duyệt', value: 0 },
-    { name: 'Chưa duyệt', value: 1 },
-    { name: 'Đã từ chối', value: 2 }
+    { name: 'Tất cả', value: 0 },
+    { name: 'Đã nhận', value: 1 },
+    { name: 'Chưa ai nhận', value: 2 },
   ]
   category: any = ''
   categories: any = []
@@ -180,7 +184,8 @@ class ItemList extends Vue {
       pageNum: pageNum || 1,
       pageSize: this.pPageSize || 10,
       search: this.search,
-      category: this.category
+      category: this.category,
+      selfAssigned: this.status != 0 ? (this.status == 1 ? true : false) : ''
     }
     const response = await this.actSearchItemApplication(params)
     console.log(response)

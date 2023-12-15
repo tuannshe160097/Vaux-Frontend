@@ -129,8 +129,13 @@
                 </div>
                 <div class="grid formgrid">
                     <div class="field col-12 flex justify-content-center">
-                        <Button v-if="isDisplayButton()" class="mx-2 btn-primary border-10"
-                            :disabled="blockedAddButton ? 'disabled' : false" label="Cập nhật" @click="onUpdate()" />
+                        <Button v-if="isDisplayButton()" class="mx-2 btn-final border-10"
+                            :disabled="blockedAddButton ? 'disabled' : false" @click="onUpdate()">
+                            <span v-if="blockedAddButton"><i class="pi pi-spin pi-spinner mr-2"></i>
+                                Đang xử
+                                lý</span>
+                            <span v-else> Cập nhật</span>
+                        </Button>
                         <Button v-if="isDisplayREAButton" icon="pi pi-sync" class="btn-warning" label="Tái đấu giá"
                             @click="onReAuction()" />
                     </div>

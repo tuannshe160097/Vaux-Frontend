@@ -96,8 +96,8 @@
                                 </div>
                             </div>
                             <div class="grid nested-grid item p-2 border-10 w-full">
-                                <div class="col-3 col-offset-6">
-                                    Phí bảo vệ người dùng:
+                                <div class="col-3 col-offset-6"  >
+                                    Phí bảo vệ người dùng: <i class="pi pi-question-circle" v-tooltip.top="'Nhằm mục đích bảo vệ người dùng, VAUX sẽ thu phí 9% giá sản phẩm'"></i>
                                 </div>
                                 <div class="col-3 flex align-items-center justify-content-end">
                                     <span class="">{{ formatNumber(shipment.buyerProtectionFee) }}</span>
@@ -131,7 +131,7 @@
                                                 <td class="text-right">{{ formatNumber(totalShipCost) }} </td>
                                             </tr>
                                             <tr>
-                                                <td class="px-3">Phí bảo vệ người dùng </td>
+                                                <td class="px-3">Phí bảo vệ người dùng <i class="pi pi-question-circle" v-tooltip.top="'Nhằm mục đích bảo vệ người dùng, VAUX sẽ thu phí 9% giá sản phẩm'"></i></td>
                                                 <td class="text-right">{{ formatNumber(totalProtectFeeCost) }} </td>
                                             </tr>
                                             <tr>

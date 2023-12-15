@@ -9,7 +9,7 @@ export default class StoreItemApplication extends VuexModule {
   private static readonly STATE_URL = {
     GET_ITEMAPPLICATION: '/Expert/ItemApplication/:itemId',
     UPDATE_ITEMAPPLICATION: '/Expert/ItemApplication/:itemId',
-    SEARCH_ITEMAPPLICATION: '/Expert/ItemApplication?pageNum=:pageNum&pageSize=:pageSize&search=:search&category=:category&',
+    SEARCH_ITEMAPPLICATION: '/Expert/ItemApplication?pageNum=:pageNum&pageSize=:pageSize&search=:search&category=:category&selfAssigned=:selfAssigned',
     GET_ITEMAPPLICATION_IMAGE: '/Expert/ItemApplication/:itemId/Images/:imgId',
     ASSIGN_ITEMAPPLICATION: '/Expert/ItemApplication/:itemId/Assign',
     UNASSIGN_ITEMAPPLICATION: '/Expert/ItemApplication/:itemId/Unassign',
@@ -21,7 +21,7 @@ export default class StoreItemApplication extends VuexModule {
   async actSearchItemApplication(params: any): Promise<string | undefined> {
     try {
       const url = PathBind.transform(this.context, StoreItemApplication.STATE_URL.SEARCH_ITEMAPPLICATION,
-        { pageNum: params.pageNum, pageSize: params.pageSize, search: params.search, category: params.category })
+        { pageNum: params.pageNum, pageSize: params.pageSize, search: params.search, category: params.category, selfAssigned: params.selfAssigned })
       return await $api.get(url)
     } catch (error) { }
   }

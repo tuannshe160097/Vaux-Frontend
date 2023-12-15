@@ -93,6 +93,7 @@ export default {
       'Textarea',
       'TieredMenu',
       'Toast',
+      'Tooltip',
       'DataView',
       'DataViewLayoutOptions',
       'Chart',

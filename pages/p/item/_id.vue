@@ -252,6 +252,7 @@ export default EditAuctionList
   .this-p-inputtext-p-4
     .p-inputtext 
       padding:1.5rem
+      padding-right:5px
       
   /* Add custom styles for the modal */
   .custom-modal
