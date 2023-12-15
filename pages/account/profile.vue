@@ -6,7 +6,9 @@
                 <TabView class="tabview-custom">
                     <TabPanel>
                         <template #header>
-                            <i class="pi pi-calendar"></i>
+                            <span class="material-symbols-outlined vertical-align-bottom m-0">
+                                info
+                            </span>
                             <span>Hồ sơ</span>
                         </template>
                         <div class="grid formgrid">
@@ -19,35 +21,39 @@
                             <div class="field md:col-6 md:col-offset-3 col-12">
                                 <div class="grid">
                                     <div class="align-self-center col-4 field">
-                                        <label class="md:m-0">Tên người dùng</label>
+                                        <label class="md:m-0">Tên người dùng<span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-8 field">
-                                        <InputText class="w-full" type="text" v-model="name" />
+                                        <InputText :class="{ 'p-invalid': fields.name.error }" class="w-full" type="text"
+                                            v-model="name" />
                                     </div>
                                     <div class="align-self-center col-4 field">
-                                        <label class="md:m-0">Số điện thoại</label>
+                                        <label class="md:m-0">Số điện thoại<span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-8 field">
-                                        <InputText class="w-full" type="text" v-model="phone" />
+                                        <InputText :class="{ 'p-invalid': fields.phone.error }" class="w-full" type="text"
+                                            v-model="phone" />
                                     </div>
                                     <div class="align-self-center col-4 field">
-                                        <label class="md:m-0">Email</label>
+                                        <label class="md:m-0">Email<span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-8 field">
-                                        <InputText class="w-full" type="text" v-model="mail" />
+                                        <InputText :class="{ 'p-invalid': fields.mail.error }" class="w-full" type="text"
+                                            v-model="mail" />
                                     </div>
                                     <div class="align-self-center col-4 field">
-                                        <label class="md:m-0">Gender</label>
+                                        <label class="md:m-0">Gender<span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-8 field">
-                                        <Dropdown class="w-100 line-height-1" v-model="gender" :options="oGenders"
-                                            optionLabel="name" optionValue="value" />
+                                        <Dropdown :class="{ 'p-invalid': fields.gender.error }" class="w-100 line-height-1"
+                                            v-model="gender" :options="oGenders" optionLabel="name" optionValue="value" />
                                     </div>
                                     <div class="align-self-center col-4 field">
-                                        <label class="md:m-0">Ngày sinh</label>
+                                        <label class="md:m-0">Ngày sinh<span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-8 field">
-                                        <Calendar class="surface-overlay w-100 m-0" v-model="doB" dateFormat="dd-mm-yy">
+                                        <Calendar :class="{ 'p-invalid': fields.doB.error }"
+                                            class="surface-overlay w-100 m-0" v-model="doB" dateFormat="dd-mm-yy">
                                         </Calendar>
                                     </div>
                                     <div class="col-8 col-offset-4">
@@ -61,8 +67,10 @@
                     </TabPanel>
                     <TabPanel>
                         <template #header>
-                            <i class="pi pi-user"></i>
-                            <span>Địa chỉ</span>
+                            <span class="material-symbols-outlined vertical-align-bottom m-0">
+                                location_on
+                            </span>
+                            <span class="ml-0">Địa chỉ</span>
                         </template>
                         <div class="grid formgrid">
                             <div class="field col-12">
@@ -75,33 +83,36 @@
                                     </div>
                                     <div class="col-8 field">
                                         <!-- <InputText class="w-full" type="text" v-model="city" /> -->
-                                        <Dropdown class="w-100 line-height-1" v-model="selectedCity" :options="oCitys"
-                                            :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                                            placeholder="-Chọn Thành phố-" @change="onSelectCity()" />
+                                        <Dropdown :class="{ 'p-invalid': fields.city.error }" class="w-100 line-height-1"
+                                            v-model="selectedCity" :options="oCitys" :filter="true"
+                                            filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="-Chọn Thành phố-"
+                                            @change="onSelectCity()" />
                                     </div>
                                     <div class="align-self-center col-4 field">
                                         <label class="md:m-0">Quận/ Huyện</label>
                                     </div>
                                     <div class="col-8 field">
                                         <!-- <InputText class="w-full" type="text" v-model="district" /> -->
-                                        <Dropdown class="w-100 line-height-1" v-model="selectedDistrict"
-                                            :options="oDistricts" :filter="true" filterPlaceholder="Tìm kiếm"
-                                            optionLabel="name" placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
+                                        <Dropdown :class="{ 'p-invalid': fields.district.error }"
+                                            class="w-100 line-height-1" v-model="selectedDistrict" :options="oDistricts"
+                                            :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                                            placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
                                     </div>
                                     <div class="align-self-center col-4 field">
                                         <label class="md:m-0">Phố/ Phường</label>
                                     </div>
                                     <div class="col-8 field">
                                         <!-- <InputText class="w-full" type="text" v-model="street" /> -->
-                                        <Dropdown class="w-100 line-height-1" v-model="street" :options="oStreets"
-                                            :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                                            placeholder="-Chọn Phố/Phường-" optionValue="value" />
+                                        <Dropdown :class="{ 'p-invalid': fields.street.error }" class="w-100 line-height-1"
+                                            v-model="street" :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm"
+                                            optionLabel="name" placeholder="-Chọn Phố/Phường-" optionValue="value" />
                                     </div>
                                     <div class="align-self-center col-4 field">
                                         <label class="md:m-0">Địa chỉ cụ thể</label>
                                     </div>
                                     <div class="col-8 field">
-                                        <InputText class="w-full" type="text" v-model="houseNumber" />
+                                        <InputText :class="{ 'p-invalid': fields.houseNumber.error }" class="w-full"
+                                            type="text" v-model="houseNumber" />
                                     </div>
                                     <div class="col-8 col-offset-4">
                                         <BlockUI :blocked="disableButton">
@@ -114,8 +125,10 @@
                     </TabPanel>
                     <TabPanel>
                         <template #header>
-                            <i class="pi pi-user"></i>
-                            <span>Tài khoản ngân hàng</span>
+                            <span class="material-symbols-outlined vertical-align-bottom m-0">
+                                account_balance_wallet
+                            </span>
+                            <span class="ml-1">Tài khoản ngân hàng</span>
                         </template>
                         <div class="grid formgrid">
                             <div class="field col-12">
@@ -127,15 +140,22 @@
                                         <label class="md:m-0">Ngân hàng</label>
                                     </div>
                                     <div class="col-8 field">
-                                        <Dropdown class="w-100 line-height-1" v-model="selectedBank" :options="oBanks"
-                                            :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+                                        <Dropdown class="w-100 line-height-1"
+                                            :class="{ 'p-invalid': fields.bankName.error }" v-model="selectedBank"
+                                            :options="oBanks" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
                                             placeholder="-Chọn Ngân hàng-" @change="onSelectBank()" />
                                     </div>
                                     <div class="align-self-center col-4 field">
                                         <label class="md:m-0">Số tài khoản</label>
                                     </div>
                                     <div class="col-8 field">
-                                        <InputText class="w-full" type="text" v-model="bankAccountNum" />
+                                        <InputText :class="{ 'p-invalid': fields.bankAccountNum.error }" class="w-full"
+                                            type="text" v-model="bankAccountNum" />
+                                    </div>
+                                    <div class="col-8 col-offset-4">
+                                        <BlockUI :blocked="disableButton">
+                                            <Button class="btn-primary border-10" label="Cập nhật" @click="onUpdate()" />
+                                        </BlockUI>
                                     </div>
                                 </div>
                             </div>
@@ -237,6 +257,19 @@ class Profile extends Vue {
     oStreets: Option.Option[] = []
     oBanks: any[] = []
 
+    fields: any = {
+        name: { label: 'Tên người dùng', required: true, error: false, value: '' },
+        phone: { label: 'Số điện thoại', required: true, error: false, value: '' },
+        mail: { label: 'Email', required: true, error: false, value: '' },
+        gender: { label: 'Giới tính', required: true, error: false, value: '' },
+        doB: { label: 'Ngày sinh', required: true, error: false, value: '' },
+        city: { label: 'Thành phố', required: false, error: false, value: '' },
+        district: { label: 'Quận, huyện', required: false, error: false, value: '' },
+        street: { label: 'Phường, xã', required: false, error: false, value: '' },
+        houseNumber: { label: 'Địa chỉ', required: false, error: false, value: '' },
+        bankName: { label: 'Ngân hàng', required: false, error: false, value: '' },
+        bankAccountNum: { label: 'Số tài khoản', required: false, error: false, value: '' },
+    }
     //---------------------------------------
     home = { icon: 'pi pi-home', to: '/homepage' }
     items = [
@@ -295,6 +328,9 @@ class Profile extends Vue {
         }
     }
     async onUpdate() {
+        if (!this.checkValid()) {
+            return
+        }
 
         // console.log(this.parseDate(this.doB))
         this.disableButton = true;
@@ -302,16 +338,91 @@ class Profile extends Vue {
             name: this.name,
             phone: this.phone,
             email: this.mail,
+            gender: this.gender,
+            doB: this.parseDate(this.doB),
             city: this.city,
             district: this.district,
             street: this.street,
             houseNumber: this.houseNumber,
-            gender: this.gender,
-            doB: this.parseDate(this.doB)
+            bankCode: this.bankCode,
+            bankName: this.bankName,
+            bankAccountNum: this.bankAccountNum,
         }
         const response: any = await this.actUpdateProfile(params)
-        if (response.status == 200) this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã cập nhật thông tin', life: 10000 })
+        if (response?.status == 200) this.$toast.add({ severity: 'success', summary: 'Success', detail: 'Đã cập nhật thông tin', life: 10000 })
         this.disableButton = false;
+    }
+    checkValid() {
+        this.fetchFormData();
+        if (!this.checkNullValue(this.fields)) {
+            return false
+        }
+        if (this.fields.name.value && this.fields.name.value.length > 40) {
+            this.fields.name.error = true;
+            this.$store.commit('commons/store-error/setError', "Tên người dùng không được dài quá 40 ký tự")
+            return false
+        }
+        const phoneRegex = /^(0|\+84)(9[0-9]|8[0-9]|7[0-9]|5[0-9]|3[0-9]|2[0-9]|6[0-9]|4[0-9]|1[0-9])+([0-9]{7})\b/;
+        if (!phoneRegex.test(this.fields.phone.value)) {
+            this.fields.phone.error = true;
+            this.$store.commit('commons/store-error/setError', "Số điện thoại không đúng định dạng")
+            return false
+        }
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(this.fields.mail.value)) {
+            this.fields.mail.error = true;
+            this.$store.commit('commons/store-error/setError', "email không đúng định dạng")
+            return false
+        }
+        if (!(this.fields.houseNumber.value.trim() == '') && this.fields.houseNumber.value.length > 100) {
+            this.fields.mail.error = true;
+            this.$store.commit('commons/store-error/setError', "Địa chỉ cụ thể quá dài (100 ký tự)")
+            return false
+        }
+        if (!(this.fields.bankAccountNum.value.trim() == '') && this.fields.bankAccountNum.value.length > 20) {
+            this.fields.mail.error = true;
+            this.$store.commit('commons/store-error/setError', "Số tài khoản ngân hàng quá dài (20 ký tự)")
+            return false
+        }
+        // console.log(this.fields.dob.value)
+        return true
+    }
+    fetchFormData() {
+        for (const fieldName in this.fields) {
+            if (this.fields.hasOwnProperty(fieldName)) {
+                this.fields[fieldName].value = (this as any)[fieldName];
+                this.fields[fieldName].error = false
+            }
+        }
+    }
+    checkNullValue(fields: any) {
+        const invalidFields: any[] = []
+        for (const fieldName in fields) {
+            if (fields.hasOwnProperty(fieldName)) {
+                const fieldProperties = fields[fieldName];
+                if (fieldProperties.required) {
+                    const value = fieldProperties.value;
+                    const trimmedValue = value != null && typeof value === 'string' ? value.trim() : value;
+
+                    // if (!fieldProperties.value || fieldProperties.value.trim() === '') {
+                    if (!trimmedValue || trimmedValue === '') {
+                        fieldProperties.error = true;
+                        invalidFields.push(fieldProperties.label)
+                    } else {
+                        fieldProperties.error = false;
+                    }
+                }
+            }
+        }
+        if (invalidFields.length > 0) {
+            const errorFields = invalidFields
+                // .map((field: any) => field.label)
+                .join(', ')
+            const errorMessage = `Vui lòng điền thêm thông tin: ${errorFields}`
+            this.$store.commit('commons/store-error/setError', errorMessage)
+            return false
+        }
+        return true
     }
     async GetCity() {
         const response: any = await this.actGetCity()
