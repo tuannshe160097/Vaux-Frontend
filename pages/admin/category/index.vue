@@ -6,18 +6,6 @@
           Danh sách thể loại
         </h2>
       </div>
-      <div class="col-fixed">
-        <div class="grid align-content-center">
-          <div class="col-fixed">
-            <!-- <Button
-              class="w-9rem h-3rem"
-              type="button"
-              label="Thêm Mới"
-              @click="openModelCategory(null)"
-            ></Button> -->
-          </div>
-        </div>
-      </div>
     </div>
     <div class="card-body">
       <div class="row justify-content-between">
@@ -25,9 +13,9 @@
           <div class="grid formgrid">
             <div class="col-3">
               <label>Tên thể loại</label>
-              <InputText class="w-21rem h-3rem" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
+              <InputText class="w-full" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
             </div>
-            <div class="col field justify-content-end flex pt-5">
+            <div class="col justify-content-end flex align-items-end">
               <Button class="mr-2" label="Tìm kiếm" style="height: 36px" @click="getCategory()" />
               <Button class="" label="Thêm Mới" style="height: 36px" @click="openModelCategory(null)" />
             </div>

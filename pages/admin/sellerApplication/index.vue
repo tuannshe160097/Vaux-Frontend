@@ -47,7 +47,7 @@
                 data.created | dateTimeFomat
               }}</template>
             </Column>
-            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-center"
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-center">
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2" v-if="data.status == 3" severity="danger" value="Đã từ chối"></Tag>

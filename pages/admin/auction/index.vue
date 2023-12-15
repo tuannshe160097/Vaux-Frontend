@@ -32,9 +32,12 @@
             </div>
           </div>
           <div class="col justify-content-between flex">
-            <label></label>
-            <Button label="Tìm kiếm" style="height: 36px" @click="getAuction" class="w-full max-w-6rem" />
-            <Button class="" label="Thêm Mới" style="height: 36px" @click="onCreateAuction" />
+            <div class="col justify-content-start flex align-items-end">
+              <Button label="Tìm kiếm" style="height: 36px" @click="getAuction" class="w-full max-w-6rem" />
+            </div>
+            <div class="col justify-content-end flex align-items-end">
+              <Button class="" label="Thêm Mới" style="height: 36px" @click="onCreateAuction" />
+            </div>
           </div>
         </div>
       </div>
