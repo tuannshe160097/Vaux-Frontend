@@ -25,6 +25,7 @@ export const PAGE_MENU_MOD = [
   { id: 6, to: '/admin/category', icon: 'category', label: 'Thể loại', hideToggled: true },
   { id: 7, to: '/admin/item', icon: 'product', label: 'Sản phẩm', hideToggled: true},
   { id: 10, to: '/admin/auction', icon: 'auction', label: 'Phiên đấu giá', hideToggled: true },
+  { id: 11, to: '/admin/order', icon: 'regulatory', label: 'Đơn hàng', hideToggled: true },
   { id: 12, to: '/admin/payment', icon: 'credit-card', label: 'Thanh toán', hideToggled: true },
   { id: 13, to: '/admin/shipment', icon: 'fast-delivery', label: 'Vận chuyển', hideToggled: true},
 ]
