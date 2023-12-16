@@ -15,11 +15,12 @@
                 </div>
                 <div class="grid formgrid">
                     <h4 class="text-brown font-bold col-12">1. Thông tin cơ bản</h4>
-                    <div class="field col-12">
+                    <div class="field md:col-8 col-12">
                         <!-- <h4 class="font-bold">Tên sản phẩm</h4> -->
 
                         <label>Tên sản phẩm</label>
-                        <InputText class="w-100" type="text" v-model="name" :disabled="status != 1" />
+                        <Textarea class="text-left w-full" :autoResize="true" v-model="name" rows="1"
+                            placeholder="Tên sản phẩm" :disabled="status != 1" />
                         <!-- <input
                 class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
                 type="text" v-model="name" placeholder="Nhập tên sản phẩm" /> -->
@@ -128,6 +129,15 @@
                     </span>
                 </div>
                 <div class="grid formgrid">
+                    <h4 class="col-12 font-bold text-brown">6. Phản hồi từ người bán</h4>
+                    <span class="col-12">
+                    </span>
+                    <div class="field col-12">
+                        <Textarea v-if="status != 1" class="text-left w-full" :autoResize="true" v-model="reason" rows="5"
+                            placeholder="Phản hồi của người bán" disabled />
+                    </div>
+                </div>
+                <div class="grid formgrid">
                     <div class="field col-12 flex justify-content-center">
                         <Button v-if="isDisplayButton()" class="mx-2 btn-final border-10"
                             :disabled="blockedAddButton ? 'disabled' : false" @click="onUpdate()">
@@ -176,6 +186,7 @@ class DetailItem extends Vue {
     categoryId: number = 0
     description: string = ''
     reservePrice: string = ''
+    reason: string = ''
     status: any
 
     fileThumbnail: any = null
@@ -248,6 +259,7 @@ class DetailItem extends Vue {
             this.status = result.status
             // this.displayAction() 
             this.thumbnailId = result.thumbnailId
+            this.reason = result.reason
             this.thumbnailUrl = await this.getImageUrl(result.id, result.thumbnailId, true)
             for (const imgId of result.images) {
                 const result2 = await this.getImageUrl(this.itemId, imgId)

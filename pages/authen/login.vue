@@ -117,8 +117,10 @@ class Login extends Vue {
   async callLogin() {
     if (!this.sPhoneNumber) {
       this.$store.commit('commons/store-error/setError', 'Vui lòng nhập Số điện thoại')
-    } else if (this.sOTP === null) {
+      return
+    } else if (this.sOTP === null || this.sOTP.trim() == '') {
       this.$store.commit('commons/store-error/setError', 'Vui lòng nhập OTP')
+      return
     }
 
     try {

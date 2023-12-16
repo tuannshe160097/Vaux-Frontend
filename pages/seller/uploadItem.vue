@@ -128,7 +128,7 @@
           <div class="field col-12 flex justify-content-center">
             <BlockUI :blocked="blockedAddButton">
               <Button class="mx-2 btn-final" @click="onSubmit()">
-                <span v-if="blockedAddButton"><i class="pi pi-spin pi-spinner mr-2" style="font-size: 2rem"></i> Đang xử
+                <span v-if="blockedAddButton"><i class="pi pi-spin pi-spinner mr-2" ></i> Đang xử
                   lý</span>
                 <span v-else> Hoàn thành</span>
               </Button>

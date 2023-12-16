@@ -4,12 +4,12 @@
             <Breadcrumb :home="home" :model="items" />
             <div v-if="!isSeller" class="card-body my-3">
                 <div v-if="!appId" class="grid">
-                    <div class="col-6 field">
+                    <div class="col-12 field flex justify-content-center">
                         <Button @click="$router.push('/account/requestSeller')" label="Trở thành Người bán ngay ->" />
                     </div>
                 </div>
                 <div v-if="appId" class="grid">
-                    <div class="col-6 field">
+                    <div class="col-12 field flex justify-content-center">
                         Quản lý đang xem xét hồ sơ của bạn.
                     </div>
                 </div>
@@ -261,8 +261,8 @@
                             <div class="field col-12">
                                 <BlockUI :blocked="blockedTable">
                                     <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="finishBoxData"
-                                        :value="finishBoxData" responsiveLayout="scroll" dataKey="id" :resizableColumns="true"
-                                        :rows="20" :scrollable="false" stripedRows>
+                                        :value="finishBoxData" responsiveLayout="scroll" dataKey="id"
+                                        :resizableColumns="true" :rows="20" :scrollable="false" stripedRows>
                                         <Column field="id" header="STT">
                                             <template #body="slotProps"><span>{{ slotProps.index + 1 }}</span></template>
                                         </Column>

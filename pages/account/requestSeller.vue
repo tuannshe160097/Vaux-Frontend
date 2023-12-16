@@ -1,118 +1,117 @@
 //Request seller
 <template>
-  <section class="surface-0 flex align-items-center justify-content-center min-h-screen overflow-hidden p-2">
-    <div class="userdetails-page-container flex flex-column ">
-      <h3>Đăng ký tài khoản người bán</h3>
-      <div class="grid">
-        <div class="col-2"></div>
-        <div class="col-8">
-          <div class="card-control">
-            <div class="card-header font-medium text-xl">
-              Thông tin yêu cầu nâng quyền tài khoản
+  <section class="surface-0 flex align-items-center justify-content-center min-h-screen  p-2">
+    <div class="box-page-container flex flex-column container">
+      <Breadcrumb :home="home" :model="items" />
+      <div class="card-body my-3">
+        <div class="grid formgrid">
+          <div class="field col-12">
+            <h2 class="font-bold text-brown">Đăng ký tài khoản người bán</h2>
+          </div>
+        </div>
+        <div class="grid grid-form">
+          <div class="field col-6">
+            <label>
+              {{ fields.name.label }}<span class="text-danger">*</span>
+            </label>
+            <InputText class="w-100" v-model="name" :class="{ 'p-invalid': fields.name.error }">
+            </InputText>
+          </div>
+          <div class="field col-6">
+            <label>{{ fields.gender.label }}</label><span class="text-danger">*</span>
+            <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': fields.gender.error }" v-model="gender"
+              :options="oGenders" optionLabel="name" optionValue="value" />
+          </div>
+          <div class="field col-6">
+            <label>{{ fields.dob.label }}</label><span class="text-danger">*</span><br />
+            <Calendar class="surface-overlay w-100" :class="{ 'p-invalid': fields.dob.error }" v-model="dob"
+              dateFormat="dd-mm-yy">
+            </Calendar>
+          </div>
+          <div class="field col-6">
+            <label>{{ fields.phone.label }}<span class="text-danger">*</span></label>
+            <InputText class="w-100" :class="{ 'p-invalid': fields.phone.error }" type="text" v-model="phone" />
+          </div>
+          <div class="field col-6">
+            <label>{{ fields.email.label }}<span class="text-danger">*</span></label>
+            <InputText class="w-100" :class="{ 'p-invalid': fields.email.error }" type="text" v-model="email" />
+          </div>
+          <div class="field col-6">
+            <label>{{ fields.cccd.label }}<span class="text-danger">*</span></label>
+            <InputText class="w-100" :class="{ 'p-invalid': fields.cccd.error }" type="text" v-model="cccd" />
+          </div>
+          <div class="field col-4">
+            <label>{{ fields.city.label }}<span class="text-danger">*</span></label>
+            <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': fields.city.error }" v-model="selectedCity"
+              :options="oCitys" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+              placeholder="-Chọn Thành phố-" @change="onSelectCity()" />
+          </div>
+          <div class="field col-4">
+            <label>{{ fields.district.label }}<span class="text-danger">*</span></label>
+            <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': fields.district.error }"
+              v-model="selectedDistrict" :options="oDistricts" :filter="true" filterPlaceholder="Tìm kiếm"
+              optionLabel="name" placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
+          </div>
+          <div class="field col-4">
+            <label>{{ fields.street.label }}<span class="text-danger">*</span></label>
+            <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': fields.street.error }" v-model="street"
+              :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+              placeholder="-Chọn Phố/Phường-" optionValue="value" />
+          </div>
+          <div class="field col-12">
+            <label>
+              {{ fields.houseNumber.label }}<span class="text-danger">*</span>
+            </label>
+            <InputText class="w-100" :class="{ 'p-invalid': fields.houseNumber.error }" type="text"
+              v-model="houseNumber" />
+          </div>
+          <div class="field col-6">
+            <label>{{ fields.filePortrait.label }}<span class="text-danger">*</span></label>
+            <div :class="{ 'input-invalid': fields.filePortrait.error }"
+              class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
+              <ImagePreview :src="portraitUrl || require('~/assets/images/default.jpg')" alt="Image"
+                imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
+              <div class="small font-italic text-muted mb-2">
+                JPG or PNG no larger than 3 MB
+              </div>
+              <input type="file" @change="onUploadFile($event, 'Portrait')" accept="image/*" />
             </div>
-            <div class="p-5 grid grid-form">
-              <div class="field col-12">
-                <label>
-                  {{ fieldLabels.name }}
-                </label>
-                <InputText class="w-100" v-model="name" disabled>
-                </InputText>
+          </div>
+          <div class="field col-6">
+            <label>{{ fields.fileCitizenId.label }}<span class="text-danger">*</span></label>
+            <div :class="{ 'input-invalid': fields.fileCitizenId.error }"
+              class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
+              <ImagePreview :src="citizenIdUrl || require('~/assets/images/default.jpg')
+                " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
+              <div class="small font-italic text-muted mb-2">
+                JPG or PNG no larger than 3 MB
               </div>
-              <div class="field col-6">
-                <label>{{ fieldLabels.gender }}</label>
-                <Dropdown class="w-100" :class="{ 'p-invalid': errors.gender }" v-model="gender" :options="oGenders"
-                  optionLabel="name" optionValue="value" />
-              </div>
-              <div class="field col-6">
-                <label>{{ fieldLabels.dob }}</label><br />
-                <Calendar class="surface-overlay w-100" :class="{ 'p-invalid': errors.dob }" v-model="dob"
-                  dateFormat="dd-mm-yy">
-                </Calendar>
-              </div>
-              <div class="field col-6">
-                <label>{{ fieldLabels.phone }}</label>
-                <InputText class="w-100" :class="{ 'p-invalid': errors.phone }" type="text" v-model="phone" />
-              </div>
-              <div class="field col-6">
-                <label>{{ fieldLabels.email }}</label>
-                <InputText class="w-100" :class="{ 'p-invalid': errors.email }" type="text" v-model="email" />
-              </div>
-              <div class="field col-12">
-                <label>{{ fieldLabels.cccd }}</label>
-                <InputText class="w-100" :class="{ 'p-invalid': errors.cccd }" type="text" v-model="cccd" />
-              </div>
-              <div class="field col-4">
-                <label>{{ fieldLabels.city }}</label>
-                <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': errors.city }" v-model="selectedCity"
-                  :options="oCitys" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                  placeholder="-Chọn Thành phố-" @change="onSelectCity()" />
-              </div>
-              <div class="field col-4">
-                <label>{{ fieldLabels.district }}</label>
-                <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': errors.district }" v-model="selectedDistrict"
-                  :options="oDistricts" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                  placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
-              </div>
-              <div class="field col-4">
-                <label>{{ fieldLabels.street }}</label>
-                <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': errors.street }" v-model="street"
-                  :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                  placeholder="-Chọn Phố/Phường-" optionValue="value" />
-              </div>
-              <div class="field col-12">
-                <label>
-                  {{ fieldLabels.houseNumber }}
-                </label>
-
-                <InputText class="w-100" :class="{ 'p-invalid': errors.houseNumber }" type="text" v-model="houseNumber" />
-              </div>
-
-              <div class="field col-6">
-                <label>{{ fieldLabels.filePortrait }}</label>
-                <div :class="{ 'input-invalid': errors.filePortrait }"
-                  class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
-                  <ImagePreview :src="portraitUrl || require('~/assets/images/default.jpg')" alt="Image"
-                    imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
-                  <div class="small font-italic text-muted mb-2">
-                    JPG or PNG no larger than 3 MB
-                  </div>
-                  <input type="file" @change="onUploadFile($event, 'Portrait')" accept="image/*" />
-                </div>
-              </div>
-              <div class="field col-6">
-                <label>{{ fieldLabels.fileCitizenId }}</label>
-                <div :class="{ 'input-invalid': errors.fileCitizenId }"
-                  class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
-                  <ImagePreview :src="citizenIdUrl || require('~/assets/images/default.jpg')
-                    " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
-                  <div class="small font-italic text-muted mb-2">
-                    JPG or PNG no larger than 3 MB
-                  </div>
-                  <input type="file" @change="onUploadFile($event, 'CitizenId')" accept="image/*" />
-                </div>
-              </div>
-              <div class="field col-6">
-                <label>Ngân hàng</label>
-                <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': errors.city }" v-model="selectedBank"
-                  :options="oBanks" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                  placeholder="-Chọn Ngân hàng-" @change="onSelectBank()" />
-              </div>
-              <div class="field col-6">
-                <label>Số tài khoản</label>
-                <InputText class="w-100" type="text" v-model="bankAccountNum" />
-              </div>
-              <div class="field col-12">
-                <label>{{ fieldLabels.content }}</label>
-                <Textarea class="text-left w-full" v-model="content" rows="15" cols="100"
-                  :class="{ 'input-invalid': errors.content }"
-                  placeholder="Ví dụ: Tôi sẽ bán các sản phẩm đồ gia dụng cổ" />
-              </div>
-              <div class="field col-12">
-                <BlockUI :blocked="disableButton">
-                  <Button label="Yêu cầu" @click="onSubmit()" />
-                </BlockUI>
-              </div>
+              <input type="file" @change="onUploadFile($event, 'CitizenId')" accept="image/*" />
             </div>
+          </div>
+          <div class="field col-6">
+            <label>{{ fields.bankName.label }}<span class="text-danger">*</span></label>
+            <Dropdown class="w-100 line-height-1" :class="{ 'p-invalid': fields.bankName.error }" v-model="selectedBank"
+              :options="oBanks" :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
+              placeholder="-Chọn Ngân hàng-" @change="onSelectBank()" />
+          </div>
+          <div class="field col-6">
+            <label>{{ fields.bankAccountNum.label }}<span class="text-danger">*</span></label>
+            <InputText class="w-100" type="text" :class="{ 'input-invalid': fields.bankAccountNum.error }"
+              v-model="bankAccountNum" />
+          </div>
+          <div class="field col-12">
+            <label>{{ fields.content.label }}<span class="text-danger">*</span></label>
+            <Textarea class="text-left w-full" v-model="content" rows="15" cols="100"
+              :class="{ 'input-invalid': fields.content.error }"
+              placeholder="Ví dụ: Tôi sẽ bán các sản phẩm đồ gia dụng cổ" />
+          </div>
+          <div class="field col-12 flex justify-content-center">
+            <BlockUI :blocked="disableButton">
+              <Button class="btn-final" label="Yêu cầu" @click="onSubmit()">
+                <i v-if="disableButton" class="pi pi-spin pi-spinner mr-2"></i>Yêu cầu
+              </Button>
+            </BlockUI>
           </div>
         </div>
       </div>
@@ -157,38 +156,29 @@ class requestSeller extends Vue {
   citizenIdUrl: string = ''
   disableButton: boolean = false
   //
-  fieldLabels: Record<string, string> = {
-    name: 'Tên người dùng',
-    gender: 'Giới tính',
-    dob: 'Ngày sinh',
-    phone: 'Số điện thoại',
-    email: 'Email',
-    cccd: 'Số CCCD',
-    city: 'Thành phố',
-    district: 'Quận, huyện',
-    street: 'Phường, xã',
-    houseNumber: 'Địa chỉ',
-    filePortrait: 'Ảnh chân dung',
-    fileCitizenId: 'Ảnh thẻ cccd/cmnd mặt trước',
-    content: 'Ghi rõ chủng loại sản phẩm bạn định bán',
+  fields: any = {
+    name: { label: 'Tên người dùng', required: true, error: false, value: '' },
+    gender: { label: 'Giới tính', required: true, error: false, value: '' },
+    dob: { label: 'Ngày sinh', required: true, error: false, value: '' },
+    phone: { label: 'Số điện thoại', required: true, error: false, value: '' },
+    email: { label: 'Email', required: true, error: false, value: '' },
+    cccd: { label: 'Số CCCD', required: true, error: false, value: '' },
+    city: { label: 'Thành phố', required: true, error: false, value: '' },
+    district: { label: 'Quận, huyện', required: true, error: false, value: '' },
+    street: { label: 'Phường, xã', required: true, error: false, value: '' },
+    houseNumber: { label: 'Địa chỉ', required: true, error: false, value: '' },
+    filePortrait: { label: 'Ảnh chân dung', required: true, error: false, value: '' },
+    fileCitizenId: { label: 'Ảnh thẻ cccd/cmnd mặt trước', required: true, error: false, value: '' },
+    bankAccountNum: { label: 'Số tài khoản', required: true, error: false, value: '' },
+    bankName: { label: 'Ngân hàng', required: true, error: false, value: '' },
+    content: { label: 'Ghi rõ chủng loại sản phẩm bạn định bán', required: true, error: false, value: '' },
   }
-  requiredFields: string[] = [
-    'name',
-    'gender',
-    'dob',
-    'phone',
-    'email',
-    'cccd',
-    'city',
-    'district',
-    'street',
-    'content',
-    'houseNumber',
-    'filePortrait',
-    'fileCitizenId',
+  //---------------------------------------
+  home = { icon: 'pi pi-home', to: '/homepage' }
+  items = [
+    { label: 'Kênh bán', to: '/Seller' },
+    { label: 'Đăng ký tài khoản người bán' }
   ]
-  errors: Record<string, boolean> = {}
-
   //option data
   oGenders = GENDER_OPTION
   selectedCity: Option.Option | null = null
@@ -218,7 +208,7 @@ class requestSeller extends Vue {
   async mounted() {
     this.name = this.user?.name || ''
     this.gender = this.user?.gender || ''
-    this.dob = this.user?.doB || ''
+    this.dob = this.getDate(this.user?.doB)
     this.phone = this.user?.phone || ''
     this.email = this.user?.email || ''
     this.cccd = this.user?.citizenId || ''
@@ -250,7 +240,7 @@ class requestSeller extends Vue {
     formData.append('BankAccountNum', this.bankAccountNum);
     formData.append('BankCode', this.bankCode);
     formData.append('BankName', this.bankName);
-    formData.append('DoB', new Date(this.dob).toISOString());
+    formData.append('DoB', this.parseDate(this.dob));
     formData.append('Content', this.content);
     formData.append('Address', this.houseNumber + ', ' + this.selectedStreet?.name + ', ' + this.selectedDistrict?.name + ', ' + this.selectedCity?.name);
     formData.append('RawPortrait', this.filePortrait, this.filePortrait.name);
@@ -260,7 +250,7 @@ class requestSeller extends Vue {
     const response = await this.actCreateSeller(formData)
     if (response) {
       this.$toast.add({ severity: 'info', summary: 'Success', detail: 'Đã gửi yêu cầu cho VAUX', life: 10000 })
-      this.$router.push('/account/profile')
+      this.$router.push('/seller')
     }
     this.disableButton = false
   }
@@ -339,12 +329,28 @@ class requestSeller extends Vue {
     this.bankName = this.selectedBank?.fullname
     this.bankCode = this.selectedBank?.value
   }
-  checkValid() {
-    const invalidFields: string[] = this.validateFields(this.requiredFields)
+  checkNullValue(fields: any) {
+    const invalidFields: any[] = []
+    for (const fieldName in fields) {
+      if (fields.hasOwnProperty(fieldName)) {
+        const fieldProperties = fields[fieldName];
+        if (fieldProperties.required) {
+          const value = fieldProperties.value;
+          const trimmedValue = value != null && typeof value === 'string' ? value.trim() : value;
 
+          // if (!fieldProperties.value || fieldProperties.value.trim() === '') {
+          if (!trimmedValue || trimmedValue === '') {
+            fieldProperties.error = true;
+            invalidFields.push(fieldProperties.label)
+          } else {
+            fieldProperties.error = false;
+          }
+        }
+      }
+    }
     if (invalidFields.length > 0) {
       const errorFields = invalidFields
-        .map((field) => this.fieldLabels[field])
+        // .map((field: any) => field.label)
         .join(', ')
       const errorMessage = `Vui lòng điền thêm thông tin: ${errorFields}`
       this.$store.commit('commons/store-error/setError', errorMessage)
@@ -352,21 +358,70 @@ class requestSeller extends Vue {
     }
     return true
   }
-  validateFields(fields: string[]): string[] {
-    const invalidFields: string[] = []
-    this.errors = {}
-    fields.forEach((field) => {
-      console.log((this as any)[field])
-      this.errors[field] = !(this as any)[field]
-      if (!(this as any)[field]) {
-        invalidFields.push(field)
+  fetchFormData() {
+    for (const fieldName in this.fields) {
+      if (this.fields.hasOwnProperty(fieldName)) {
+        this.fields[fieldName].value = (this as any)[fieldName];
+        this.fields[fieldName].error = false
       }
-    })
-
-    return invalidFields
+    }
   }
-  isRequiredField(field: string): boolean {
-    return this.requiredFields.includes(field)
+  checkValid() {
+    this.fetchFormData();
+    if (!this.checkNullValue(this.fields)) {
+      return false
+    }
+    if (this.fields.name.value && this.fields.name.value.length > 40) {
+      this.fields.name.error = true;
+      this.$store.commit('commons/store-error/setError', "Tên người dùng không được dài quá 40 ký tự")
+      return false
+    }
+    const phoneRegex = /^(0|\+84)(9[0-9]|8[0-9]|7[0-9]|5[0-9]|3[0-9]|2[0-9]|6[0-9]|4[0-9]|1[0-9])+([0-9]{7})\b/;
+    if (!phoneRegex.test(this.fields.phone.value)) {
+      this.fields.phone.error = true;
+      this.$store.commit('commons/store-error/setError', "Số điện thoại không đúng định dạng")
+      return false
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(this.fields.email.value) || this.fields.cccd.value.trim().length > 64) {
+      this.fields.email.error = true;
+      this.$store.commit('commons/store-error/setError', "email không đúng định dạng")
+      return false
+    }
+    if (this.fields.cccd.value && this.fields.cccd.value.trim().length > 13) {
+      this.fields.cccd.error = true;
+      this.$store.commit('commons/store-error/setError', "Tên người dùng không được dài quá 40 ký tự")
+      return false
+    }
+    if (this.fields.houseNumber.value && this.fields.houseNumber.value.trim().length > 100) {
+      this.fields.houseNumber.error = true;
+      this.$store.commit('commons/store-error/setError', "Tên người dùng không được dài quá 40 ký tự")
+      return false
+    }
+    if (this.fields.bankAccountNum.value && this.fields.bankAccountNum.value.trim().length > 20) {
+      this.fields.bankAccountNum.error = true;
+      this.$store.commit('commons/store-error/setError', "Tên người dùng không được dài quá 40 ký tự")
+      return false
+    }
+    // console.log(this.fields.dob.value)
+    return true
+  }
+  getDate(string: any) {
+    if (!string) {
+      return new Date()
+    }
+    return new Date(string)
+  }
+  parseDate(value: Date) {
+    const date = new Date(value);
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    return formattedDate;
   }
 }
 export default requestSeller
