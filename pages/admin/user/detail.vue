@@ -92,8 +92,8 @@
                 </div>
                 <div class="field col-6">
                   <label>Ngày sinh<span class="text-danger">*</span></label>
-                  <Calendar class="w-100" :class="{ 'p-invalid': fields.dob.error }" v-model="dob"
-                    dateFormat="dd-mm-yy" :maxDate="new Date()"/>
+                  <Calendar class="w-100" :class="{ 'p-invalid': fields.dob.error }" v-model="dob" dateFormat="dd-mm-yy"
+                    :maxDate="new Date()" />
                 </div>
                 <div class="field col-4">
                   <label>Thành phố<span class="text-danger">*</span></label>
@@ -254,8 +254,8 @@ class DetailUser extends Vue {
     district: { label: 'Quận, huyện', required: true, error: false, value: '' },
     street: { label: 'Phường, xã', required: true, error: false, value: '' },
     houseNumber: { label: 'Địa chỉ', required: true, error: false, value: '' },
-    filePortrait: { label: 'Ảnh chân dung', required: true, error: false, value: '' },
-    fileCitizenId: { label: 'Ảnh thẻ cccd/cmnd mặt trước', required: true, error: false, value: '' },
+    filePortrait: { label: 'Ảnh chân dung', required: false, error: false, value: '' },
+    fileCitizenId: { label: 'Ảnh thẻ cccd/cmnd mặt trước', required: false, error: false, value: '' },
     bankName: { label: 'Ngân hàng', required: true, error: false, value: '' },
     bankAccountNum: { label: 'Số tài khoản', required: true, error: false, value: '' },
     curSubject: { label: 'Quyền hạn', required: true, error: false, value: '' },
@@ -437,8 +437,8 @@ class DetailUser extends Vue {
     formData.append("bankAccountNum", this.bankAccountNum);
     formData.append("bankCode", this.bankCode);
     formData.append("bankName", this.bankName);
-    formData.append("RawCitizenIdImage", this.fileCitizenId, this.fileCitizenId.name);
-    formData.append("RawPortrait", this.filePortrait, this.filePortrait.name);
+    formData.append("RawCitizenIdImage", this.fileCitizenId, this.fileCitizenId?.name);
+    formData.append("RawPortrait", this.filePortrait, this.filePortrait?.name);
     formData.append("address", this.houseNumber + ', ' + this.selectedStreet?.name + ', ' + this.selectedDistrict?.name + ', ' + this.selectedCity?.name);
     let result
     if (this.curSubject == '1') {
@@ -555,6 +555,19 @@ class DetailUser extends Vue {
     this.fetchFormData();
     if (!this.checkNullValue(this.fields)) {
       return false
+    }
+    if (this.curThread === 'ADD') {
+      console.log('check 234: ', this.fields.fileCitizenId.value)
+      if (!this.fields.fileCitizenId.value) {
+        this.fields.fileCitizenId.error = true;
+        this.$store.commit('commons/store-error/setError', "Chưa có " + this.fields.fileCitizenId.label)
+        return false
+      }
+      if (!this.fields.filePortrait.value) {
+        this.fields.filePortrait.error = true;
+        this.$store.commit('commons/store-error/setError', "Chưa có " + this.fields.filePortrait.label)
+        return false
+      }
     }
     if (this.fields.name.value && this.fields.name.value.length > 40) {
       this.fields.name.error = true;
