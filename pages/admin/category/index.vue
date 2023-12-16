@@ -86,10 +86,9 @@
         <Dialog :header="titleModel" :visible.sync="displayBasic" :containerStyle="{ width: '50vw' }" :maximizable="true"
           :modal="true">
           <div class="field">
-            <label>Tên</label>
-            <InputText
-              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-              type="text" v-model="sName" placeholder="Vui lòng nhập tên" />
+            <label>Tên<span class="text-danger">*</span></label>
+            <InputText :class="{ 'input-invalid': nameError }" class=" p-2 border-10 w-full" type="text" v-model="sName"
+              placeholder="Vui lòng nhập tên" />
           </div>
           <div class="field">
             <label>Mô tả</label>
@@ -124,9 +123,10 @@ class CategoryList extends Vue {
   displayBasic = false
   search: string = ''
   pPagenum: number = 1
-  pPageSize: number = 5
+  pPageSize: number = 10
   totalRecords: number = 0
 
+  nameError: boolean = false
   @nsStoreCategory.Action
   actGetCategory!: (params: any) => Promise<any>
 
@@ -171,6 +171,7 @@ class CategoryList extends Vue {
   }
 
   async onSaveCategory() {
+    if (!this.checkValid()) return;
     let response = null
     const params = {
       name: this.sName || '',
@@ -195,6 +196,21 @@ class CategoryList extends Vue {
       })
       this.closeModel()
     }
+  }
+  checkValid() {
+    this.nameError = false;
+    if (this.sName.trim() == '') {
+      this.nameError = true;
+      this.$store.commit('commons/store-error/setError', "Chưa nhập tên thể loại")
+      return false
+    }
+    if (this.sName.length > 30) {
+      this.nameError = true;
+      this.$store.commit('commons/store-error/setError', "Tên thể loại không được dài quá 30 ký tự")
+      return false
+    }
+    // console.log(this.fields.dob.value)
+    return true
   }
 
   openModelCategory(row?: any) {

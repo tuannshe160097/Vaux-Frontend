@@ -6,16 +6,6 @@
 						style="margin-bottom: -7px;">VAUX</a>
 			</div>
 			<ul class="nav-links inline-flex mx-2 megaDisplay">
-				<!-- <li>
-					<a href="#" class="desktop-item">Dropdown Menu</a>
-					<label for="showDrop" class="mobile-item">Dropdown Menu</label>
-					<ul class="drop-menu absolute ">
-						<li><a href="#">Drop menu 1</a></li>
-						<li><a href="#">Drop menu 2</a></li>
-						<li><a href="#">Drop menu 3</a></li>
-						<li><a href="#">Drop menu 4</a></li>
-					</ul>
-				</li> -->
 				<li>
 					<a @click="megaDisplay = !megaDisplay" href="#" class="desktop-item mr-2">Danh mục</a>
 					<div v-if="megaDisplay" class="mega-box absolute left-0 w-full">
@@ -39,7 +29,8 @@
 					<InputText type="text" v-model="search" class="w-full px-2" placeholder="Tìm sản phẩm"
 						@keyup.enter="onSearch()" />
 				</li>
-				<li><a href="/seller" class=" ml-2">Kênh bán</a></li>
+				<li v-if="userRoleId == 2"><a href="/expert/items" class=" ml-2">Kênh chuyên gia</a></li>
+				<li v-else><a href="/seller" class=" ml-2">Kênh bán</a></li>
 			</ul>
 			<div class="text-yellow mr-2 dropOption notiDisplay" v-if="user != null">
 				<a @click="notiDisplay = !notiDisplay" href="#" class="desktop-item">
@@ -74,7 +65,6 @@
 				<div v-if="profileDisplay" class="relative">
 					<ul class="drop-menu2 absolute">
 						<li><a href="/account/profile">Thông tin cá nhân</a></li>
-						<li v-if="userRoleId==2"><a href="/expert/items">Danh sách sản phẩm</a></li>
 						<li><a href="/account/items">Sản phẩm đã thắng</a></li>
 						<li><a href="/account/orders">Danh sách đơn hàng</a></li>
 						<li><a @click="logout()">Đăng xuất</a></li>
