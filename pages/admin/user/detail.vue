@@ -425,6 +425,8 @@ class DetailUser extends Vue {
     var formData = new FormData();
     formData.append("subject", this.curSubject);
     formData.append("name", this.name);
+    formData.append("gender", this.gender);
+    formData.append("doB", this.parseDate(this.dob));
     formData.append("phone", this.phone);
     formData.append("email", this.email);
     formData.append("houseNumber", this.houseNumber);
@@ -432,8 +434,6 @@ class DetailUser extends Vue {
     formData.append("district", this.district);
     formData.append("street", this.street);
     formData.append("citizenId", this.cccd);
-    formData.append("gender", this.gender);
-    formData.append("doB", this.parseDate(this.dob));
     formData.append("bankAccountNum", this.bankAccountNum);
     formData.append("bankCode", this.bankCode);
     formData.append("bankName", this.bankName);
@@ -468,13 +468,17 @@ class DetailUser extends Vue {
       name: this.name,
       phone: this.phone,
       email: this.email,
+      gender: this.gender,
+      doB: this.parseDate(this.dob),
       houseNumber: this.houseNumber,
       city: this.city,
       district: this.district,
       street: this.street,
       citizenId: this.cccd,
-      gender: this.gender,
-      doB: this.parseDate(this.dob),
+      bankAccountNum: this.bankAccountNum,
+      bankCode: this.bankCode,
+      bankName: this.bankName,
+      address: this.houseNumber + ', ' + this.selectedStreet?.name + ', ' + this.selectedDistrict?.name + ', ' + this.selectedCity?.name
     }
     const result = await this.actUpdateUser(params)
     if (result) {

@@ -16,19 +16,15 @@
         <div class="grid formgrid">
           <h4 class="text-brown font-bold col-12">1. Thông tin cơ bản</h4>
           <div class="field md:col-8 col-12 ">
-            <!-- <h4 class="font-bold">Tên sản phẩm</h4> -->
-
-            <label>Tên sản phẩm</label>
-            <!-- <InputText class="w-100" type="text" v-model="name" /> -->
-            <Textarea class="text-left w-full" :autoResize="true" v-model="name" rows="1" placeholder="Tên sản phẩm" />
-            <!-- <input
-              class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-              type="text" v-model="name" placeholder="Nhập tên sản phẩm" /> -->
+            <label>Tên sản phẩm<span class="text-danger">*</span></label>
+            <Textarea :class="{ 'input-invalid': error.name }" class="text-left w-full" :autoResize="true" v-model="name"
+              rows="1" placeholder="Tên sản phẩm" />
           </div>
           <div class="field md:col-4 col-12">
-            <label>Thể loại</label>
-            <Dropdown class="w-100 line-height-1" v-model="categoryId" :options="oCategories" optionLabel="name"
-              optionValue="id" placeholder="Chọn thể loại" :filter="true" filterPlaceholder="Tìm kiếm" />
+            <label>Thể loại<span class="text-danger">*</span></label>
+            <Dropdown :class="{ 'input-invalid': error.categoryId }" class="w-100 line-height-1" v-model="categoryId"
+              :options="oCategories" optionLabel="name" optionValue="id" placeholder="Chọn thể loại" :filter="true"
+              filterPlaceholder="Tìm kiếm" />
           </div>
         </div>
         <div class="grid formgrid">
@@ -39,10 +35,11 @@
             của bạn lên hàng đầu.
           </span>
           <div class="field col-4">
-            <div class="card-header font-medium text-xl">Ảnh bìa</div>
+            <div class="card-header font-medium text-xl">Ảnh bìa<span class="text-danger">*</span></div>
             <div class="card-body p-5">
               <div class="field">
-                <div class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
+                <div :class="{ 'input-invalid': error.fileThumbnail }"
+                  class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
                   <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
                     imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
                   <div class="font-italic text-danger mb-2">
@@ -73,22 +70,24 @@
           </div>
         </div>
         <div class="grid formgrid">
-          <h4 class="col-12 font-bold text-brown">3. Mô tả sản phẩm</h4>
+          <h4 class="col-12 font-bold text-brown">3. Mô tả sản phẩm<span class="text-danger">*</span></h4>
           <span class="col-12">
             Thêm mô tả chi tiết về sản phẩm của bạn. Cung cấp nhiều thông tin hơn
             sẽ giúp khách hàng của bạn tin tưởng sản phẩm hơn
           </span>
           <div class="field col-12">
-            <Textarea class="text-left w-full" :autoResize="true" v-model="description" rows="5"
-              placeholder="Sử dụng phần này để thêm thông tin mô tả." style="height: 3rem;" />
+            <Textarea class="text-left w-full" :class="{ 'input-invalid': error.description }" :autoResize="true"
+              v-model="description" rows="5" placeholder="Sử dụng phần này để thêm thông tin mô tả."
+              style="height: 3rem;" />
           </div>
         </div>
         <div class="grid formgrid">
-          <h4 class="col-12 font-bold text-brown">4. Giá sàn</h4>
+          <h4 class="col-12 font-bold text-brown">4. Giá sàn<span class="text-danger">*</span></h4>
           <span class="col-12">
           </span>
           <div class="field col-12 md:col-4">
-            <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reservePrice" />
+            <InputNumber :class="{ 'input-invalid': error.reservePrice }" class="text-right w-full" suffix=" vnđ"
+              v-model="reservePrice" />
           </div>
         </div>
         <div class="grid formgrid">
@@ -120,15 +119,10 @@
           </span>
         </div>
         <div class="grid formgrid">
-          <div class="col-12">
-
-          </div>
-        </div>
-        <div class="grid formgrid">
           <div class="field col-12 flex justify-content-center">
             <BlockUI :blocked="blockedAddButton">
               <Button class="mx-2 btn-final" @click="onSubmit()">
-                <span v-if="blockedAddButton"><i class="pi pi-spin pi-spinner mr-2" ></i> Đang xử
+                <span v-if="blockedAddButton"><i class="pi pi-spin pi-spinner mr-2"></i> Đang xử
                   lý</span>
                 <span v-else> Hoàn thành</span>
               </Button>
@@ -156,8 +150,7 @@ class CreateItem extends Vue {
   name: string = ''
   categoryId: number = 0
   description: string = ''
-  reservePrice: string = ''
-
+  reservePrice: number = 0
   fileThumbnail: any = null
   thumbnailUrl: string = ''
 
@@ -169,6 +162,14 @@ class CreateItem extends Vue {
     { field: 'label', header: 'Tên' },
     { field: 'value', header: 'Giá trị' }
   ];
+
+  error: any = {
+    name: false,
+    categoryId: false,
+    description: false,
+    fileThumbnail: false,
+    reservePrice: false
+  }
 
   blockedAddButton: boolean = false
   //---------------------------------------
@@ -198,8 +199,6 @@ class CreateItem extends Vue {
     const fileList = Array.from(files);
     if (files != null) {
       for (const file of fileList) {
-
-
         if (file.size / 1024 / 1024 > 20) {
           this.$store.commit(
             'commons/store-error/setError',
@@ -207,7 +206,6 @@ class CreateItem extends Vue {
           )
           return
         }
-
         const objectURL = URL.createObjectURL(file);
         const imageInfo = { objectURL, name: file.name, size: file.size };
         this.images.push(imageInfo);
@@ -236,6 +234,7 @@ class CreateItem extends Vue {
     this.$delete(this.files, index);
   }
   async onSubmit() {
+    if (!this.checkValid()) return
     this.blockedAddButton = true
     this.$toast.add({ severity: 'warn', summary: 'Thành công', detail: 'Đang tạo sản phẩm, Vui lòng đợi trong giây lát', life: 3000 })
     const params = {
@@ -255,6 +254,43 @@ class CreateItem extends Vue {
     }
     this.blockedAddButton = false
     this.$router.push('/seller')
+  }
+  checkValid() {
+    this.error.name = false
+    this.error.categoryId = false
+    this.error.fileThumbnail = false
+    this.error.description = false
+    this.error.reservePrice = false
+    if (this.name.trim() == '' || this.name.length > 100) {
+      this.error.name = true
+      this.$store.commit('commons/store-error/setError', 'Chưa có tên sản phẩm')
+      return false
+    }
+    if (this.categoryId == 0) {
+      this.error.categoryId = true
+      this.$store.commit('commons/store-error/setError', 'Chưa chọn thể loại')
+      return false
+    }
+    if (this.fileThumbnail == null) {
+      this.error.fileThumbnail = true
+      this.$store.commit('commons/store-error/setError', 'Chưa có ảnh bìa cho sản phẩm')
+      return false
+    }
+    if (this.images.length < 3 || this.images.length > 10) {
+      this.$store.commit('commons/store-error/setError', 'Danh sách ảnh chi tiết cần có ít nhất là 3 ảnh và nhiều nhất là 10 ảnh')
+      return false
+    }
+    if (this.description.trim() == '') {
+      this.error.description = true
+      this.$store.commit('commons/store-error/setError', 'Chưa có mô tả sản phẩm')
+      return false
+    }
+    if (this.reservePrice < 0) {
+      this.error.reservePrice = true
+      this.$store.commit('commons/store-error/setError', 'Giá sàn phải lớn hơn hoặc bằng 0 vnđ')
+      return false
+    }
+    return true
   }
   async AddMultiImage(itemId: any, fileList: any) {
     const formData = new FormData();
