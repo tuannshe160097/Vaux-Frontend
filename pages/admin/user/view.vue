@@ -63,7 +63,7 @@
               </div>
               <div class="field col-6">
                 <label>Ngày sinh</label>
-                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" disabled />
+                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" disabled :maxDate="new Date()" />
               </div>
               <div class="field col-4">
                 <label>Thành phố</label>

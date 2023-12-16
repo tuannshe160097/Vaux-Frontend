@@ -93,7 +93,7 @@
                 <div class="field col-6">
                   <label>Ngày sinh<span class="text-danger">*</span></label>
                   <Calendar class="w-100" :class="{ 'p-invalid': fields.dob.error }" v-model="dob"
-                    dateFormat="dd-mm-yy" />
+                    dateFormat="dd-mm-yy" :maxDate="new Date()"/>
                 </div>
                 <div class="field col-4">
                   <label>Thành phố<span class="text-danger">*</span></label>

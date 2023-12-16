@@ -7,7 +7,7 @@
       </div>
       <div class="col-fixed">
         <div class="grid align-content-center">
-        <!-- <div class="col-fixed">
+          <!-- <div class="col-fixed">
             <Button class="w-9rem h-3rem" type="button" label="Thêm Mới" @click="onAddNew()"></Button>
             </div> -->
         </div>
@@ -46,7 +46,7 @@
               </div>
               <div class="field col-4">
                 <label>Ngày sinh</label>
-                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" disabled />
+                <Calendar class="w-100" v-model="dob" dateFormat="dd-mm-yy" disabled :maxDate="new Date()" />
               </div>
               <div class="field col-4">
                 <label>Thành phố</label>
@@ -88,7 +88,7 @@
                 <label>Ảnh cccd/cmnd</label>
                 <div class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
                   <ImagePreview :src="citizenIdUrl || require('~/assets/images/default.jpg')
-                  " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
+                    " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
                 </div>
               </div>
               <div class="field col-12">
@@ -100,7 +100,7 @@
                 <label>Phản hồi từ người bán</label>
                 <Textarea class="text-left w-full" v-model="reason" rows="15" cols="100" placeholder="Lý do..." />
               </div>
-            <!-- <div class="field col-4">
+              <!-- <div class="field col-4">
                 <label>Ngày tạo</label>
                 <input
                   class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
@@ -222,7 +222,7 @@ class ViewUser extends Vue {
       this.content = result.content
       this.reason = result.reason
       this.appStatus = result.status
-      console.log(result.id, '???' , result.appStatus)
+      console.log(result.id, '???', result.appStatus)
     }
     else {
       this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin application Id")

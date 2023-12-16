@@ -52,7 +52,7 @@
                                         <label class="md:m-0">Ngày sinh<span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-8 field">
-                                        <Calendar :class="{ 'p-invalid': fields.doB.error }"
+                                        <Calendar :class="{ 'p-invalid': fields.doB.error }" :maxDate="new Date()"
                                             class="surface-overlay w-100 m-0" v-model="doB" dateFormat="dd-mm-yy">
                                         </Calendar>
                                     </div>
