@@ -347,8 +347,8 @@ class DetailUser extends Vue {
       this.bankCode = result.bankCode
       this.bankName = result.bankName
       this.bankAccountNum = result.bankAccountNum
-      this.portraitUrl = await this.getImageUrl(result.portraitId)
-      this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId)
+      this.portraitUrl = await this.getImageUrl(result.portraitId, this.curUserId)
+      this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId, this.curUserId)
     } else {
     }
   }
@@ -497,9 +497,10 @@ class DetailUser extends Vue {
       }
     }
   }
-  async getImageUrl(imgId: any): Promise<any> {
+  async getImageUrl(imgId: any, userId: any): Promise<any> {
     try {
-      const response = await this.actGetUserImage({ imageId: imgId, userId: this.curUserId });
+      if (imgId == null || userId == null) return ''
+      const response = await this.actGetUserImage({ imageId: imgId, userId: userId });
       return new Promise((resolve) => {
         const reader = new FileReader();
         reader.readAsDataURL(response);
