@@ -148,14 +148,21 @@ class BidDialog extends Vue {
     await this.joinBidRoom();
     await this.receiveMessage();
     await this.receiveEndMessage();
-    console.log('LTAb: ', this.endDatetime)
+    console.log('Bid itemId: ', this.curItemId)
   }
   async mounted() {
+    if (this.curItemId == null) {
+      this.$toast.add({
+        severity: 'error',
+        summary: 'Lỗi',
+        detail: "Không lấy được id sản phẩm cho đấu giá",
+        life: 5000
+      })
+    }
     await this.getItemInfo()
     await this.getBids()
     this.getBids()
     this.formatItemsTimeLeft()
-    console.log(this.endDatetime)
     this.formatTimeLeft(this.endDatetime);
   }
   async start() {
@@ -198,6 +205,7 @@ class BidDialog extends Vue {
   async receiveEndMessage() {
     try {
       const eventName = "AuctionEnd"
+      console.log("AuctionEnd");
       await this.connection.on(eventName, () => {
         this.onEndBid()
       })
@@ -210,8 +218,10 @@ class BidDialog extends Vue {
       itemId: this.curItemId
     }
     const response = await this.actGetItem(params)
+    console.log('Bid getItemInfo: ',response)
     if (response) {
       this.reservePrice = response.reservePrice
+      this.endDatetime = response.ongoingSession.endDate
       this.curBid = 0
       if (response.highestBid) {
         this.curBid = response.highestBid.amount / 1000
@@ -223,6 +233,7 @@ class BidDialog extends Vue {
       itemId: this.curItemId
     }
     const response = await this.actGetItemBids(params)
+    console.log('Bid getBids: ',response)
     if (response && response.records.length > 0) {
       this.bidshow = []
       this.bidFullList = []
@@ -257,9 +268,8 @@ class BidDialog extends Vue {
         amount: this.priceBid
       }
     }
-    console.log('hi: ')
     const response = await this.actAddItemBids(params)
-    console.log('heello: ', response)
+    console.log('Bid postBids: ', response)
     if (response && response.status == 200) {
       this.$toast.add({
         severity: 'success',
@@ -360,12 +370,7 @@ class BidDialog extends Vue {
   }
   onEndBid() {
     this.bidEnd = true
-  }
-  @Watch('endDatetime')
-  setShowModal() {
-    console.log(this.endDatetime)
-    this.formatTimeLeft(this.endDatetime);
-  }
+  } 
 }
 export default BidDialog
 </script>
