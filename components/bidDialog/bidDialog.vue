@@ -12,7 +12,7 @@
           <span v-if="bidEnd">Giá cao nhất</span><span v-else>Giá hiện tại</span>
         </div>
         <div class="col-12">
-          <h1>{{ formatNumber(curBid) }}</h1>
+          <h1>{{ formatNumber(curBid * 1000) }}</h1>
         </div>
         <div v-if="reservePrice <= curBid" class="col-12 text-brown">
           Đã đạt mức giá tối thiểu
@@ -24,24 +24,36 @@
         <div v-if="!bidEnd" class="col-12 mt-3  border-bottom-1" style="border-color: #E0A26F;">
           <div v-if="user" class="grid">
             <div class="col-4">
-              <button @click="BidOption(curBid + 100000)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid +
+              <button @click="BidOption(curBid + 100)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid *
+                1000
+                +
                 100000)
               }}</button>
             </div>
             <div class="col-4">
-              <button @click="BidOption(curBid + 200000)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid +
+              <button @click="BidOption(curBid + 200)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid *
+                1000
+                +
                 200000)
               }}</button>
             </div>
             <div class="col-4">
-              <button @click="BidOption(curBid + 300000)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid +
+              <button @click="BidOption(curBid + 300)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid *
+                1000
+                +
                 300000)
               }}</button>
             </div>
             <div class="col-12">
-              <InputNumber class="w-full this-p-inputtext-p-4" v-model="priceBid" suffix=",000"
-                :placeholder="`${formatNumber(curBid + 10000)} hoặc cao hơn`">
-              </InputNumber>
+              <div class="p-inputgroup" style="border-color: aqua;">
+                <InputNumber class=" this-p-inputtext-p-4" inputClass="text-right" v-model="priceBid"
+                  :placeholder="`Cao hơn hoặc bằng ${formatNumber(curBid + 10)}`" inputStyle="border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px; border-color: #A16B56; border-right:0">
+                </InputNumber>
+                <span class="p-inputgroup-addon"
+                  style="padding-left: 2px;border-top-right-radius: 10px; border-bottom-right-radius: 10px;border-color: #A16B56">,000
+                </span>
+              </div>
             </div>
             <div class="col-12">
               <button class="p-3 btn-primary border-10 w-full" @click="postBids()">Đấu giá</button>
@@ -176,7 +188,7 @@ class BidDialog extends Vue {
     try {
       const roomname = "item_bid_" + this.curItemId;
       await this.connection.on(roomname, (bid: any, amount: any) => {
-        this.curBid = amount
+        this.curBid = amount / 1000
         this.getBids()
       })
     } catch (error) {
@@ -202,7 +214,7 @@ class BidDialog extends Vue {
       this.reservePrice = response.reservePrice
       this.curBid = 0
       if (response.highestBid) {
-        this.curBid = response.highestBid.amount
+        this.curBid = response.highestBid.amount / 1000
       }
     }
   }
@@ -262,7 +274,7 @@ class BidDialog extends Vue {
     this.postBids()
   }
   formatNumber(number: any) {
-    const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return "₫" + formattedNumber;
   }
   formatItemsTimeLeft() {
@@ -361,4 +373,9 @@ export default BidDialog
 <style lang="sass" scoped>
 .read-more
   border: 1px solid $primary-orange
+.this-p-inputtext-p-4
+  .p-inputtext 
+    padding:1.5rem
+    padding-right:2px
+    
   </style>

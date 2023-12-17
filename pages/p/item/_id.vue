@@ -58,6 +58,36 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="grid nested-grid">
+                            <h2 class="col-12 mb-0">Bình luận</h2>
+                            <div class="field col-12">
+                                <form @submit.prevent="onComment">
+                                    <Textarea class="w-full" v-model="comment" :autoResize="true"
+                                        placeholder="Viết bình luận của bạn..." rows="1"></Textarea>
+                                    <div v-if="comment != null && comment.trim() != ''" class="flex justify-content-end">
+                                        <Button @click="comment = ''" class="btn-second border-10 mr-2">Hủy</Button>
+                                        <Button type="submit" class="btn-primary border-10">Bình luận</Button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col-12">
+                                <div v-for="comment in comments" :key="comment.id" class="col-12 mb-2">
+                                    <div class="grid grid-nested">
+                                        <div class="col-fixed surface-300 flex justify-content-center align-items-center"
+                                            style="height: 50px; width:50px; border-radius:50%">
+                                            <i class="pi pi-user" style="font-size: 1.5rem"></i>
+                                        </div>
+                                        <div class="col flex flex-column">
+                                            <div class="flex flex-row">
+                                                <div class="font-bold">{{ "Người tham gia " + comment.userId }}</div>
+                                                <div class="ml-2">{{ formatDistanceToNow(comment.time) }}</div>
+                                            </div>
+                                            <div class="">{{ comment.content }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="md:col-5 col-12 md:pl-3">
                         <BidDialog :curItemId="itemId" :endDatetime="endDate" :reservePrice="item.reservePrice"></BidDialog>
@@ -103,11 +133,12 @@ class EditAuctionList extends Vue {
     priceBid: any = null
     previewImage: string | null | undefined = null;
 
-    zoom: number = 1;
-    rotation: number = 0;
     activeIndex: number = 0;
     displayBasic2: boolean = false
     images: any = []
+
+    comments: any[] = [ ]
+    comment: string | null = ''
 
     responsiveOptions = [
         { breakpoint: '1024px', numVisible: 5 },
@@ -124,14 +155,13 @@ class EditAuctionList extends Vue {
         { label: 'Nguồn gốc', value: 'Thần rùa' },
         { label: 'Chất liệu', value: 'Thép đen nguyên khối' }
     ]
-    bids = []
     disableButton: boolean = false
     @nsStoreItem.Action
     actGetItem!: (params: any) => Promise<any>
     @nsStoreItem.Action
-    actGetItemBids!: (params: any) => Promise<any>
+    actAddItemComment!: (params: any) => Promise<any>
     @nsStoreItem.Action
-    actAddItemBids!: (params: any) => Promise<any>
+    actGetItemComments!: (params: any) => Promise<any>
 
     async created() {
         this.itemId = this.$route?.params?.id
@@ -143,12 +173,22 @@ class EditAuctionList extends Vue {
             { label: this.item.category.name, to: '/p/item?cId=' + this.item.category.id },
             { label: this.item.name }
         ]
+        this.getComments()
     }
     async fetchData() {
+        if (this.itemId == null) {
+            this.$toast.add({
+                severity: 'error',
+                summary: 'Lỗi',
+                detail: "Không tìm thấy id sản phẩm",
+                life: 5000
+            })
+        }
         const params = {
             itemId: this.itemId
         }
         const response = await this.actGetItem(params)
+        console.log('fetchData: ', response)
         this.item = {
             id: response.id,
             name: response.name,
@@ -170,11 +210,8 @@ class EditAuctionList extends Vue {
     getImageUrl(itemId: any, imgId: any) {
         try {
             if (itemId == null || imgId == null) {
+                console.log('getImageUrl: itemId=' + itemId + " imgId=" + imgId)
                 return ''
-            }
-            const params = {
-                itemId: itemId,
-                imgId: imgId,
             }
             return process.env.BE_API_URL + '/api/Item/' + itemId + '/Images/' + imgId
         } catch (error) {
@@ -184,29 +221,12 @@ class EditAuctionList extends Vue {
         }
     }
     displayFullScreen(index: any) {
-        // this.activeIndex = index;
         this.displayBasic2 = true;
     }
     hidePreview(event: Event) {
-        // this.previewImage = null;
-        // this.display = false;
         if (event.target === event.currentTarget) {
             this.previewImage = null;
         }
-    }
-    zoomIn() {
-        this.zoom += 0.1;
-    }
-    zoomOut() {
-        if (this.zoom > 0.1) {
-            this.zoom -= 0.1;
-        }
-    }
-    rotate() {
-        this.rotation += 90;
-    }
-    nextImage() {
-        // Implement logic to move to the next image in the gallery
     }
     formatNumber(number: any) {
         const formattedNumber = number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -223,14 +243,30 @@ class EditAuctionList extends Vue {
         const days = Math.floor(hours / 24);
 
         if (days > 0) {
-            return `${days} day${days > 1 ? 's' : ''} ago`;
+            return `${days} ngày trước`;
         } else if (hours > 0) {
-            return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+            return `${hours} giờ trước`;
         } else if (minutes > 0) {
-            return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+            return `${minutes} phút trước`;
         } else {
-            return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
+            return `${seconds > 10 ? seconds : 'vài'} giây trước`;
         }
+    }
+    //======================================================
+    async onComment() {
+        const response = await this.actAddItemComment({ itemId: this.itemId, content: this.comment })
+        console.log('onComment: ', response)
+    }
+    async getComments() {
+        this.comments = []
+        const response = await this.actGetItemComments({ itemId: this.itemId, pageNum: 1, pageSize: -1 })
+        console.log('getComments: ', response)
+        this.comments = response.records.map((comment: any) => ({
+            id: comment.index,
+            userId: comment.userId,
+            time: comment.created,
+            content: comment.content,
+        }));
     }
 }
 export default EditAuctionList
@@ -252,7 +288,7 @@ export default EditAuctionList
   .this-p-inputtext-p-4
     .p-inputtext 
       padding:1.5rem
-      padding-right:5px
+      padding-right:2px
       
   /* Add custom styles for the modal */
   .custom-modal

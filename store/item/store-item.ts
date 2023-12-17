@@ -43,7 +43,7 @@ export default class StoreItem extends VuexModule {
   @Action({ rawError: true })
   async actGetItemComments(params: any): Promise<string | undefined> {
     try {
-      const url = PathBind.transform(this.context, StoreItem.STATE_URL.POST_ITEM_COMMENT,
+      const url = PathBind.transform(this.context, StoreItem.STATE_URL.GET_ITEM_COMMENT,
         { pageNum: params?.pageNum, pageSize: params?.pageSize, itemId: params?.itemId })
       return await $api.get(url)
     } catch (error) { }

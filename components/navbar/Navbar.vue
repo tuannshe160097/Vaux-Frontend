@@ -40,7 +40,7 @@
 					<ul class="drop-menu absolute surface border-10" style="max-height: 80vh; overflow-y: auto;">
 						<li v-for="item in notifications" :key="item.id" :item="item"
 							class="p-2 hover:surface-300 cursor-pointer border-bottom-1 border-200">
-							<a :href="item.redirect" class="border-10" style="line-height: 1.6;">
+							<a :href="item.redirect" class="border-10" style="line-height: 1.6;" @click="markAsRead(item)">
 								<div class="flex align-content-center justify-content-between">
 									<div class="notiContent vertical-align-middle pr-2">
 										{{ item.content }}
@@ -88,6 +88,7 @@ import { Component, namespace, ProvideReactive, Vue, Watch } from 'nuxt-property
 import { User } from '~/models/User'
 const nsUser = namespace('user-auth/store-user')
 const nsStoreCategory = namespace('category/store-category')
+const nsStoreNoti = namespace('notification/store-notification')
 
 @Component
 class MenuNavbar extends Vue {
@@ -104,6 +105,8 @@ class MenuNavbar extends Vue {
 	// -- [ Properties ] ----------------------------------------------------------
 	@nsStoreCategory.Action
 	actGetCategory!: (params: any) => Promise<any>
+	@nsStoreNoti.Action
+	actPatchMarkAsRead!: (params: any) => Promise<any>
 
 	@ProvideReactive()
 	selectedItem: any = null
@@ -147,7 +150,9 @@ class MenuNavbar extends Vue {
 		this.getCategory()
 		this.notifications = this.user ? this.user.notifications : []
 	}
-
+	markAsRead(item: any) {
+		this.actPatchMarkAsRead({ notiId: item.id })
+	}
 	beforeDestroy() {
 		// Remove the click event listener when the component is destroyed
 		document.body.removeEventListener('click', this.handleBodyClick);

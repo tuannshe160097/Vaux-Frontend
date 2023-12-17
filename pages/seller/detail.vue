@@ -16,20 +16,15 @@
                 <div class="grid formgrid">
                     <h4 class="text-brown font-bold col-12">1. Thông tin cơ bản</h4>
                     <div class="field md:col-8 col-12">
-                        <!-- <h4 class="font-bold">Tên sản phẩm</h4> -->
-
                         <label>Tên sản phẩm</label>
-                        <Textarea class="text-left w-full" :autoResize="true" v-model="name" rows="1"
-                            placeholder="Tên sản phẩm" :disabled="status != 1" />
-                        <!-- <input
-                class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                type="text" v-model="name" placeholder="Nhập tên sản phẩm" /> -->
+                        <Textarea :class="{ 'input-invalid': error.name }" class="text-left w-full" :autoResize="true"
+                            v-model="name" rows="1" placeholder="Tên sản phẩm" :disabled="status != 1" />
                     </div>
                     <div class="field md:col-4 col-12">
                         <label>Thể loại</label>
-                        <Dropdown class="w-100" v-model="categoryId" :options="oCategories" optionLabel="name"
-                            optionValue="id" placeholder="Chọn thể loại" :filter="true" filterPlaceholder="Tìm kiếm"
-                            :disabled="status != 1" />
+                        <Dropdown :class="{ 'input-invalid': error.categoryId }" class="w-100" v-model="categoryId"
+                            :options="oCategories" optionLabel="name" optionValue="id" placeholder="Chọn thể loại"
+                            :filter="true" filterPlaceholder="Tìm kiếm" :disabled="status != 1" />
                     </div>
                 </div>
                 <div class="grid formgrid">
@@ -43,7 +38,7 @@
                         <div class="card-header font-medium text-xl">Ảnh bìa</div>
                         <div class="card-body p-5">
                             <div class="field">
-                                <div
+                                <div :class="{ 'input-invalid': error.fileThumbnail }"
                                     class="w-100 text-center surface-overlay p-1 border-1 border-solid surface-border border-10 w-full">
                                     <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
                                         imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
@@ -82,7 +77,8 @@
                         sẽ giúp khách hàng của bạn tin tưởng sản phẩm hơn
                     </span>
                     <div class="field col-12">
-                        <Textarea class="text-left w-full" :autoResize="true" v-model="description" rows="5"
+                        <Textarea :class="{ 'input-invalid': error.description }" class="text-left w-full"
+                            :autoResize="true" v-model="description" rows="5"
                             placeholder="Sử dụng phần này để thêm thông tin mô tả." style="height: 3rem;"
                             :disabled="status != 1" />
                     </div>
@@ -92,8 +88,8 @@
                     <span class="col-12">
                     </span>
                     <div class="field col-12 md:col-4">
-                        <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reservePrice"
-                            :disabled="status != 1" />
+                        <InputNumber class="text-right w-full" suffix=" vnđ" v-model="reservePrice" :disabled="status != 1"
+                            :class="{ 'input-invalid': error.reservePrice }" />
                     </div>
                 </div>
                 <div class="grid formgrid">
@@ -128,12 +124,12 @@
                         <Button v-if="status == 1" icon="pi pi-plus" label="Thêm dòng" @click="onAddProperty()" />
                     </span>
                 </div>
-                <div class="grid formgrid">
+                <div v-if="status != 1" class="grid formgrid">
                     <h4 class="col-12 font-bold text-brown">6. Phản hồi từ người bán</h4>
                     <span class="col-12">
                     </span>
                     <div class="field col-12">
-                        <Textarea v-if="status != 1" class="text-left w-full" :autoResize="true" v-model="reason" rows="5"
+                        <Textarea class="text-left w-full" :autoResize="true" v-model="reason" rows="5"
                             placeholder="Phản hồi của người bán" disabled />
                     </div>
                 </div>
@@ -185,7 +181,7 @@ class DetailItem extends Vue {
     name: string = ''
     categoryId: number = 0
     description: string = ''
-    reservePrice: string = ''
+    reservePrice: number = 0
     reason: string = ''
     status: any
 
@@ -211,6 +207,14 @@ class DetailItem extends Vue {
         { label: 'Kênh bán', to: '/Seller' },
         { label: 'Tạo sản phẩm' }
     ]
+    //----------------------------------------
+    error: any = {
+        name: false,
+        categoryId: false,
+        description: false,
+        fileThumbnail: false,
+        reservePrice: false
+    }
     //----------------------------------------
     oCategories: Array<any> | null = null
 
@@ -350,6 +354,7 @@ class DetailItem extends Vue {
         //console.log(this.images.length + " ??? " + this.files.length)
     }
     async onUpdate() {
+        if (!this.checkValid()) return
         this.blockedAddButton = true
         this.$toast.add({ severity: 'warn', summary: 'Thông báo', detail: 'Đang cập nhật. Vui lòng đợi trong giây lát', life: 3000 })
 
@@ -381,6 +386,43 @@ class DetailItem extends Vue {
         }
         this.$toast.add({ severity: 'success', summary: 'Thành công', detail: 'Đã cập nhật sản phẩm', life: 10000 })
         this.blockedAddButton = false
+    }
+    checkValid() {
+        this.error.name = false
+        this.error.categoryId = false
+        this.error.fileThumbnail = false
+        this.error.description = false
+        this.error.reservePrice = false
+        if (this.name.trim() == '' || this.name.length > 100) {
+            this.error.name = true
+            this.$store.commit('commons/store-error/setError', 'Chưa có tên sản phẩm')
+            return false
+        }
+        if (this.categoryId == 0) {
+            this.error.categoryId = true
+            this.$store.commit('commons/store-error/setError', 'Chưa chọn thể loại')
+            return false
+        }
+        if (this.fileThumbnail == null && this.thumbnailId == null) {
+            this.error.fileThumbnail = true
+            this.$store.commit('commons/store-error/setError', 'Chưa có ảnh bìa cho sản phẩm')
+            return false
+        }
+        if (this.images.length < 3 || this.images.length > 10) {
+            this.$store.commit('commons/store-error/setError', 'Danh sách ảnh chi tiết cần có ít nhất là 3 ảnh và nhiều nhất là 10 ảnh')
+            return false
+        }
+        if (this.description.trim() == '') {
+            this.error.description = true
+            this.$store.commit('commons/store-error/setError', 'Chưa có mô tả sản phẩm')
+            return false
+        }
+        if (this.reservePrice < 0) {
+            this.error.reservePrice = true
+            this.$store.commit('commons/store-error/setError', 'Giá sàn phải lớn hơn hoặc bằng 0 vnđ')
+            return false
+        }
+        return true
     }
     async onReAuction() {
         const res = await this.actPatchItemApplicationReAuction({ itemId: this.itemId })
