@@ -171,7 +171,7 @@ class requestSeller extends Vue {
     fileCitizenId: { label: 'Ảnh thẻ cccd/cmnd mặt trước', required: true, error: false, value: '' },
     bankAccountNum: { label: 'Số tài khoản', required: true, error: false, value: '' },
     bankName: { label: 'Ngân hàng', required: true, error: false, value: '' },
-    content: { label: 'Ghi rõ chủng loại sản phẩm bạn định bán', required: true, error: false, value: '' },
+    content: { label: 'Tại sao bạn lại muốn trở thành người bán?', required: true, error: false, value: '' },
   }
   //---------------------------------------
   home = { icon: 'pi pi-home', to: '/homepage' }

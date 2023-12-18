@@ -125,9 +125,6 @@
                                     </div>
                                 </div>
                             </div>
-                            <div v-if="items.length <= 0">
-                                <div class="col-12">Bạn chưa có sản phẩm nào đấu giá cao nhất</div>
-                            </div>
                         </div>
                     </TabPanel>
                 </TabView>

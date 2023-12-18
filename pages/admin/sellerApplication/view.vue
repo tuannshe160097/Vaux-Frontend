@@ -92,7 +92,7 @@
                 </div>
               </div>
               <div class="field col-12">
-                <label>Nội dung muốn bán</label>
+                <label>Lý do trở thành người bán</label>
                 <Textarea class="text-left w-full" v-model="content" rows="15" cols="100" placeholder="Ghi chú..."
                   disabled />
               </div>

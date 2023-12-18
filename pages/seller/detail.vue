@@ -5,7 +5,7 @@
             <div class="card-body my-3">
                 <div class="grid formgrid">
                     <div class="field col-12">
-                        <h2 class="font-bold text-brown">Tạo sản phẩm mới</h2>
+                        <h2 class="font-bold text-brown">Thông tin sản phẩm</h2>
                     </div>
                     <div class="field col-12">
                         Hãy cho chúng tôi biết mọi thứ về sản phẩm của bạn bằng cách điền
@@ -263,13 +263,17 @@ class DetailItem extends Vue {
             this.status = result.status
             // this.displayAction() 
             this.thumbnailId = result.thumbnailId
-            this.reason = result.reason
             this.thumbnailUrl = await this.getImageUrl(result.id, result.thumbnailId, true)
             for (const imgId of result.images) {
                 const result2 = await this.getImageUrl(this.itemId, imgId)
                 const imageInfo = { objectURL: result2, name: "result2.name", imgId: imgId };
                 this.images.push(imageInfo);
             }
+            const examinationPendingChange = result.statusChanges.find(
+                (change : any) => change.statusFrom === "EXAMINATION_PENDING"
+            );
+            this.reason = examinationPendingChange?.statusChangeReason
+
             this.getBtn()
         }
         else {

@@ -105,7 +105,7 @@
                                         <!-- <InputText class="w-full" type="text" v-model="street" /> -->
                                         <Dropdown :class="{ 'p-invalid': fields.street.error }" class="w-100 line-height-1"
                                             v-model="street" :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm"
-                                            optionLabel="name" placeholder="-Chọn Phố/Phường-" optionValue="value" />
+                                            optionLabel="name" placeholder="-Chọn Phố/Phường-" @change="onSelectStreet()" />
                                     </div>
                                     <div class="align-self-center col-4 field">
                                         <label class="md:m-0">Địa chỉ cụ thể</label>
@@ -282,11 +282,11 @@ class Profile extends Vue {
         }
     }
     async onUpdate() {
+        console.log(this.houseNumber, this.selectedStreet?.name, this.selectedDistrict?.name, this.selectedCity?.name)
         if (!this.checkValid()) {
             return
         }
 
-        // console.log(this.parseDate(this.doB))
         this.disableButton = true;
         const params = {
             name: this.name,
@@ -312,7 +312,7 @@ class Profile extends Vue {
         if (!this.checkNullValue(this.fields)) {
             return false
         }
-        if (this.fields.name.value && this.fields.name.value.length > 40) {
+        if (!this.fields.name.value && this.fields.name.value.length > 40) {
             this.fields.name.error = true;
             this.$store.commit('commons/store-error/setError', "Tên người dùng không được dài quá 40 ký tự")
             return false
@@ -329,12 +329,12 @@ class Profile extends Vue {
             this.$store.commit('commons/store-error/setError', "email không đúng định dạng")
             return false
         }
-        if (!(this.fields.houseNumber.value.trim() == '') && this.fields.houseNumber.value.length > 100) {
+        if (this.fields.houseNumber.value && !(this.fields.houseNumber.value.trim() == '') && this.fields.houseNumber.value.length > 100) {
             this.fields.mail.error = true;
             this.$store.commit('commons/store-error/setError', "Địa chỉ cụ thể quá dài (100 ký tự)")
             return false
         }
-        if (!(this.fields.bankAccountNum.value.trim() == '') && this.fields.bankAccountNum.value.length > 20) {
+        if (this.fields.bankAccountNum.value && !(this.fields.bankAccountNum.value.trim() == '') && this.fields.bankAccountNum.value.length > 20) {
             this.fields.mail.error = true;
             this.$store.commit('commons/store-error/setError', "Số tài khoản ngân hàng quá dài (20 ký tự)")
             return false
@@ -412,19 +412,16 @@ class Profile extends Vue {
     }
     getAddress(houseNumber: any, street: any, district: any, city: any,) {
         let address = ''
-        if (houseNumber.trim() !== "") {
+        if (houseNumber && houseNumber.trim() !== "") {
             address += houseNumber.trim() + " ";
         }
-
-        if (street.trim() !== "") {
+        if (street && street.trim() !== "") {
             address += street.trim() + ", ";
         }
-
-        if (district.trim() !== "") {
+        if (district && district.trim() !== "") {
             address += district.trim() + ", ";
         }
-
-        if (city.trim() !== "") {
+        if (city && city.trim() !== "") {
             address += city.trim();
         }
         return address
@@ -434,6 +431,10 @@ class Profile extends Vue {
         this.street = ''
         this.oStreets = []
         this.getDistrict()
+    }
+    onSelectStreet() {
+        if (this.selectedStreet == undefined || this.selectedStreet == null) return
+        this.street = this.selectedStreet.value
     }
     async GetBank() {
         const response: any = await this.actGetBanksList()

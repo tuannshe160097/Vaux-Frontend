@@ -15,9 +15,13 @@
               <label>Tên thể loại</label>
               <InputText class="w-full" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
             </div>
-            <div class="col justify-content-end flex align-items-end">
-              <Button class="mr-2" label="Tìm kiếm" style="height: 36px" @click="getCategory()" />
-              <Button class="" label="Thêm Mới" style="height: 36px" @click="openModelCategory(null)" />
+            <div class="col justify-content-between flex align-items-end">
+              <Button class="mr-2 border-10" style="height: 36px" @click="getCategory()">
+                <i class="pi pi-search mr-2"></i>Tìm kiếm
+              </Button>
+              <Button class="btn-primary border-10" style="height: 36px" @click="openModelCategory(null)">
+                <i class="pi pi-plus mr-2"></i>Thêm Mới
+              </Button>
             </div>
           </div>
         </div>

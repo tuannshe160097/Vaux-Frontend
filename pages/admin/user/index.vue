@@ -8,7 +8,7 @@
       <div class="col-fixed">
         <div class="grid align-content-center">
           <div class="col-fixed">
-          <!-- <Button
+            <!-- <Button
               class="w-9rem h-3rem"
               type="button"
               label="Thêm Mới"
@@ -29,20 +29,25 @@
             </div>
             <div class="col-3 field">
               <label>Quyền</label>
-              <Dropdown class="w-100  line-height-1" v-model="role" :options="oRoles" optionLabel="name" optionValue="value" />
+              <Dropdown class="w-100  line-height-1" v-model="role" :options="oRoles" optionLabel="name"
+                optionValue="value" />
             </div>
-            <div class="col-3 field">
+            <div class="col-fixed field">
               <label>Tình trạng</label>
               <div class="col-3 field-checkbox my-2 w-full">
-              <!-- <label>Tình trạng</label>
+                <!-- <label>Tình trạng</label>
                 <Dropdown class="w-100" v-model="banned" :options="oBanneds" optionLabel="name" optionValue="value" /> -->
                 <Checkbox id="binary" v-model="banned" :binary="true" />
-                <label for="binary">{{ banned?'Bị cấm':'Hoạt động' }}</label>
+                <label for="binary">{{ banned ? 'Bị cấm' : 'Hoạt động' }}</label>
               </div>
             </div>
-            <div class="col field justify-content-end flex pt-5">
-              <Button class="mr-2" label="Tìm kiếm" style="height: 36px" @click="Search()" />
-              <Button class="" label="Thêm Mới" style="height: 36px" @click="onAddNew()" />
+            <div class="col field justify-content-between flex pt-5">
+              <Button class=" border-10" style="height: 36px" @click="Search()">
+                <i class="pi pi-search mr-2"></i>Tìm kiếm
+              </Button>
+              <Button class="btn-primary border-10"  style="height: 36px" @click="onAddNew()">
+                <i class="pi pi-plus mr-2"></i>Thêm Mới
+              </Button>
             </div>
           </div>
         </div>
@@ -54,9 +59,10 @@
             <Column field="id" header="STT">
               <template #body="slotProps"><span>{{ (pPagenum - 1) * pPageSize + slotProps.index + 1 }}</span></template>
             </Column>
-            <Column field="phone" header="SỐ ĐIỆN THOẠI" sortable="sortable" bodyClass="font-semibold" className="p-text-right"></Column>
+            <Column field="phone" header="SỐ ĐIỆN THOẠI" sortable="sortable" bodyClass="font-semibold"
+              className="p-text-right"></Column>
             <Column field="name" header="TÊN" sortable="sortable" className="w-3 font-semibold"></Column>
-            <Column field="role" header="QUYỀN" sortable="sortable" className="p-text-center">
+            <Column field="role" header="QUYỀN" sortable="sortable" className="">
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2 bg-green-100" v-if="data.role.id == 5" severity="danger"><span
@@ -72,7 +78,7 @@
                 </div>
               </template>
             </Column>
-          <!-- <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
+            <!-- <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
               <template #body="{ data }">{{
                 data.created | dateTimeFomat
               }}</template>
@@ -82,7 +88,7 @@
                 data.updated | dateTimeFomat
               }}</template>
             </Column>
-            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-center">
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2" v-if="data.deleted != null" severity="danger" value="Đã cấm"></Tag>

@@ -14,7 +14,7 @@
         <div class="col-12">
           <h1>{{ formatNumber(curBid * 1000) }}</h1>
         </div>
-        <div v-if="reservePrice <= curBid" class="col-12 text-brown">
+        <div v-if="(reservePrice / 1000) <= curBid" class="col-12 text-brown">
           Đã đạt mức giá tối thiểu
         </div>
         <div v-else class="col-12 text-brown">
@@ -24,25 +24,19 @@
         <div v-if="!bidEnd" class="col-12 mt-3  border-bottom-1" style="border-color: #E0A26F;">
           <div v-if="user" class="grid">
             <div class="col-4">
-              <button @click="BidOption(curBid + 100)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid *
-                1000
-                +
-                100000)
-              }}</button>
+              <button @click="BidOption(curBid + 100)" class="p-3 btn-second border-10 w-full">
+                {{ formatNumber(curBid * 1000 + 100000) }}
+              </button>
             </div>
             <div class="col-4">
-              <button @click="BidOption(curBid + 200)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid *
-                1000
-                +
-                200000)
-              }}</button>
+              <button @click="BidOption(curBid + 200)" class="p-3 btn-second border-10 w-full">
+                {{ formatNumber(curBid * 1000 + 200000) }}
+              </button>
             </div>
             <div class="col-4">
-              <button @click="BidOption(curBid + 300)" class="p-3 btn-second border-10 w-full">{{ formatNumber(curBid *
-                1000
-                +
-                300000)
-              }}</button>
+              <button @click="BidOption(curBid + 300)" class="p-3 btn-second border-10 w-full">
+                {{ formatNumber(curBid * 1000 + 300000) }}
+              </button>
             </div>
             <div class="col-12">
               <div class="p-inputgroup" style="border-color: aqua;">
@@ -218,7 +212,7 @@ class BidDialog extends Vue {
       itemId: this.curItemId
     }
     const response = await this.actGetItem(params)
-    console.log('Bid getItemInfo: ',response)
+    console.log('Bid getItemInfo: ', response)
     if (response) {
       this.reservePrice = response.reservePrice
       this.endDatetime = response.ongoingSession.endDate
@@ -233,7 +227,7 @@ class BidDialog extends Vue {
       itemId: this.curItemId
     }
     const response = await this.actGetItemBids(params)
-    console.log('Bid getBids: ',response)
+    console.log('Bid getBids: ', response)
     if (response && response.records.length > 0) {
       this.bidshow = []
       this.bidFullList = []
@@ -370,7 +364,7 @@ class BidDialog extends Vue {
   }
   onEndBid() {
     this.bidEnd = true
-  } 
+  }
 }
 export default BidDialog
 </script>

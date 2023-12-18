@@ -151,6 +151,7 @@ class MenuNavbar extends Vue {
 		this.notifications = this.user ? this.user.notifications : []
 	}
 	markAsRead(item: any) {
+		item.seen = true
 		this.actPatchMarkAsRead({ notiId: item.id })
 	}
 	beforeDestroy() {
