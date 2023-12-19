@@ -9,23 +9,23 @@
     </div>
     <div class="card-body">
       <div class="card-function">
-        <div class="grid formgrid">
-          <div class="col p-fluid grid formgrid flex justify-content-between">
-            <div class="field col-12 md:col-6">
-              <label>Thời gian bắt đầu</label>
-              <Calendar v-model="startDate" dateFormat="dd-mm-yy" :minDate="minDateValue" placeholder="Thời gian bắt đầu"/>
-            </div>
-            <div class="field col-12 md:col-6">
-              <label>Thời gian kết thúc</label>
-              <Calendar v-model="endDate" dateFormat="dd-mm-yy" :minDate="startDate" placeholder="Thời gian kết thúc"/>
-            </div>
+        <div class="grid col-12">
+          <div class="col-4 ">
+            <label>Thời gian bắt đầu</label>
+            <Calendar class="w-full" v-model="startDate" dateFormat="dd-mm-yy" :minDate="minDateValue" placeholder="Thời gian bắt đầu" />
           </div>
-          <div class="col field justify-content-end flex pt-5">
-            <Button class="" label="Thêm sản phẩm" style="height: 36px" @click="openModelAddItem" />
+          <div class="col-4 ">
+            <label>Thời gian kết thúc</label>
+            <Calendar class="w-full" v-model="endDate" dateFormat="dd-mm-yy" :minDate="startDate" placeholder="Thời gian kết thúc" />
           </div>
         </div>
       </div>
       <div class="row flex-1 relative">
+        <div class="col-12 md:col-12 m-0">
+          <div class="justify-content-start flex">
+            <Button class="border-10" icon="pi pi-plus" label="Thêm sản phẩm" style="height: 36px" @click="openModelAddItem" />
+          </div>
+        </div>
         <div class="col-12 md:col-12">
           <DataTable class="w-full airtag-datatable h-full flex flex-column p-datatable-customers"
             v-if="selectedItemsApproved" :value="selectedItemsApproved" responsiveLayout="scroll" dataKey="id"
@@ -62,8 +62,8 @@
         <CreateAuction :isDisplayDialog="displayAddItem" :selectedItemsProp="selectedItemsApproved"
           @close-modal="displayAddItem = false" @add-items="addItemApproved" />
       </div>
-      <div>
-        <Button label="Đăng ký" style="height: 36px" @click="onCreateAuction" />
+      <div class="flex justify-content-center">
+        <Button label="Tạo phiên" class="border-10 btn-final" style="height: 36px" @click="onCreateAuction" />
       </div>
     </div>
   </div>
@@ -83,7 +83,7 @@ const dayjs = require('dayjs')
   }
 })
 class CreateAuctionList extends Vue {
-  minDateValue:Date = new Date()
+  minDateValue: Date = new Date()
   startDate: any = null
   endDate: any = null
   displayAddItem: boolean = false

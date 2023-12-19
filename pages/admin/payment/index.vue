@@ -31,7 +31,7 @@
                     <span class="image-text">{{slotProps.data.id}}</span>
                 </template>
             </Column>
-            <Column field="itemId" header="ID Đơn hàng" className="p-text-right">
+            <Column field="itemId" header="ID sản phẩm" className="p-text-right">
                 <template #body="slotProps">
                     <span class="image-text font-semibold">{{slotProps.data.itemId}}</span>
                 </template>

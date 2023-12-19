@@ -96,28 +96,6 @@
                 <Textarea class="text-left w-full" v-model="content" rows="15" cols="100" placeholder="Ghi chú..."
                   disabled />
               </div>
-              <div class="field col-12">
-                <label>Phản hồi từ người bán</label>
-                <Textarea class="text-left w-full" v-model="reason" rows="15" cols="100" placeholder="Lý do..." />
-              </div>
-              <!-- <div class="field col-4">
-                <label>Ngày tạo</label>
-                <input
-                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text" v-model="dateCreated" disabled />
-              </div>
-              <div class="field col-4">
-                <label>Ngày cập nhật</label>
-                <input
-                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text" v-model="dateUpdated" disabled />
-              </div>
-              <div class="field col-4">
-                <label>Ngày cấm</label>
-                <input
-                  class="text-base text-color surface-overlay p-2 border-1 border-solid surface-border border-round appearance-none outline-none w-full focus:border-primary"
-                  type="text" v-model="dateDeleted" disabled />
-                </div> -->
               <div v-if="appId != null && appStatus == 1" class="field col-12 justify-content-center flex">
                 <Button class="btn-danger border-10" label="Từ chối" @click="onDeny()" />
                 <Button class="ml-3 btn-success border-10" label="Đồng ý" @click="onAccept()" />

@@ -65,16 +65,31 @@
             <Column field="role" header="QUYỀN" sortable="sortable" className="">
               <template #body="{ data }">
                 <div>
-                  <Tag class="px-2 bg-green-100" v-if="data.role.id == 5" severity="danger"><span
-                      class="font-bold text-green-400 font-size-small">Admin</span></Tag>
+                  <!-- <Tag class="px-2 bg-green-100" v-if="data.role.id == 5" severity="danger"><span
+                      class="font-bold text-green-400 font-size-small">Quản trị viên</span></Tag>
                   <Tag class="px-2 bg-green-100" v-else-if="data.role.id == 1" severity="danger"><span
-                      class="font-bold text-green-400 font-size-small">Mod</span></Tag>
+                      class="font-bold text-green-400 font-size-small">Quản lý</span></Tag>
                   <Tag class="px-2 bg-green-100" v-else-if="data.role.id == 2" severity="danger"><span
                       class="font-bold text-green-400 font-size-small">Chuyên gia</span></Tag>
                   <Tag class="px-2 bg-green-100" v-else-if="data.role.id == 3" severity="danger"><span
                       class="font-bold text-green-400 font-size-small">Người bán</span></Tag>
                   <Tag class="px-2 surface-200" v-else severity="danger"><span
-                      class="font-bold text-green-400 font-size-small">Người mua</span></Tag>
+                      class="font-bold text-green-400 font-size-small">Người mua</span></Tag> -->
+
+                  <Tag class="px-2 " v-if="data.role.id == '5'" severity="danger" value="Quản trị viên">
+                  </Tag>
+                  <Tag class="px-2 " v-else-if="data.role.id == '1'" severity="success" value="Quản lý">
+                  </Tag>
+                  <Tag class="px-2 " v-else-if="data.role.id == '2'" severity="success" value="Kiểm định viên">
+                  </Tag>
+                  <Tag class="px-2 " v-else-if="data.role.id == '3'" severity="warning" value="Người bán">
+                  </Tag>
+                  <Tag class="px-2 " v-else-if="data.role.id == '4'" severity="info" value="Người mua">
+                  </Tag>
+                  <Tag class="px-2 " v-else severity="info" :value="data.role.id">
+                  </Tag>
+
+
                 </div>
               </template>
             </Column>
@@ -98,7 +113,7 @@
                   <div class="icon--small icon-compose"></div>
                 </Button>
                 <Button v-if="data.deleted == null"
-                  class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200" @click="banAccount(data)">
+                  class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200" @click="deleteBoxById(data)">
                   <div class="icon--small icon-bin"></div>
                 </Button>
               </template>

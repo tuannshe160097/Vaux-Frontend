@@ -6,7 +6,10 @@
       <Toast />
     </div>
     <div class="bg-footer ">
-      Footer
+      <div class="flex justify-content-center align-items-center p-2">
+        <img src="~/assets/images/logo2.png" alt="logo" class="mr-1" height="37px" style="margin-bottom: 0px;">
+        <h3 class="m-0 font-bold" style="color:white">VAUX</h3>
+      </div>
     </div>
   </div>
 </template>

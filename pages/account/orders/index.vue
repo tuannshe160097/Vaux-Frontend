@@ -7,7 +7,9 @@
                 <TabView class="tabview-custom">
                     <TabPanel>
                         <template #header>
-                            <i class="pi pi-calendar mr-2"></i>
+                            <span class="material-symbols-outlined vertical-align-bottom m-0 mr-2">
+                                list_alt
+                            </span>
                             <span>Tất cả</span>
                         </template>
                         <div class="grid nested-grid formgrid">
@@ -76,7 +78,9 @@
                     </TabPanel>
                     <TabPanel>
                         <template #header>
-                            <i class="pi pi-user"></i>
+                            <span class="material-symbols-outlined vertical-align-bottom m-0 mr-2">
+                                package_2
+                            </span>
                             <span>Đang lấy hàng</span>
                         </template>
                         <div class="grid formgrid">
@@ -136,7 +140,9 @@
                     </TabPanel>
                     <TabPanel>
                         <template #header>
-                            <i class="pi pi-user"></i>
+                            <span class="material-symbols-outlined vertical-align-bottom m-0 mr-2">
+                                local_shipping
+                            </span>
                             <span>Đang giao hàng</span>
                         </template>
                         <div class="grid formgrid">
@@ -196,7 +202,9 @@
                     </TabPanel>
                     <TabPanel>
                         <template #header>
-                            <i class="pi pi-user"></i>
+                            <span class="material-symbols-outlined vertical-align-bottom m-0 mr-2">
+                                download_done
+                            </span>
                             <span>Đã giao hàng</span>
                         </template>
                         <div class="grid formgrid">

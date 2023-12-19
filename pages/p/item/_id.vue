@@ -137,7 +137,7 @@ class EditAuctionList extends Vue {
     displayBasic2: boolean = false
     images: any = []
 
-    comments: any[] = [ ]
+    comments: any[] = []
     comment: string | null = ''
 
     responsiveOptions = [
@@ -256,6 +256,10 @@ class EditAuctionList extends Vue {
     async onComment() {
         const response = await this.actAddItemComment({ itemId: this.itemId, content: this.comment })
         console.log('onComment: ', response)
+        if (response) {
+            this.comment = ''
+            this.getComments()
+        }
     }
     async getComments() {
         this.comments = []

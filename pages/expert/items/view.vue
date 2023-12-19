@@ -22,7 +22,7 @@
                     </div>
                     <div class="field md:col-4 col-12">
                         <label>Thể loại</label>
-                        <Dropdown class="w-100" v-model="categoryId" :options="oCategories" optionLabel="name"
+                        <Dropdown class="w-100 line-height-1" v-model="categoryId" :options="oCategories" optionLabel="name"
                             optionValue="id" placeholder="Chọn thể loại" :filter="true" filterPlaceholder="Tìm kiếm"
                             disabled />
                     </div>

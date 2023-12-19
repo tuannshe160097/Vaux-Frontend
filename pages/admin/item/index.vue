@@ -59,14 +59,14 @@
                   <Tag class="px-2 bg-yellow-100" v-if="data.status == 1" severity="success" value="Từ chối"><span
                       class="font-bold text-yellow-900 font-size-small">Chờ thẩm định</span></Tag>
                   <Tag class="px-2" v-else-if="data.status == 2" severity="danger" value="Từ chối"></Tag>
-                  <Tag class="mr-2 text-cyan-50" v-else-if="data.status == 3" severity="warning" value="Chờ đấu giá"></Tag>
+                  <Tag class="mr-2" v-else-if="data.status == 3" severity="warning" value="Chờ đấu giá"></Tag>
                   <Tag class="px-2 surface-200 bg-green-400" v-else-if="data.status == 4" severity="success"><span
                       class="font-bold font-size-small">Đang đấu giá</span></Tag>
                   <Tag class="px-2 surface-200" v-else-if="data.status == 5" severity="success"><span
                       class="font-bold text-400 font-size-small">Đã xóa</span></Tag>
-                  <Tag class="mr-2" v-else-if="data.status == 6" severity="warning" value="Chờ đấu giá lại"></Tag>
+                  <Tag class="mr-2" v-else-if="data.status == 6" severity="danger" value="Đấu giá thất bại"></Tag>
                   <Tag class="px-2 bg-orange-300" v-else-if="data.status == 7" severity="success"><span
-                      class="font-bold text-yellow-400 font-size-small">Chờ thanh toán</span></Tag>
+                      class="font-bold text-white-400 font-size-small">Chờ thanh toán</span></Tag>
                   <Tag class="px-2 surface-200 bg-green-100" v-else-if="data.status == 8" severity="success"><span
                       class="font-bold text-green-400 font-size-small">Đã thanh toán</span></Tag>
                   <Tag class="px-2 surface-200 bg-green-100" v-else severity="success"><span

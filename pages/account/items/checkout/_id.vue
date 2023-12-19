@@ -126,7 +126,8 @@
                         <h4 class="font-bold text-brown mb-0">
                             <span class="material-icons vertical-align-bottom mr-2">
                                 payments
-                            </span>Tổng thanh toán</h4>
+                            </span>Tổng thanh toán
+                        </h4>
                     </div>
                     <div class="field col-12" style="">
                         <div class="grid nested-grid justify-content-end">
@@ -157,10 +158,15 @@
                                         </table>
                                     </div>
                                     <div class="col-12 flex justify-content-end">
-                                        <Button @click="createPayment()" class="btn-final border-10"><span
-                                                class="material-icons vertical-align-bottom mr-2">
-                                                check
-                                            </span> Thanh toán</Button>
+                                        <BlockUI :blocked="blockedCheckoutButton">
+                                            <Button @click="createPayment()" class="btn-final border-10">
+                                                <span v-if="blockedCheckoutButton">
+                                                    <i class="pi pi-spin pi-spinner mr-2"></i>
+                                                </span>
+                                                <span v-else class="material-icons vertical-align-bottom mr-2">
+                                                    check
+                                                </span> Thanh toán</Button>
+                                        </BlockUI>
                                     </div>
                                 </div>
                             </div>
@@ -220,6 +226,7 @@ class ItemList extends Vue {
         street: { label: 'Phường, xã', required: true, error: false, value: '' },
         houseNumber: { label: 'Địa chỉ cụ thể', required: true, error: false, value: '' },
     }
+    blockedCheckoutButton: boolean = false
     @nsStoreUser.Action
     actGetUserDetail!: () => Promise<string>
     @nsStoreAddress.Action
@@ -480,6 +487,7 @@ class ItemList extends Vue {
         return true
     }
     async confirmPayment(param: any) {
+        this.blockedCheckoutButton = true
         const response = await this.actConfirmPayment(param)
         if (response) {
             this.$toast.add({
@@ -490,6 +498,7 @@ class ItemList extends Vue {
             })
             this.$router.push("/account/orders")
         }
+        this.blockedCheckoutButton = false
     }
 
 }
