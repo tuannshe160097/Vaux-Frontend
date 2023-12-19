@@ -106,7 +106,7 @@
                                                     <Tag class="px-2" v-else-if="data.status == 7" value="Chờ thanh toán"
                                                         severity="warning">
                                                     </Tag>
-                                                    <Tag class="px-2" v-else-if="data.status == 8" value="Chờ lấy hàng"
+                                                    <Tag class="px-2" v-else-if="data.status == 8" value="Đang vận chuyển"
                                                         severity="info">
                                                     </Tag>
                                                     <Tag class="px-2" v-else-if="data.status == 9" value="Hoàn thành"
@@ -399,7 +399,7 @@ class CreateItem extends Vue {
         { id: 4, name: 'Đang được đấu giá' },
         { id: 6, name: 'Đấu giá không thành công' },
         { id: 7, name: 'Chờ thanh toán' },
-        { id: 8, name: 'Chờ lấy hàng' },
+        { id: 8, name: 'Đang vận chuyển' },
         { id: 9, name: 'Hoàn thành' },
     ]
 
@@ -443,6 +443,7 @@ class CreateItem extends Vue {
         }
         this.blockedTable = true
         let response = await this.actSearchItemApplication(params)
+        console.log(response)
         if (response && response.records.length > 0) {
             for (let i = 0; i < response.records.length; i++) {
                 if (response.records[i].thumbnailId == undefined || response.records[i].thumbnailId == null) {
@@ -528,21 +529,11 @@ class CreateItem extends Vue {
     }
     async getImageUrl(itemId: any, imgId: any) {
         try {
-            console.log(imgId, 'lll', itemId)
             const params = {
                 itemId: itemId,
                 imgId: imgId,
             }
             return process.env.BE_API_URL + '/api/item/' + itemId + '/images/' + imgId
-            // const response = await this.actGetItemApplicationImage(params)
-            // return new Promise((resolve) => {
-            //     const reader = new FileReader();
-            //     reader.readAsDataURL(response);
-            //     reader.onloadend = () => {
-            //         const base64Image = reader.result;
-            //         resolve(base64Image);
-            //     };
-            // });
         } catch (error) {
             this.$store.commit('commons/store-error/setError', "Error fetching or converting image")
             console.error("Error fetching or converting image:", error);

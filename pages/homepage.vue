@@ -194,7 +194,7 @@ class homepage extends Vue {
             pageNum: 1,
             search: '',
             category: '',
-            orderBy: '',
+            orderBy: 'start',
         }
         const response = await this.actGetItemList(params)
         console.log(response)

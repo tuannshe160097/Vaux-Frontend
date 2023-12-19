@@ -95,7 +95,8 @@ class ItemList extends Vue {
   totalRecords: number = 0
 
   oSortedBy: any[] = [
-    { value: '', name: 'Mới nhất' },
+    { value: '', name: 'Mặc định' },
+    { value: 'start', name: 'Mới nhất' },
     { value: 'bid', name: 'Hot nhất' },
     { value: 'end', name: 'Sắp kết thúc' }
   ]
@@ -114,12 +115,13 @@ class ItemList extends Vue {
   created() {
     this.category = Array.isArray(this.$route.query.cId)
       ? this.$route.query.cId[0]
-      : this.$route.query.curItemId
+      : this.$route.query.cId
     this.searchText = Array.isArray(this.$route.query.search)
       ? this.$route.query.search[0]
       : this.$route.query.search
   }
   async mounted() {
+    console.log(this.category)
     this.getCategory()
     this.getItem()
     this.formatItemsTimeLeft()
@@ -182,10 +184,6 @@ class ItemList extends Vue {
     })
     console.log(response)
     if (response) {
-      // this.sortOptions = [
-      //   { id: '', name: '----Tất cả----' },
-      //   ...response.records
-      // ]
       this.sortOptions = [
         { id: '', name: '----Tất cả----' },
         ...response.records.map((cat: any) => ({

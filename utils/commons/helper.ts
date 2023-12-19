@@ -11,6 +11,7 @@ export function confirmDelete(_this: any, accept: any) {
 }
 export function confirm(_this: any, header: string = '', message: string = '', icon: string = '',
   acceptLabel: string = '', acceptClass: string = '', rejectLabel: string = '', accept: any) {
+    debugger
   _this.$confirm.require({
     message: message,
     header: header,

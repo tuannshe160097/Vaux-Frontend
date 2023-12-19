@@ -11,13 +11,13 @@
       <div class="row justify-content-between">
         <div class="col-fixed">
           <div class="grid formgrid">
-            <div class="col-3 field">
+            <div class="col-3">
               <label>Trạng thái</label>
               <Dropdown class="w-100 line-height-1" v-model="statusSelected" :options="status" optionLabel="name"
                 optionValue="id" />
             </div>
-            <div class="col field justify-content-end flex pt-5">
-              <Button class="mr-2" label="Tìm kiếm" style="height: 36px" @click="getPaymentList()" />
+            <div class="col-fixed align-items-end flex">
+              <Button class="mr-2 border-10" icon="pi pi-search" label="Tìm kiếm" @click="getPaymentList()" />
             </div>
           </div>
         </div>
@@ -156,6 +156,7 @@ class PaymentList extends Vue {
       pageNum: this.pPagenum,
       completed: this.statusSelected
     })
+    console.log(response)
     if (response?.records) {
       this.totalRecords = response.totalRecords
       const paymentList: any = []

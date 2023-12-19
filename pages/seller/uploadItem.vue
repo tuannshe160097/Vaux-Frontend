@@ -43,7 +43,7 @@
                   <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
                     imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
                   <div class="font-italic text-danger mb-2">
-                    JPG or PNG no larger than 20 MB
+                    Tệp JPEG,JPG hoặc PNG nhỏ hơn 20mb
                   </div>
                   <input type="file" @change="onUploadThumbnail($event)" accept="image/*" />
                 </div>

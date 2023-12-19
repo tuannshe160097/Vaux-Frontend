@@ -45,7 +45,7 @@
               <Button class=" border-10" style="height: 36px" @click="Search()">
                 <i class="pi pi-search mr-2"></i>Tìm kiếm
               </Button>
-              <Button class="btn-primary border-10"  style="height: 36px" @click="onAddNew()">
+              <Button class="btn-primary border-10" style="height: 36px" @click="onAddNew()">
                 <i class="pi pi-plus mr-2"></i>Thêm Mới
               </Button>
             </div>
@@ -78,11 +78,6 @@
                 </div>
               </template>
             </Column>
-            <!-- <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-right">
-              <template #body="{ data }">{{
-                data.created | dateTimeFomat
-              }}</template>
-                          </Column> -->
             <Column field="updated" header="NGÀY CẬP NHẬT" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
                 data.updated | dateTimeFomat
@@ -103,7 +98,7 @@
                   <div class="icon--small icon-compose"></div>
                 </Button>
                 <Button v-if="data.deleted == null"
-                  class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200" @click="deleteBoxById(data)">
+                  class="border-0 p-0 ml-1 h-2rem w-2rem justify-content-center surface-200" @click="banAccount(data)">
                   <div class="icon--small icon-bin"></div>
                 </Button>
               </template>
@@ -133,8 +128,8 @@
 </template>
   
 <script lang="ts">
-import { thisExpression } from '@babel/types'
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
+import { confirm } from '~/utils/commons/helper'
 const nsStoreUser = namespace('user/store-user')
 
 @Component({
@@ -203,6 +198,7 @@ class UserList extends Vue {
     this.$router.push('/admin/user/detail')
   }
   async deleteBoxById(data: any) {
+    console.log(data)
     const params = {
       userId: data.id,
     }
@@ -213,10 +209,39 @@ class UserList extends Vue {
     } else if (role == 5) {
       response = await this.actAdminBanUser(params)
     }
-    if (response) {
+    if (response && response?.status == '200') {
       data.deleted = 'deleted'
-      this.$toast.add({ severity: 'info', summary: 'Thành công', detail: 'Đã cấm người dùng', life: 5000 })
+      this.Search()
+      this.$toast.add({ severity: 'info', summary: 'Thông báo', detail: 'Đã cấm người dùng', life: 5000 })
     }
+  }
+  async banAccount(data: any) {
+    console.log(data)
+    const params = {
+      userId: data.id,
+    }
+    let response: any;
+    const role = this.$cookies.get('auth.role')
+    const _this: any = this
+    confirm(_this,
+      'Xác nhận cấm tài khoản',
+      `Bạn có chắc bạn muốn cấm tài khoản ${data.name} không?`,
+      'pi pi-exclamation-triangle',
+      'btn-success',
+      'Xác nhận',
+      'Hủy',
+      async () => {
+        if (role == 1) {
+          response = await this.actModBanUser(params)
+        } else if (role == 5) {
+          response = await this.actAdminBanUser(params)
+        }
+        if (response && response?.status == '200') {
+          data.deleted = 'deleted'
+          this.Search()
+          this.$toast.add({ severity: 'info', summary: 'Thông báo', detail: 'Đã cấm người dùng', life: 5000 })
+        }
+      })
   }
   onPage(event: any) {
     this.pPagenum = event.page + 1

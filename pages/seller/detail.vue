@@ -43,7 +43,7 @@
                                     <ImagePreview :src="thumbnailUrl || require('~/assets/images/default.jpg')" alt="Image"
                                         imageClass="w-max-100" imageStyle="height:200px;object-fit: contain" />
                                     <div class="small font-italic text-muted mb-2" v-if="status == 1">
-                                        JPG or PNG no larger than 1 MB
+                                        Tệp JPEG,JPG hoặc PNG nhỏ hơn 20mb
                                     </div>
                                     <input v-if="status == 1" type="file" @change="onUploadThumbnail($event)"
                                         accept=".png, .jpg, .jpeg" />

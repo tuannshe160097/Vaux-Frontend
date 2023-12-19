@@ -3,7 +3,7 @@
   <div class="box-page-container flex flex-column container">
     <div class="flex justify-content-between header container">
       <div class="col-fixed">
-        <h2 class="font-bold m-0 text-uppercase">Danh sách người bán</h2>
+        <h2 class="font-bold m-0 text-uppercase">Danh sách đơn xin quyền người bán</h2>
       </div>
       <div class="col-fixed">
         <div class="grid align-content-center">

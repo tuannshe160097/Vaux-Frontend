@@ -16,40 +16,48 @@
                             <div class="col-12 grid p-3">
                                 <div class="align-self-center col-6 field mb-0">
                                     <label class="">Họ và tên người nhận<span class="text-danger">*</span></label>
-                                    <InputText :class="{ 'p-invalid': fields.name.error }" class="w-100 line-height-1" v-model="name" />
+                                    <InputText :class="{ 'p-invalid': fields.name.error }" class="w-100 line-height-1"
+                                        v-model="name" />
                                 </div>
                                 <div class="align-self-center col-6 field mb-0">
                                     <label class="">Số điện thoại người nhận<span class="text-danger">*</span></label>
-                                    <InputText :class="{ 'p-invalid': fields.phone.error }" class="w-100 line-height-1" v-model="phone" />
+                                    <InputText :class="{ 'p-invalid': fields.phone.error }" class="w-100 line-height-1"
+                                        v-model="phone" />
                                 </div>
                                 <div class="align-self-center col-4 field mb-0">
                                     <label class="">Thành phố<span class="text-danger">*</span></label>
-                                    <Dropdown :class="{ 'p-invalid': fields.city.error }" class="w-100 line-height-1" v-model="selectedCity" :options="oCitys"
-                                        :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                                        placeholder="-Chọn Thành phố-" @change="onSelectCity()" />
+                                    <Dropdown :class="{ 'p-invalid': fields.city.error }" class="w-100 line-height-1"
+                                        v-model="selectedCity" :options="oCitys" :filter="true" filterPlaceholder="Tìm kiếm"
+                                        optionLabel="name" placeholder="-Chọn Thành phố-" @change="onSelectCity()" />
                                 </div>
                                 <div class="align-self-center col-4 field mb-0">
                                     <label class="">Quận/ Huyện<span class="text-danger">*</span></label>
-                                    <Dropdown :class="{ 'p-invalid': fields.district.error }" class="w-100 line-height-1" v-model="selectedDistrict" :options="oDistricts"
-                                        :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                                        placeholder="-Chọn Quận/Huyện-" @change="getStreet()" />
+                                    <Dropdown :class="{ 'p-invalid': fields.district.error }" class="w-100 line-height-1"
+                                        v-model="selectedDistrict" :options="oDistricts" :filter="true"
+                                        filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="-Chọn Quận/Huyện-"
+                                        @change="getStreet()" />
                                 </div>
                                 <div class="align-self-center col-4 field mb-0">
                                     <label class="">Phố/ Phường<span class="text-danger">*</span></label>
-                                    <Dropdown :class="{ 'p-invalid': fields.street.error }" class="w-100 line-height-1" v-model="street" :options="oStreets"
-                                        :filter="true" filterPlaceholder="Tìm kiếm" optionLabel="name"
-                                        placeholder="-Chọn Phố/Phường-" optionValue="value" />
+                                    <Dropdown :class="{ 'p-invalid': fields.street.error }" class="w-100 line-height-1"
+                                        v-model="street" :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm"
+                                        optionLabel="name" placeholder="-Chọn Phố/Phường-" optionValue="value" />
                                 </div>
                                 <div class="align-self-center col-12 field mb-0">
-                                    <label class=""  v-tooltip.top="'Enter your username'" >Địa chỉ cụ thể<span class="text-danger">*</span></label>
-                                    <Textarea :class="{ 'p-invalid': fields.houseNumber.error }" class="text-left w-full" :autoResize="true" v-model="houseNumber" rows="1"
-                                        placeholder="Địa chỉ cụ thể" />
+                                    <label class="" v-tooltip.top="'Enter your username'">Địa chỉ cụ thể<span
+                                            class="text-danger">*</span></label>
+                                    <Textarea :class="{ 'p-invalid': fields.houseNumber.error }" class="text-left w-full"
+                                        :autoResize="true" v-model="houseNumber" rows="1" placeholder="Địa chỉ cụ thể" />
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="field col-12">
-                        <h4 class="font-bold text-brown mb-0">Danh sách sản phẩm</h4>
+                        <h4 class="font-bold text-brown mb-0">
+                            <span class="material-icons vertical-align-bottom mr-2">
+                                view_list
+                            </span>Danh sách sản phẩm
+                        </h4>
                     </div>
                     <div class="field col-12">
                         <div class="grid nested-grid" v-for="shipment in shipments" :key="shipment.id" :item="shipment">
@@ -96,8 +104,9 @@
                                 </div>
                             </div>
                             <div class="grid nested-grid item p-2 border-10 w-full">
-                                <div class="col-3 col-offset-6"  >
-                                    Phí bảo vệ người dùng: <i class="pi pi-question-circle" v-tooltip.top="'Nhằm mục đích bảo vệ người dùng, VAUX sẽ thu phí 9% giá sản phẩm'"></i>
+                                <div class="col-3 col-offset-6">
+                                    Phí bảo vệ người dùng: <i class="pi pi-question-circle"
+                                        v-tooltip.top="'Nhằm mục đích bảo vệ người dùng, VAUX sẽ thu phí 9% giá sản phẩm'"></i>
                                 </div>
                                 <div class="col-3 flex align-items-center justify-content-end">
                                     <span class="">{{ formatNumber(shipment.buyerProtectionFee) }}</span>
@@ -114,7 +123,10 @@
                         </div>
                     </div>
                     <div class="field col-12">
-                        <h4 class="font-bold text-brown mb-0">Tổng thanh toán</h4>
+                        <h4 class="font-bold text-brown mb-0">
+                            <span class="material-icons vertical-align-bottom mr-2">
+                                payments
+                            </span>Tổng thanh toán</h4>
                     </div>
                     <div class="field col-12" style="">
                         <div class="grid nested-grid justify-content-end">
@@ -131,7 +143,9 @@
                                                 <td class="text-right">{{ formatNumber(totalShipCost) }} </td>
                                             </tr>
                                             <tr>
-                                                <td class="px-3">Phí bảo vệ người dùng <i class="pi pi-question-circle" v-tooltip.top="'Nhằm mục đích bảo vệ người dùng, VAUX sẽ thu phí 9% giá sản phẩm'"></i></td>
+                                                <td class="px-3">Phí bảo vệ người dùng <i class="pi pi-question-circle"
+                                                        v-tooltip.top="'Nhằm mục đích bảo vệ người dùng, VAUX sẽ thu phí 9% giá sản phẩm'"></i>
+                                                </td>
                                                 <td class="text-right">{{ formatNumber(totalProtectFeeCost) }} </td>
                                             </tr>
                                             <tr>

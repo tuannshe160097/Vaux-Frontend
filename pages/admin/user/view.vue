@@ -25,15 +25,15 @@
               </div>
               <div class="card-action">
                 <label class="text-normal">Quyền hạn<span class="text-danger">*</span>:</label>
-                <Tag class="px-2 " v-if="curUserRoleId == '1'" severity="warning" value="Quản trị viên">
+                <Tag class="px-2 " v-if="curUserRoleId == '5'" severity="danger" value="Quản trị viên">
                 </Tag>
-                <Tag class="px-2 " v-else-if="curUserRoleId == '2'" severity="success" value="Quản lý">
+                <Tag class="px-2 " v-else-if="curUserRoleId == '1'" severity="success" value="Quản lý">
                 </Tag>
-                <Tag class="px-2 " v-else-if="curUserRoleId == '3'" severity="success" value="Kiểm định viên">
+                <Tag class="px-2 " v-else-if="curUserRoleId == '2'" severity="success" value="Kiểm định viên">
                 </Tag>
-                <Tag class="px-2 " v-else-if="curUserRoleId == '4'" severity="warning" value="Người bán">
+                <Tag class="px-2 " v-else-if="curUserRoleId == '3'" severity="warning" value="Người bán">
                 </Tag>
-                <Tag class="px-2 " v-else-if="curUserRoleId == '5'" severity="info" value="Người mua">
+                <Tag class="px-2 " v-else-if="curUserRoleId == '4'" severity="info" value="Người mua">
                 </Tag>
                 <Tag class="px-2 " v-else severity="info" :value="curUserRoleId">
                 </Tag>

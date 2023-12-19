@@ -14,30 +14,28 @@
       </div>
     </div>
     <div class="card-body">
-      <div>
+      <div class="col-12">
         <div class="grid">
-          <div class="col grid">
-            <div class="col-4">
-              <label>ID</label><br/>
-              <InputText class="w-full" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
-            </div>
-            <div class="col-3">
-              <label>Trạng thái</label>
-              <Dropdown class="w-full line-height-1" v-model="statusSelected" :options="status" optionLabel="name"
-                optionValue="code" />
-            </div>
+          <div class="col-3">
+            <label>ID</label><br />
+            <InputText class="w-full" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
           </div>
-          <div class="col justify-content-end flex">
-            <Button label="Tìm kiếm" style="height: 36px" @click="getShipmentList" class="w-full max-w-6rem" />
+          <div class="col-3">
+            <label>Trạng thái</label>
+            <Dropdown class="w-full line-height-1" v-model="statusSelected" :options="status" optionLabel="name"
+              optionValue="code" />
+          </div>
+          <div class="col-fixed align-items-end flex">
+            <Button label="Tìm kiếm" @click="getShipmentList" icon="pi pi-search" class="w-full border-10" />
           </div>
         </div>
       </div>
       <div class="row flex-1 relative">
         <div class="col-12 md:col-12">
-          <DataTable class="w-full airtag-datatable h-full flex flex-column p-datatable-customers"
-            v-if="shipments" :value="shipments" responsiveLayout="scroll" dataKey="id"
-            :resizableColumns="true" :rows="10" :scrollable="false" stripedRows :rowsPerPageOptions="[10, 25, 50]" :expandedRows.sync="expandedRows">
-            <Column :expander="true" :headerStyle="{'width': '3rem'}" />
+          <DataTable class="w-full airtag-datatable h-full flex flex-column p-datatable-customers" v-if="shipments"
+            :value="shipments" responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="10"
+            :scrollable="false" stripedRows :rowsPerPageOptions="[10, 25, 50]" :expandedRows.sync="expandedRows">
+            <Column :expander="true" :headerStyle="{ 'width': '3rem' }" />
             <Column field="id" header="ID Đơn vận chuyển" sortable="sortable" className="w-3 font-semibold"></Column>
             <Column field="seller" header="Tên người bán" sortable="sortable" className="w-3">
               <template #body="{ data }">
@@ -49,11 +47,13 @@
                 data.itemCost | moneyNumberFomat
               }}</template>
             </Column>
-            <Column field="shippingCost" header="Phí vận chuyển" sortable="sortable" className="w-3 p-text-right"></Column>
+            <Column field="shippingCost" header="Phí vận chuyển" sortable="sortable" className="w-3 p-text-right">
+            </Column>
             <Column field="address" header="Địa chỉ người gửi" sortable="sortable" className="overflow-ellipsis"></Column>
             <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right overflow-visible">
               <template #body="{ data }">
-                <select name="shipmentStatus" id="shipmentStatus" v-model="data.status" @change="onChangeStatusShipment(data)">
+                <select name="shipmentStatus" id="shipmentStatus" v-model="data.status"
+                  @change="onChangeStatusShipment(data)">
                   <option v-for="item in shipmentStatus" :key="item.code" :value="item.code">{{ item.name }}</option>
                 </select>
               </template>
@@ -79,7 +79,7 @@
                       data?.seller?.name
                     }}</template>
                   </Column>
-              </DataTable>
+                </DataTable>
               </div>
             </template>
             <template #footer="">
@@ -99,7 +99,7 @@
                 </Paginator>
               </div>
             </template>
-          </DataTable> 
+          </DataTable>
         </div>
         <ConfirmDialog></ConfirmDialog>
       </div>

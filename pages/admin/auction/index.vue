@@ -18,25 +18,25 @@
         <div class="grid">
           <div class="col-7 grid flex justify-content-between">
             <div class="col-4">
-              <label>Tìm kiếm theo ngày</label><br/>
+              <label>Ngày bắt đầu</label><br />
               <Calendar class="w-full" v-model="startDate" dateFormat="dd-mm-yy" placeholder="Thời gian bắt đầu" />
             </div>
             <div class="col-4">
-              <label></label><br/>
+              <label>Ngày kết thúc</label><br />
               <Calendar class="w-full" v-model="endDate" dateFormat="dd-mm-yy" placeholder="Thời gian kết thúc" />
             </div>
             <div class="col-4">
               <label>Trạng thái</label>
               <Dropdown class="w-100 line-height-1" v-model="statusSelected" :options="status" optionLabel="name"
-                optionValue="id" placeholder="Tình trạng"/>
+                optionValue="id" placeholder="Tình trạng" />
             </div>
           </div>
           <div class="col justify-content-between flex">
-            <div class="col justify-content-start flex align-items-end">
-              <Button label="Tìm kiếm" style="height: 36px" @click="getAuction" class="w-full max-w-6rem" />
+            <div class="col-fixed justify-content-start flex align-items-end">
+              <Button label="Tìm kiếm" icon="pi pi-search" @click="getAuction" class="w-full border-10" />
             </div>
             <div class="col justify-content-end flex align-items-end">
-              <Button class="" label="Thêm Mới" style="height: 36px" @click="onCreateAuction" />
+              <Button class="btn-primary border-10" label="Thêm Mới" icon="pi pi-plus" @click="onCreateAuction" />
             </div>
           </div>
         </div>
@@ -45,10 +45,14 @@
         <div class="col-12 md:col-12">
           <DataTable class="w-full airtag-datatable h-full flex flex-column" v-if="auctions" :value="auctions"
             responsiveLayout="scroll" dataKey="id" :resizableColumns="true" :rows="10" :scrollable="false" stripedRows>
-            <Column field="id" header="STT" sortable="sortable">
+            <Column field="id" header="STT">
               <template #body="slotProps">
                 <span class="">{{ (pPagenum - 1) * pPageSize + slotProps.index + 1 }}</span>
               </template>
+            </Column>
+            <Column field="id" header="Mã phiên đấu giá" className="p-text-right">
+            </Column>
+            <Column field="itemsInAuction" header="Số lượng sản phẩm" className="p-text-right">
             </Column>
             <Column field="startDate" header="Bắt đầu" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{
@@ -60,7 +64,7 @@
                 data.endDate | dateTimeFomat
               }}</template>
             </Column>
-            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-center">
+            <Column field="status" header="TRẠNG THÁI" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
                 <div>
                   <Tag class="px-2 bg-yellow-100" v-if="data.status == 1" severity="success"><span
@@ -74,18 +78,10 @@
             </Column>
             <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right">
               <template #body="{ data }">
-                <Button
-                  v-if="data.status == 1"
-                  label="Bắt đầu"
-                  class="p-button-sm p-button-outlined"
-                  @click="onForceStart(data)"
-                />
-                <Button
-                  v-if="data.status == 2"
-                  label="Kết thúc"
-                  class="p-button-sm p-button-outlined p-button-danger"
-                  @click="onForceEnd(data)"
-                />
+                <Button v-if="data.status == 1" label="Bắt đầu" class="p-button-sm p-button-outlined"
+                  @click="onForceStart(data)" />
+                <Button v-if="data.status == 2" label="Kết thúc" class="p-button-sm p-button-outlined p-button-danger"
+                  @click="onForceEnd(data)" />
                 <Button class="border-0 p-0 h-2rem w-2rem justify-content-center surface-200"
                   @click="onUpdateAuction(data)">
                   <div class="icon--small icon-compose"></div>
@@ -157,7 +153,7 @@ class AuctionList extends Vue {
 
   @nsStoreAuction.Action
   actDeleteAuction!: (params: { id: number }) => Promise<any>
-  
+
   @nsStoreAuction.Action
   actForceStartAuction!: (params: { id: number }) => Promise<any>
 
@@ -176,6 +172,7 @@ class AuctionList extends Vue {
       to: this.endDate ? dayjs(new Date(this.endDate)).format('YYYY-MM-DD') : '',
       status: this.statusSelected
     })
+    console.log(response)
     if (response) {
       this.auctions = response.records
       this.totalRecords = response.totalRecords

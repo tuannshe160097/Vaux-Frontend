@@ -176,6 +176,7 @@ class ItemList extends Vue {
         const response = await this.actGetItemsWon()
         if (response) {
             console.log(response)
+            this.items = []
             if (response.records <= 0) { return }
             this.totalRecords = response.totalRecords
             for (let i = 0; i < response.records.length; i++) {
@@ -199,6 +200,7 @@ class ItemList extends Vue {
         const response = await this.actGetAllOrder({})
         if (response) {
             console.log('LTA', response)
+            this.orders = []
             if (response.records.length <= 0) {
                 return
             }
@@ -267,6 +269,7 @@ class ItemList extends Vue {
                 severity: 'success', summary: 'Đã hủy đơn hàng',
                 detail: 'Đã hủy đơn hàng', life: 10000
             })
+            this.getItems()
             this.getOrders()
         }
     }

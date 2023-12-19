@@ -60,7 +60,7 @@ export default class StoreCategory extends VuexModule {
     async actAdminBanUser(params: any): Promise<string | undefined> {
         try {
             const url = PathBind.transform(this.context, StoreCategory.STATE_URL.ADMIN_BAN_USER, { userId: params?.userId })
-            return await $api.patch(url)
+            return await $api.patch_response(url)
         } catch (error) { }
     }
     @Action({ rawError: true })
