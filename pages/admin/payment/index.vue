@@ -67,7 +67,7 @@
                 <template #body="slotProps">
                   <div>
                   <Tag class="px-2 bg-yellow-100" v-if="slotProps.data.paymentStatus == 1" severity="success"><span
-                      class="font-bold text-yellow-400 font-size-small">Đang chờ</span></Tag>
+                      class="font-bold text-orange-700 font-size-small">Đang chờ</span></Tag>
                   <Tag class="px-2 bg-green-100" v-else-if="slotProps.data.paymentStatus == 2" severity="success"><span
                       class="font-bold text-green-400 font-size-small">Đã thanh toán</span></Tag>
                 </div>
