@@ -135,6 +135,11 @@
                 </Paginator>
               </div>
             </template>
+            <template #empty>
+              <div class="justify-content-center flex font-italic">
+                Không có dữ liệu
+              </div>
+            </template>
           </DataTable>
         </div>
       </div>
@@ -144,7 +149,6 @@
   
 <script lang="ts">
 import { Component, namespace, Vue } from 'nuxt-property-decorator'
-import { confirm } from '~/utils/commons/helper'
 const nsStoreUser = namespace('user/store-user')
 
 @Component({
@@ -213,6 +217,9 @@ class UserList extends Vue {
     this.$router.push('/admin/user/detail')
   }
   async deleteBoxById(data: any) {
+    if (!confirm("Bạn có chắc muốn cấm người này?")) {
+      return
+    }
     console.log(data)
     const params = {
       userId: data.id,
@@ -229,34 +236,6 @@ class UserList extends Vue {
       this.Search()
       this.$toast.add({ severity: 'info', summary: 'Thông báo', detail: 'Đã cấm người dùng', life: 5000 })
     }
-  }
-  async banAccount(data: any) {
-    console.log(data)
-    const params = {
-      userId: data.id,
-    }
-    let response: any;
-    const role = this.$cookies.get('auth.role')
-    const _this: any = this
-    confirm(_this,
-      'Xác nhận cấm tài khoản',
-      `Bạn có chắc bạn muốn cấm tài khoản ${data.name} không?`,
-      'pi pi-exclamation-triangle',
-      'btn-success',
-      'Xác nhận',
-      'Hủy',
-      async () => {
-        if (role == 1) {
-          response = await this.actModBanUser(params)
-        } else if (role == 5) {
-          response = await this.actAdminBanUser(params)
-        }
-        if (response && response?.status == '200') {
-          data.deleted = 'deleted'
-          this.Search()
-          this.$toast.add({ severity: 'info', summary: 'Thông báo', detail: 'Đã cấm người dùng', life: 5000 })
-        }
-      })
   }
   onPage(event: any) {
     this.pPagenum = event.page + 1

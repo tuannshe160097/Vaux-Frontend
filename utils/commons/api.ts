@@ -46,6 +46,10 @@ class ApiWrapper {
     const response: any = await this.$axios.post(url, data, config)
     return response
   }
+  public async get_response<T = any, R = SuccessResponse<T>>(url: string, config?: AxiosRequestConfig): Promise<R> {
+    const response: AxiosResponse<R> = await this.$axios.get(url, config)
+    return response.data
+  }
 
 }
 

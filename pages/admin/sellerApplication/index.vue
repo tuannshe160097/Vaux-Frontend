@@ -26,8 +26,8 @@
               <Dropdown class="w-100 line-height-1" v-model="status" :options="oStatus" optionLabel="name"
                 optionValue="value" />
             </div>
-            <div class="col field justify-content-end flex pt-5">
-              <Button class="mr-2 border-10" label="Tìm kiếm" style="height: 36px" @click="Search()" />
+            <div class="col field pt-5">
+              <Button class="mr-2 border-10 p-inputtext" icon="pi pi-search" label="Tìm kiếm" @click="Search()" />
             </div>
           </div>
         </div>

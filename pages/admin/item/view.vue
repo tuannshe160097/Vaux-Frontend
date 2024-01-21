@@ -16,7 +16,7 @@
             <div class="col-fixed">
                 <div class="grid formgrid">
                     <h4 class="text-brown font-bold col-12">1. Thông tin cơ bản</h4>
-                    <div class="field col-12">
+                    <div class="field md:col-8 col-12">
                         <label>Tên sản phẩm</label>
                         <InputText class="w-100" type="text" v-model="name" />
                     </div>

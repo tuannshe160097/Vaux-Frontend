@@ -8,8 +8,8 @@
           <InputText class="w-full" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
         </div>
         <div class="col-3">
-          <label>Hạng mục</label>
-          <Dropdown class="w-100 line-height-1" placeholder="Hạng mục" v-model="categoryId" :options="categories" optionLabel="name"
+          <label>Thể loại</label>
+          <Dropdown class="w-100 line-height-1" placeholder="Thể loại" v-model="categoryId" :options="categories" optionLabel="name"
             optionValue="id" />
         </div>
         <div class="col justify-content-end flex align-items-center">

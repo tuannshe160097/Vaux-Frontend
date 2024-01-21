@@ -104,7 +104,11 @@
                 <InputText class="w-100" type="text" v-model="dateDeleted" disabled />
               </div>
               <div class="field col-12 justify-content-center flex">
-                <div v-if="displayButton" class="field"><Button label="Sửa" @click="Edit()" /></div>
+                <div v-if="displayButton" class="field">
+                  <Button class="mr-2" label="Sửa" @click="Edit()" />
+                  <Button class="btn-warning" v-if="dateDeleted" label="Bỏ cấm" @click="banAccount('UNBAN')" />
+                  <Button class="btn-danger" v-if="!dateDeleted" label="Cấm" @click="banAccount('BAN')" />
+                </div>
               </div>
             </div>
           </div>
@@ -185,16 +189,22 @@ class ViewUser extends Vue {
   actGetStreet!: (params: any) => Promise<string>
   @nsStoreUser.Action
   actGetUserImage!: (params: any) => Promise<any>
+  @nsStoreUser.Action
+  actAdminBanUser!: (params: any) => Promise<any>
+  @nsStoreUser.Action
+  actModBanUser!: (params: any) => Promise<any>
 
   async mounted() {
     this.fetchData()
     const role = this.$cookies.get('auth.role')
-    if (role == 1) {
+    if (role != 5) {
       this.displayButton = false
     }
-    await this.GetCity()
-    await this.getDistrict()
-    await this.getStreet()
+    else {
+      await this.GetCity()
+      await this.getDistrict()
+      await this.getStreet()
+    }
   }
   async fetchData() {
     const userId = Array.isArray(this.$route.query.userId)
@@ -207,22 +217,33 @@ class ViewUser extends Vue {
       }
       const result = await this.actGetUser(params)
       console.log(result)
-      this.name = result.name
-      this.phone = result.phone
-      this.email = result.email
-      this.cccd = result.citizenId
-      this.houseNumber = result.houseNumber
-      this.street = result.street
-      this.district = result.district
-      this.city = result.city
-      this.dob = this.formatDate(result.doB)
-      this.role = result.role.title
-      this.curUserRoleId = result.role.id
-      this.dateCreated = this.formatDate(result.created)
-      this.dateUpdated = this.formatDate(result.updated)
-      this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
-      this.portraitUrl = await this.getImageUrl(result.portraitId, this.curUserId)
-      this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId, this.curUserId)
+      if (!result) {
+        console.log("???");
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Không tìm thấy thông tin người dùng',
+          life: 3000,
+        })
+      }
+      else {
+        this.name = result.name
+        this.phone = result.phone
+        this.email = result.email
+        this.cccd = result.citizenId
+        this.houseNumber = result.houseNumber
+        this.street = result.street
+        this.district = result.district
+        this.city = result.city
+        this.dob = this.formatDate(result.doB)
+        this.role = result.role.title
+        this.curUserRoleId = result.role.id
+        this.dateCreated = this.formatDate(result.created)
+        this.dateUpdated = this.formatDate(result.updated)
+        this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
+        this.portraitUrl = await this.getImageUrl(result.portraitId, this.curUserId)
+        this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId, this.curUserId)
+      }
     }
   }
   async getImageUrl(imgId: any, userId: any): Promise<any> {
@@ -249,7 +270,6 @@ class ViewUser extends Vue {
     const year = date.getFullYear()
     return `${day}-${month}-${year}`
   }
-
   Edit() {
     let url = '/admin/user/detail?userId=' + this.curUserId
     if (this.curUserRoleId == 5) url + '&subject=ADM'
@@ -257,7 +277,6 @@ class ViewUser extends Vue {
     else if (this.curUserRoleId == 2) url + '&subject=EXP'
     this.$router.push(url)
   }
-
   async GetCity() {
     const response: any = await this.actGetCity()
     this.oCitys = response.map((city: any) => ({
@@ -303,6 +322,34 @@ class ViewUser extends Vue {
     this.street = ''
     this.oStreets = []
     this.getDistrict()
+  }
+  async banAccount(action: string) {
+    let question = 'Bạn có chắc muốn cấm người này?'
+    if (action == 'UNBAN') {
+      question = 'Bạn có chắc muốn bỏ cấm người này?'
+    }
+    if (!confirm(question)) {
+      return
+    }
+    const params = {
+      userId: this.curUserId
+    }
+    let response: any;
+    const role = this.$cookies.get('auth.role')
+    if (role == 1) {
+      response = await this.actModBanUser(params)
+    } else if (role == 5) {
+      response = await this.actAdminBanUser(params)
+    }
+    if (response && response?.status == '200') {
+      this.fetchData()
+      if (action == 'UNBAN') {
+        this.$toast.add({ severity: 'info', summary: 'Thông báo', detail: 'Đã bỏ cấm người dùng', life: 5000 })
+      }
+      else if (action == 'BAN') {
+        this.$toast.add({ severity: 'info', summary: 'Thông báo', detail: 'Đã cấm người dùng', life: 5000 })
+      }
+    }
   }
 }
 export default ViewUser

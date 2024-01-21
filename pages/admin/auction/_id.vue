@@ -62,8 +62,8 @@
         <CreateAuction :isDisplayDialog="displayAddItem" :selectedItemsProp="selectedItemsApproved"
           @close-modal="displayAddItem = false" @add-items="addItemApproved" />
       </div>
-      <div>
-        <Button label="Lưu" style="height: 36px" @click="onEditAuction" />
+      <div class="flex justify-content-center mt-3">
+        <Button class="btn-final border-10 px-5" label="Lưu" style="height: 36px" @click="onEditAuction" />
       </div>
     </div>
   </div>

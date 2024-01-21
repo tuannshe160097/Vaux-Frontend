@@ -21,12 +21,12 @@
               <InputText class="w-full" type="text" placeholder="Tìm kiếm" v-model="search"></InputText>
             </div>
             <div class="col-3 field">
-              <label>Hạng mục</label>
+              <label>Thể loại</label>
               <Dropdown class="w-100 line-height-1" v-model="categoryId" :options="categories" optionLabel="name"
                 optionValue="id" />
             </div>
-            <div class="col field justify-content-end flex pt-5">
-              <Button class="mr-2" label="Tìm kiếm" style="height: 36px" @click="getItem()" />
+            <div class="col field flex pt-5">
+              <Button class="mr-2 p-inputtext" label="Tìm kiếm" icon="pi pi-search" @click="getItem()" />
             </div>
           </div>
         </div>
@@ -41,7 +41,7 @@
               </template>
             </Column>
             <Column field="name" className="font-semibold max-w-30rem overflow-ellipsis text-overflow-ellipsis" header="Tên" sortable="sortable" bodyStyle="max-wi"></Column>
-            <Column field="category.name" className="font-semibold" header="Hạng mục" sortable="sortable"></Column>
+            <Column field="category.name" className="font-semibold" header="Thể loại" sortable="sortable"></Column>
             <Column field="seller.name" className="" header="Người bán" sortable="sortable"></Column>
             <Column field="created" header="NGÀY TẠO" sortable="sortable" className="p-text-center">
               <template #body="{ data }">{{

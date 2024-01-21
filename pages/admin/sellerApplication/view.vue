@@ -91,6 +91,15 @@
                     " imageClass="w-max-100" imageStyle="height:200px;" alt="Image" />
                 </div>
               </div>
+              <div class="field col-6">
+                <label>Ngân hàng</label>
+                <Dropdown class="w-100 line-height-1" v-model="selectedBank" :options="oBanks" :filter="true"
+                  filterPlaceholder="Tìm kiếm" optionLabel="name" placeholder="-Chọn ngân hàng-" disabled />
+              </div>
+              <div class="field col-6">
+                <label>Số tài khoản</label>
+                <InputText class="w-100" type="text" v-model="cccd" disabled />
+              </div>
               <div class="field col-12">
                 <label>Lý do trở thành người bán</label>
                 <Textarea class="text-left w-full" v-model="content" rows="15" cols="100" placeholder="Ghi chú..."
@@ -114,6 +123,7 @@ import { GENDER_OPTION } from '~/utils'
 import { Option } from '~/models/Option'
 const nsStoreSeller = namespace('seller/store-seller')
 const nsStoreAddress = namespace('address/store-address')
+const nsStoreBank = namespace('bank/store-bank')
 
 @Component({
   middleware: ['authenticate'],
@@ -133,6 +143,9 @@ class ViewUser extends Vue {
   cccd: string = ''
   citizenIdUrl: string | ArrayBuffer | null = ''
   portraitUrl: any = ''
+  bankAccountNum: string = ''
+  bankCode: string = ''
+  bankName: string = ''
   content: string = ''
   reason: string = ''
   dateCreated: string = ''
@@ -148,10 +161,12 @@ class ViewUser extends Vue {
   selectedCity: Option.Option | null = null
   selectedDistrict: Option.Option | null = null
   selectedStreet: Option.Option | null = null
+  selectedBank: any | null = null
   option: Option.Option | undefined
   oCitys: Option.Option[] = []
   oDistricts: Option.Option[] = []
   oStreets: Option.Option[] = []
+  oBanks: any[] = []
 
 
   @nsStoreSeller.Action
@@ -168,12 +183,15 @@ class ViewUser extends Vue {
   actGetDistrict!: (params: any) => Promise<string>
   @nsStoreAddress.Action
   actGetStreet!: (params: any) => Promise<string>
+  @nsStoreBank.Action
+  actGetBanksList!: () => Promise<string>
 
   async mounted() {
     this.fetchData()
     await this.GetCity()
     await this.getDistrict()
     await this.getStreet()
+    await this.GetBank();
   }
   async fetchData() {
     this.appId = Array.isArray(this.$route.query.appliId)
@@ -195,12 +213,15 @@ class ViewUser extends Vue {
       this.street = result.street
       this.district = result.district
       this.city = result.city
-      this.portraitUrl = await this.getImageUrl(result.portraitId)
-      this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId)
+      this.bankAccountNum = result.bankAccountNum
+      this.bankCode = result.bankCode
+      this.bankName = result.bankName
       this.content = result.content
       this.reason = result.reason
       this.appStatus = result.status
       console.log(result.id, '???', result.appStatus)
+      this.portraitUrl = await this.getImageUrl(result.portraitId)
+      this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId)
     }
     else {
       this.$store.commit('commons/store-error/setError', "Không tìm thấy thông tin application Id")
@@ -291,6 +312,23 @@ class ViewUser extends Vue {
     }))
     this.selectedStreet =
       this.oStreets.find((street) => street.value === this.street) || null
+  }
+  async GetBank() {
+    const response: any = await this.actGetBanksList()
+    console.log(response)
+    if (response.code == '00') {
+
+    }
+    this.oBanks = response.data.map((bank: any) => ({
+      id: bank.id,
+      name: bank.shortName + ' - ' + bank.name,
+      fullname: bank.name,
+      value: bank.code,
+    }));
+    this.selectedBank = this.oBanks.find((bank) => bank.value === this.bankCode) || null;
+    console.log(this.selectedBank);
+    
+    // this.selectedCity = this.oCitys.find((city) => city.value === this.city) || null;
   }
   onSelectCity() {
     this.district = ''

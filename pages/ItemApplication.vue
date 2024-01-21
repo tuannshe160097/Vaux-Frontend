@@ -63,7 +63,7 @@
             ></Column>
             <Column
               field="category"
-              header="Hạng mục"
+              header="Thể loại"
               sortable="sortable"
               className="w-3 font-semibold"
             ></Column>

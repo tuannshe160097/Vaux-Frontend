@@ -37,6 +37,6 @@ export const PAGE_MENU_EXPERT = [
 ]
 
 export const SETTING_MENU = [
-  { id: 200, icon: 'settings', label: 'Setting' },
-  { id: 201, icon: 'logout', label: 'Logout', parentId: 200, action: MENU_ACTION.LOGOUT, isLast: true }
+  { id: 200, icon: 'settings', label: 'Cài đặt' },
+  { id: 201, icon: 'logout', label: 'Đăng xuất', parentId: 200, action: MENU_ACTION.LOGOUT, isLast: true }
 ]

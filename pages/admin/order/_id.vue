@@ -72,7 +72,7 @@
                 <DataTable class="mt-2" :value="slotProps?.data?.items">
                   <Column field="id" header="Id sản phẩm" sortable></Column>
                   <Column field="name" header="Tên sản phẩm" sortable></Column>
-                  <Column field="category" header="Hạng mục" sortable>
+                  <Column field="category" header="Thể loại" sortable>
                     <template #body="{ data }">{{
                       data?.category?.name
                     }}</template>

@@ -53,15 +53,15 @@
                       optionLabel="name" optionValue="value" />
                   </span>
                   <span v-else>
-                    <Tag class="px-2 " v-if="curSubject == '1'" severity="warning" value="Quản trị viên">
+                    <Tag class="px-2 " v-if="curSubject == '5'" severity="danger" value="Quản trị viên">
                     </Tag>
-                    <Tag class="px-2 " v-else-if="curSubject == '2'" severity="success" value="Quản lý">
+                    <Tag class="px-2 " v-else-if="curSubject == '1'" severity="success" value="Quản lý">
                     </Tag>
-                    <Tag class="px-2 " v-else-if="curSubject == '3'" severity="success" value="Kiểm định viên">
+                    <Tag class="px-2 " v-else-if="curSubject == '2'" severity="success" value="Kiểm định viên">
                     </Tag>
-                    <Tag class="px-2 " v-else-if="curSubject == '4'" severity="warning" value="Người bán">
+                    <Tag class="px-2 " v-else-if="curSubject == '3'" severity="warning" value="Người bán">
                     </Tag>
-                    <Tag class="px-2 " v-else-if="curSubject == '5'" severity="info" value="Người mua">
+                    <Tag class="px-2 " v-else-if="curSubject == '4'" severity="info" value="Người mua">
                     </Tag>
                     <Tag class="px-2 " v-else severity="info" :value="curSubject">
                     </Tag>
@@ -152,14 +152,15 @@
                     type="text" v-model="dateDeleted" disabled />
                 </div>
                 <div class="field col-12 justify-content-center flex">
-                  <div v-if="curThread === 'ADD'">
-                    <Button class="btn-final border-10" type="submit" label="Tạo mới" />
-                  </div>
-                  <div v-else-if="curThread === 'UPDATE'">
-                    <Button class="btn-final border-10" type="submit" label="Cập nhật" />
+                  <div v-if="!displayButton">
                   </div>
                   <div v-else>
-                    <Button class="btn-final border-10" label="Button" />
+                    <div v-if="curThread === 'ADD'">
+                      <Button class="btn-final border-10" type="submit" label="Tạo mới" />
+                    </div>
+                    <div v-else-if="curThread === 'UPDATE'">
+                      <Button class="btn-final border-10" type="submit" label="Cập nhật" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -266,6 +267,7 @@ class DetailUser extends Vue {
   curThread: string = 'ADD'
   curSubject: any = 0
   curUserId: string = ''
+  displayButton: boolean = true
   //option data
   oGenders = GENDER_OPTION
   oRoles: any = null
@@ -305,8 +307,10 @@ class DetailUser extends Vue {
     const role = this.user?.role.id
     if (role == 1) {
       this.oRoles = ROLE_OPTION_MOD
+      this.displayButton = false
     } else if (role == 5) {
       this.oRoles = ROLE_OPTION_ADMIN
+      this.displayButton = true
     }
     await this.GetCity()
     await this.getDistrict()
@@ -330,25 +334,36 @@ class DetailUser extends Vue {
       }
       const result = await this.actGetUser(params)
       console.log(result)
-      this.curSubject = result.role.id
-      this.role = result.role.name
-      this.name = result.name
-      this.phone = result.phone
-      this.email = result.email
-      this.cccd = result.citizenId
-      this.houseNumber = result.houseNumber
-      this.street = result.street
-      this.district = result.district
-      this.city = result.city
-      this.dob = this.getDate(result.doB)
-      this.dateCreated = this.formatDate(result.created)
-      this.dateUpdated = this.formatDate(result.updated)
-      this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
-      this.bankCode = result.bankCode
-      this.bankName = result.bankName
-      this.bankAccountNum = result.bankAccountNum
-      this.portraitUrl = await this.getImageUrl(result.portraitId, this.curUserId)
-      this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId, this.curUserId)
+      if (!result) {
+        this.displayButton = false
+        this.$toast.add({
+          severity: 'error',
+          summary: 'Lỗi',
+          detail: 'Không tìm thấy thông tin người dùng',
+          life: 3000,
+        })
+      }
+      else {
+        this.curSubject = result.role.id
+        this.role = result.role.name
+        this.name = result.name
+        this.phone = result.phone
+        this.email = result.email
+        this.cccd = result.citizenId
+        this.houseNumber = result.houseNumber
+        this.street = result.street
+        this.district = result.district
+        this.city = result.city
+        this.dob = this.getDate(result.doB)
+        this.dateCreated = this.formatDate(result.created)
+        this.dateUpdated = this.formatDate(result.updated)
+        this.dateDeleted = result.deleted ? this.formatDate(result.deleted) : ''
+        this.bankCode = result.bankCode
+        this.bankName = result.bankName
+        this.bankAccountNum = result.bankAccountNum
+        this.portraitUrl = await this.getImageUrl(result.portraitId, this.curUserId)
+        this.citizenIdUrl = await this.getImageUrl(result.citizenIdImageId, this.curUserId)
+      }
     } else {
     }
   }

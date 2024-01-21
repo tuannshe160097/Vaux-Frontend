@@ -122,6 +122,10 @@ class Login extends Vue {
       this.$store.commit('commons/store-error/setError', 'Vui lòng nhập OTP')
       return
     }
+    if (!this.validPhoneNumber(this.sPhoneNumber)) {
+      this.$store.commit('commons/store-error/setError', 'Số điện thoại không đúng định dạng')
+      return
+    }
 
     try {
       //const response: any = await this.$auth.loginWith('local', { headers: { 'Content-Type': 'multipart/form-body' } }, { data: { phone: this.sPhoneNumber, otp: this.sOTP } })

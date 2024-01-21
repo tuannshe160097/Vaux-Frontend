@@ -25,7 +25,7 @@
               <div class="item__icon">
                 <div class="icon icon--large icon-notification "></div>
               </div>
-              <div class="item__label"><span>Notifications</span> <span
+              <div class="item__label"><span>Thông báo</span> <span
                   class="icon toggle icon-chevron-down surface-500 toggle-none"></span> <span
                   class="mr-2 badge-notify p-badge p-component p-badge-no-gutter">{{ unseen }}</span></div>
             </div>

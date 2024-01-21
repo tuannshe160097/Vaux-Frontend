@@ -40,8 +40,9 @@
                                 <div class="align-self-center col-4 field mb-0">
                                     <label class="">Phố/ Phường<span class="text-danger">*</span></label>
                                     <Dropdown :class="{ 'p-invalid': fields.street.error }" class="w-100 line-height-1"
-                                        v-model="street" :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm"
-                                        optionLabel="name" placeholder="-Chọn Phố/Phường-" optionValue="value" />
+                                        v-model="selectedStreet" :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm"
+                                        optionLabel="name" placeholder="-Chọn Phố/Phường-" 
+                                        @change="onSelectStreet()" />
                                 </div>
                                 <div class="align-self-center col-12 field mb-0">
                                     <label class="" v-tooltip.top="'Enter your username'">Địa chỉ cụ thể<span
@@ -419,12 +420,18 @@ class ItemList extends Vue {
             value: street.codename,
         }));
         this.selectedStreet = this.oStreets.find((street) => street.value === this.street) || null;
+        console.log(this.selectedStreet);
+        
     }
     onSelectCity() {
         this.district = ''
         this.street = ''
         this.oStreets = []
         this.getDistrict()
+    }
+    onSelectStreet() {
+        if (this.selectedStreet == undefined || this.selectedStreet == null) return
+        this.street = this.selectedStreet.value
     }
     checkValid() {
         this.fetchFormData();

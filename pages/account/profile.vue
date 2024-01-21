@@ -42,7 +42,7 @@
                                             v-model="mail" />
                                     </div>
                                     <div class="align-self-center col-4 field">
-                                        <label class="md:m-0">Gender<span class="text-danger">*</span></label>
+                                        <label class="md:m-0">Giới tính<span class="text-danger">*</span></label>
                                     </div>
                                     <div class="col-8 field">
                                         <Dropdown :class="{ 'p-invalid': fields.gender.error }" class="w-100 line-height-1"
@@ -104,7 +104,7 @@
                                     <div class="col-8 field">
                                         <!-- <InputText class="w-full" type="text" v-model="street" /> -->
                                         <Dropdown :class="{ 'p-invalid': fields.street.error }" class="w-100 line-height-1"
-                                            v-model="street" :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm"
+                                            v-model="selectedStreet" :options="oStreets" :filter="true" filterPlaceholder="Tìm kiếm"
                                             optionLabel="name" placeholder="-Chọn Phố/Phường-" @change="onSelectStreet()" />
                                     </div>
                                     <div class="align-self-center col-4 field">

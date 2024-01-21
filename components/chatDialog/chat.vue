@@ -35,7 +35,7 @@
           </span>
         </label>
         <input v-model="msg" type="text" class="flex-1" id="chat-input" @keyup.enter="onChatSubmitClick()"
-          placeholder="Send a message..." />
+          placeholder="Nhập tin nhắn..." />
         <!-- <Button class="chat-submit"> -->
         <span @click="onChatSubmitClick()" class="chat-submit cursor-pointer material-icons">
           send

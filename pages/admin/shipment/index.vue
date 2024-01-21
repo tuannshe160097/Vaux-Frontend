@@ -48,6 +48,9 @@
               }}</template>
             </Column>
             <Column field="shippingCost" header="Phí vận chuyển" sortable="sortable" className="w-3 p-text-right">
+              <template #body="{ data }">{{
+                data.shippingCost | moneyNumberFomat
+              }}</template>
             </Column>
             <Column field="address" header="Địa chỉ người gửi" sortable="sortable" className="overflow-ellipsis"></Column>
             <Column :exportable="false" header="Hoạt động" sortable="sortable" className="p-text-right overflow-visible">
@@ -69,7 +72,7 @@
                 <DataTable class="mt-2" :value="slotProps?.data?.items">
                   <Column field="id" header="Id" sortable></Column>
                   <Column field="name" header="Tên sản phẩm" sortable></Column>
-                  <Column field="category" header="Hạng mục" sortable>
+                  <Column field="category" header="Thể loại" sortable>
                     <template #body="{ data }">{{
                       data?.category?.name
                     }}</template>
